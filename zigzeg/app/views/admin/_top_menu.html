@@ -1,0 +1,11 @@
+<div class="fcontainer_12 menuTabsContain">
+  <ul class="menu_tabs">
+    <a <%= ["admin", "messages", "alerts"].include?(controller_name) ? "class='selected'" : '' %>  href="<%= admin_path %>"><li>Home<span <%= has_updates?("home") ? "class='alert'" : '' %> ></span></li></a>
+    <a <%= ["administrators", "system", "announcements", "categories", "email_templates", "statistics", "logs","packages"].include?(controller_name) ? "class='selected'" : '' %> href="<%= system_admin_path %>"><li>System</li></a>
+    <a href="<%= admin_maps_path %>"><li>Map</li></a>
+    <a <%= ["advertisers"].include?(controller_name) ? "class='selected'" : "" %>  href="<%= admin_advertisers_path %>"><li>Business</li></a>
+    <a <%= ["users"].include?(controller_name) ? "class='selected'" : "" %> href="<%= admin_users_path %>"><li>User<span <%= has_updates?("user") ? "class='alert'" : '' %>></span></li></a>
+    <a href="<%= sales_admin_path %>"><li>Sales</li></a>
+    <a href="<%= company_admin_path %>"><li>Company</li></a>
+  </ul>
+</div>

@@ -1,0 +1,34 @@
+compress_assets:        on
+package_assets:         on
+embed_assets:           on
+template_function:      _.template
+package_path:           packages
+javascript_compressor:  yui
+
+javascripts:
+  workspace:
+    - public/javascripts/jquery-1.6.min.js
+    - public/javascripts/jquery.fcbkcomplete.js
+    - public/javascripts/jquery.ui.core.js
+    - public/javascripts/jquery.ui.datepicker.js
+    - public/javascripts/jquery.validate.min.js
+    - public/javascripts/jquery.autocomplete.js
+    - public/javascripts/jquery.ui.widget.js
+    - public/javascripts/fancybox/jquery.fancybox-1.3.4.pack.js
+    - public/javascripts/fancybox/jquery.easing-1.3.pack.js
+    - public/javascripts/fancybox/jquery.mousewheel-3.0.4.pack.js
+    
+stylesheets:
+  common:
+    - public/stylesheets/global.css
+    - public/stylesheets/sessions.css
+    - public/stylesheets/opportunities.css
+    - public/stylesheets/messages.css
+    - public/stylesheets/contacts.css
+    - public/stylesheets/fckfacebook.css
+    - public/stylesheets/jquery.autocomplete.css
+    - public/stylesheets/fancybox/jquery.fancybox-1.3.4.css
+    - public/stylesheets/jquery.ui.all.css
+    - public/stylesheets/jquery.ui.datepicker.css
+    - public/stylesheets/pagination.css
+    - public/stylesheets/fancybox/jquery.fancybox-1.3.4.css

@@ -1,0 +1,8 @@
+<div  id="contact_box_parent">
+  <div >
+    <span class="name" style="margin-left: 0px;"><%= user.fullname.titleize %></span>
+    <span> 's friends (<%= user.contacts.length %>) </span>
+    <div class="clr"></div>
+    <span class="expertise" style="font-size: 10px"><%= user.expertise.titleize rescue ''%></span>
+  </div>
+</div>

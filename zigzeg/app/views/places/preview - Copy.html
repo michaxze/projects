@@ -1,0 +1,250 @@
+<script>
+$(document).ready(function(e) {
+  $("#wnShowall").click(function() {
+    var place_id = $(this).attr('data-id');
+    $.ajax({
+      type: "GET",
+      url: "/places/all_whatsnew",
+      data: "id=" + place_id,
+      success: function(data){
+        $("#wnShowall").hide();
+        $("#tabHide").show();
+        $(".contentList").append(data);
+      }
+    });
+  });
+  $("#tabHide").click(function() {
+    $("#wnShowall").show();
+    $("#tabHide").hide();
+    $(".appended").remove();
+  });
+});
+</script>
+<div id="main" class="width70 alpha">
+  <!--start page post-->
+  <article class="clearfix">
+    <div class="relative">
+      <!--header--> 
+      <div id="depTabMain">
+        <ul class="tabs">
+          <li class="ui-tabs-selected"><a href="#wnTab"><h3 class="segoe">WHAT'S NEW - <%= @place.latest.length %> 
+          LISTING<% if @place.latest.length > 1 %>S<% end %></h3></a></li>
+        </ul>
+        <div class="imageLoader tabLoader posRight dispNone"></div> 
+        <% if @place.latest.length > 5 %>
+        <h6 class="lgray right posRight" >
+          <a id="wnShowall" data-id="<%= @place.id %>" class="gray showAll cursor">SHOW ALL</a>
+          <a id="tabHide" class="gray hideAll cursor dispNone">HIDE</a>
+        </h6>
+        <% end %>      
+	<div class="panes">
+  <div class="hr"></div>
+    <!-- start whats new tab -->
+	  <div id="wnTab" class="">
+      <ul class="contentList">
+        <% if @place.latest.empty? %>
+            <li class="places">
+              <div class="margin_left_10">
+                <b class="black">Welcome!</b>
+                	<p><%= @place.name.titleize %> joined Zigzeg on <%= @place.user.created_at.strftime("%B %d, %Y") %></p>
+              </div>
+            </li>
+        <% end %>
+        <% @place.latest.take(5).each do |a| %>
+          <%= render :partial => "whatsnew", :locals => { :whatsnew => a, :appended => nil } %>
+        <% end %>
+      </ul>
+			
+	    <!-- start tab appending area -->
+            <div id="newTabAppend" class="dispNone">
+              <div id="newAppendarea" class="pad_bot"> </div>
+              <div class="clearfix"></div>
+              <div class="gray_box tabClickHide cursor" align="center"> &nbsp;click to hide</div>
+            </div>
+            <!-- end tab appending area -->
+          </div>
+	  <!-- start whats new tab -->
+    </div>
+    <!-- end tab panes -->
+  </div>
+
+</div>
+<hr>
+<a id="announcementBox" href="#announceDialog" class="dispNone"></a>
+<div class="alpha relative leftContent">
+  <!--blog header-->    
+  <div>
+    <div class="imageLoader aboutLoader posRight dispNone"></div> 
+    <h3 class="segoe">ABOUT US</h3>  
+    <h6 class="lgray right posRight"><a id="aboutLink" class="gray showAll cursor dispNone">SHOW ALL</a></h6> 
+  </div>
+  <div class=" hr"></div>
+  <!--page description-->
+  <div id="divAbountCon">
+  	<p id="aboutPlace" class="AboutP" align="justify"><%= @place.description %> </p>
+  </div>
+</div>
+<div class="clear"></div>
+
+  <% if @place.pictures.length > 0 %>
+  <div id="tabMain" class="leftContent">
+      <ul class="tabs">
+        <li class="ui-tabs-selected"><a href="#productTab"><h3 class="segoe">GALLERY - <%= @place.pictures.length %> image(s)</h3></a></li>
+      </ul>
+      <div class="imageLoaderGallery tabLoader posRight dispNone"></div> 
+      <% if @place.pictures.length > 4 %>
+        <h6 class="lgray right posRight" >
+          <a id="tabShow" class="gray showAll cursor">SHOW ALL</a>
+        </h6>
+      <% end %>
+    
+    <div class="panes">
+      <div class=" hr pad_bot"></div>
+      <!-- start product tab -->
+      <div id="productTab" class="">
+        <% @place.pictures.take(4).each do |photo| %>
+          <div class="grid_3 alpha portfolio">
+	    <a rel="product_group" title="<%= photo.name %>" name="<span class='bold'><%= photo.name %></span><br><%= photo.description %>" href="<%= photo.image.url(:large)%>" >
+              <div class="zig">
+		<img alt="<%= photo.name.titleize rescue ''%>" src="<%= photo.image.url(:thumb) %>" class="radius5">
+              </div>       
+	      <div><h6 class="fleft"><%= truncate(photo.name, :length => 20, :omission => "...")  %></h6></div>   
+            </a>
+	  </div>
+        <% end %>
+        <div class="clearfix"></div>
+
+        <!-- start tab appending area -->
+        <div id="prodContain" class="dispNone">
+          <div id="prodAppendarea" class="pad_bot">
+          <% if @place.pictures.length > 4 %>
+            <% @place.pictures[4..-1].each do |photo| %>
+              <div class="grid_3 alpha portfolio">
+
+                 <a rel="product_group" title="<%= photo.name %>" name="<span class='bold'><%= photo.name %></span><br><%= photo.description %>" href="<%= photo.image.url(:large)%>" >
+
+                 <div class="zig">
+                   <img alt="<%= photo.name.titleize rescue ''%>" src="<%= photo.image.url(:thumb) %>" class="radius5">
+                 </div>       
+                 <div><h6 class="fleft"><%= truncate(photo.name, :length => 20, :omission => "..." ) %> &nbsp;</h6></div>   
+                 </a>
+              </div>
+            <% end %>
+          <% end %>
+          </div>
+          <div class="clearfix"></div>
+          <div class="gray_box tabClickHide cursor" align="center"> &nbsp;click to hide</div>
+        </div>
+        <!-- end tab appending area -->
+      </div>
+      <!-- start product tab -->
+    </div>
+  <% end %>
+
+
+ <div class="clearfix"></div>
+ <div class="alpha relative leftContent">
+  <!--blog header-->    
+  <!--<div>
+    <h6 class="lgray right posRight" >
+      <a href="ajax link" data-id="#branchesListingAppends" class="gray showAll listingShow cursor">SHOW ALL</a>
+    </h6>
+    <h3 class="segoe capital branches" id="branchesTitle"><%= @place.name.titleize %> HAS <strong>NO BRANCHES</strong></h3> 
+     
+  </div>-->
+  <div class="hr"></div>
+      <ul class="mainList listing pad_top">
+       <div id="branchesListingAppends"></div>
+      </ul>
+      
+  </div>
+   
+<% if @place.pub_deals.length > 0 %>   
+<div class="alpha relative leftContent">
+  <!--blog header-->    
+  <div>
+    <% if @place.pub_deals.length > 2 %>
+    <h6 class="lgray right posRight" >
+      <a id="offersTitleLink" href="ajax link" data-id="#dealsListingAppends" class="gray showAll listingShow cursor">SHOW ALL</a>
+    </h6>
+    <% end %>
+    <h3 class="segoe capital deals" id="offersTitle"><%= truncate(@place.name.titleize, :length => 50, :omission => "...")  %> HAS <strong>
+    <% if @place.pub_deals.length > 0 %>
+      <%= @place.pub_deals.length %> OFFER<% if @place.deals.length > 1 %>S<% end %>
+    <% else %>
+      NO OFFERS
+    <% end %>     
+    </strong></h3>  
+  </div>
+  <div class="hr"></div>
+  <ul class="mainList listing pad_top">
+      <% @place.pub_deals.take(2).each do |deal| %>
+        <li class="deals radius5">
+        <span><a class="cursor" href="<%= form_url(deal) %>"><%= truncate(deal.name, :length => 75, :omission => "...") %></a></span>
+	    	<p><%= truncate(deal.description, :length => 150, :omission => "...") %></p>
+     	 <a class="map radius5 fright marginRight cursor" href="/maps?id=<%=deal.id %>&type=deal" target="_new">Go to Map</a>
+        </li>
+      <% end %>
+      <div id="dealsListingAppends" class="dispNone">
+      <% if @place.pub_deals.length > 2 %>
+        <% @place.pub_deals[2..-1].each do |deal| %>
+        <li class="deals radius5">
+          <span><a class="cursor" href="<%= form_url(deal) %>"><%= truncate(deal.name, :length => 75, :omission => "...") %></a></span>
+          <p><%= truncate(deal.description, :length => 150, :omission => "...") %></p>
+          <a class="map radius5 fright marginRight cursor" href="/maps?id=<%=deal.id%>&type=deal" target="_new">Go to Map</a>
+        </li>
+        <% end %>
+      <% end %>
+      </div>
+      </ul>
+</div>
+
+<% end %>
+<% if @place.pub_events.length > 0 %>
+<div class="alpha relative leftContent">
+  <!--blog header-->    
+  <div>
+   <% if @place.pub_events.length > 2 %>
+    <h6 class="lgray right posRight" ><a id="eventsTitleLink" href="ajax link" data-id="#eventsListingAppends" class="gray showAll listingShow cursor">SHOW ALL</a></h6>
+   <% end %>       
+    <h3 class="segoe capital events" id="eventsTitle"><%= truncate(@place.name.titleize, :length => 50, :omission => "...")  %> HAS <strong>
+     <% if @place.pub_events.length > 0 %>
+    			<%= @place.pub_events.length %> EVENT<% if @place.pub_events.length > 1 %>S<% end %>
+      <% else %>
+    			NO EVENTS
+    <% end %>      
+    </strong></h3> 
+     
+  </div>
+  <div class="hr"></div>
+  <ul class="mainList listing pad_top">
+        <% @place.pub_events.take(2).each do |event| %>
+        <li class="events radius5">
+          <span><a class="cursor" href="<%= form_url(event) %>"><%= truncate(event.name, :length => 75, :omission => "...") %></a></span>
+          <p><%= truncate(event.description, :length => 150, :omission => "...") %></p>
+          <a class="map radius5 fright marginRight cursor" href="/maps?id=<%= event.id %>&type=event" target="_new">Go to Map</a>
+        </li>
+      <% end %>
+       <div id="eventsListingAppends" class="dispNone">
+       <% if @place.pub_events.length > 2 %>
+        <% @place.pub_events[2..-1].each do |event| %>
+        <li class="events radius5">
+          <span><a class="cursor" href="<%= form_url(event) %>"><%=  truncate(event.name, :length => 75, :omission => "...") %></a></span>
+          <p><%= truncate(event.description, :length => 150, :omission => "...") %></p>
+          <a class="map radius5 fright marginRight cursor" href="/maps?id=<%= event.id %>&type=event" target="_new">Go to Map</a>
+        </li>
+          <% end %>
+        <% end %>
+       </div>
+      </ul>
+      
+  </div>
+<% end %>
+  <!-- end tab panes -->
+   <% unless @listing.nil? %>
+     <%= render :partial => "/globals/tags", :locals => { :listing => @listing } %>
+   <% else %>
+     <%= render :partial => "/places/tags", :locals => { :place => @place } %>
+   <% end %>
+
+</div>

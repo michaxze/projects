@@ -1,0 +1,32 @@
+<div id="listing-header" > 
+  <div id="listing-header-container">
+
+    <div style="float: right;" >
+      <span class="bluebutton" style="padding: 4px 4px; background-color: gray; cursor: pointer; right: 0; float: right; position: absolute; top: -4px; right: -4px" onclick="close_opp_details();">CLOSE</span>
+      <ul style="list-style-type: none; padding-top: 20px; text-align: right"> 
+        <li><%= link_to "Respond", respond_opportunity_path(opp)%></li> 
+        <li><%= link_to "Refer to friend", refer_opportunity_path(opp)%></li> 
+        <li><%= link_to "Tweet this post", Helper.twitter_sharer(opportunity_url(opp), opp.subject), :target => "_blank"%></li> 
+        <li><%= link_to "Share to Facebook", Helper.facebook_sharer(opportunity_url(opp), opp.subject), :target => "_blank"%></li> 
+      </ul>
+    </div>
+    
+    <span style="font-size: 14px; font-family: Arial; "><%= opp.subject.titleize%></span> <br /> 
+    <span style="font-size: 10px; color: #999">Date posted: <%= opp.created_at.strftime("%B %d, %Y")%></span><br /> 
+    <% unless opp.zipcode.blank?%>
+    <span style="font-size: 10px; color: #999">City: <%= Helper.getcity(opp.zipcode) %> (<%= opp.zipcode%>)</span><br /> 
+    <% end %>
+    <span style="font-size: 10px; color: #999">Posted by: </span>
+    <div>
+      <%= image_tag("profile.png", :size => "32x32")%>
+      <span style="font-size: 10px; color: #999; line-height: 35px"><%= link_to opp.user.username, "/#{opp.user.username}" %></span>
+    </div>
+    
+  </div>
+</div>
+
+<div id="listing-container"> 
+  <div><%= opp.description %></div>
+  <div class="paragraph_break"><br /></div>
+</div>
+<div class="clear"></div>

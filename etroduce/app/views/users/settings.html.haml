@@ -1,0 +1,80 @@
+%h3 Settings
+
+- form_for :user, @user, :url => settings_path, :method => :post, :html => { :id => "new_opportunity_form", :multipart => true } do |f|
+
+  %div.field_line
+    %div.field_label
+      First Name :
+    %div.field_box
+      = f.text_field :firstname
+  %div.clr
+  
+  %div.field_line
+    %div.field_label
+      Last Name :
+    %div.field_box
+      = f.text_field :lastname
+  %div.clr
+  
+  %div.field_line
+    %div.field_label
+      Email :
+    %div.field_box
+      = f.text_field :email
+  %div.clr
+
+  %div.field_line
+    %div.field_label
+      Username :
+    %div.field_box
+      = f.text_field :username, :maxlength => "8"
+      - unless @user.username.blank?
+        %span{:style => "font-size: 10px; font-weight: bold; padding: 30px 30px; position: relative"}
+          Your public url: 
+          = link_to "#{root_url}#{@user.username.to_s}", "#{root_url}#{@user.username.to_s}", :target => "_blank"
+  %div.clr
+
+  %div.field_line
+    %div.field_label
+      Zipcode :
+    %div.field_box
+      = f.text_field :zipcode
+  %div.clr
+  
+  %div.field_line
+    %div.field_label
+      Expertise :
+    %div.field_box
+      = f.text_field :expertise
+  %div.clr
+
+  %div.field_line
+    %div.field_label
+      Mobile Number :
+    %div.field_box
+      = f.text_field :mobileno
+  %div.clr
+
+  %div.field_line
+    %div.field_label
+      Password :
+    %div.field_box
+      = password_field_tag :password, nil
+  %div.clr
+
+  %div.field_line
+    %div.field_label
+      Profile Image :
+    %div.field_box
+      - if @user.avatar.exists?
+        = image_tag @user.avatar.url(:medium)
+        %br
+        %br
+      = f.file_field :avatar
+  %div.clr
+  
+  %div.field_line
+    %div.field_label
+    %div.field_box
+      = submit_tag "Update"
+  %div.clr

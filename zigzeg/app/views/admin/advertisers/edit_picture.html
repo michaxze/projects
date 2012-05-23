@@ -1,0 +1,23 @@
+  	<div id="imagePop" class="window whiteBox">
+      <div class="container_12">
+      <form class="form" id="imageGalFrm">
+      <%= form_tag "/admin/advertisers/edit_picture"%>
+      	<div class="grid_4"><img src="<%= @picture.image.url(:thumb) rescue '' %>" width="100"><br>
+<br><input type="submit" class="checkButton cursor removeSelected white pad_top20 half" value="Save" ></div>
+        <div class="grid_8">
+        <input type="hidden" name="image_id" id="image_id">
+        	<div class="container_12">
+          		<div class="grid_12">Image file</div>
+              <div class="grid_12"><input type="file" class="dispNone fileBrowser"><input type="text" class="radius5 full required"></div>
+              <div class="grid_12">Image Title</div>
+              <div class="grid_12"><input type="text" class="radius5 full required" name="title"></div> 
+              <div class="grid_12">Image Description</div>
+              <div class="grid_12"><textarea name="description" rows="5" class="full required"></textarea></div>        
+          </div>
+
+        </div>
+        <div class="grid_12"><a href="">delete</a></div>
+
+      </form>
+      </div>  
+  </div>

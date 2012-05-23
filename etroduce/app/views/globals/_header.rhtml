@@ -1,0 +1,31 @@
+<div class="logo left">
+  <%= link_to(image_tag("etroduce-logo.png", :alt => "Etroduce"), root_path) %>
+</div>
+
+<% if controller_name != 'sessions'%>
+  <% if !logged_in? %>
+  <div id="front_signin" class="right" style="width: 350px">
+    <% form_tag "/login", :method => :post, :class => "signin" do %>
+
+    <table border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td style="padding: 0px 5px; border-bottom: none"><input type="text" placeholder="Username" name="username_or_email"/></td>
+        <td style="padding: 0px 5px; border-bottom: none"><input type="password" placeholder="Password" name="password"/></td>
+        <td style="padding: 0px 5px; border-bottom: none"><button type="submit" class="rounded bluebutton" style="margin: 0px;">Sign in</button></td>
+      </tr>
+      <tr style="height: 25px">
+        <td style="padding: 0px"><input type="checkbox" name="rememberme" value="1" style="float: left; width: 15px"/>
+          <span class="small" style="float: left; width: 80px">Remember me</span></td>
+        <td style="padding: 0px"><span id="fgt" class="small" style="float: left; width: 100px"><%= link_to "Forgot Password?", forgot_password_path %></span></td>
+        <td style="padding: 0px">
+          <a href="/auth/facebook">
+        <%= image_tag "fb_login_icon.gif", :size => "130x20", :style => "padding-left: 5px; padding-top: 2px"%>
+        </a></td>
+      </tr>
+    </table>
+        
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
+<div class="clr"></div>

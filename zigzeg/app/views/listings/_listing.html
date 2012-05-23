@@ -1,0 +1,99 @@
+<% unless listing.listable.nil?%>
+<!-- events, deals, place -->
+<li class="<%= listing.listing_type %>s relative new">
+<!-- ****** START THUMB VIEW AREAS****** -->
+  <div class="thumbView">
+    <a href="<%= form_url(listing) %>">
+      <div class="wraptocenter">
+        <div class="bgHover">
+          <div class="hoverImage">
+            <div>click to view more</div>
+          </div>
+					<% if listing.listing_type == "place" %>
+              <div class="imgWrap">
+                <img src="<%= listing.listable.profile_image.image(:thumb2) rescue get_missing_image(listing.listable) %>"  class="radius5" width="160" height="121" >
+              </div>
+          <% else %>
+              <div class="imgWrap">
+                <img src="<%= listing.listable.pictures.first.image(:thumb_index) rescue get_missing_image(listing.listable) %>"  class="radius5" width="160" height="121" >
+              </div>
+          <% end %>
+       </div>
+        <% unless listing.package.nil?
+             if listing.package.package_code.include?("premium") 
+        %>
+          <div class="premium"></div>
+           <% end %>
+        <% end %>
+      </div>
+
+      <div title="<%= listing.name rescue '' %>">
+        <span title="<%= listing.name rescue '' %>"><%= truncate(listing.name, :length => 45, :omission => "...") %></span>
+        <p><%= truncate(listing.description, :length => 85, :omission => "...") %></p>
+      </div>
+    </a>
+  </div>
+   <!-- ****** END THUMB VIEW AREA****** -->
+   <!-- ****** START LIST VIEW AREAS****** -->
+	 <div class="grid_12 listViewArea"> 
+    <% unless listing.package.nil?
+             if listing.package.package_code.include?("premium") 
+        %>
+          <div class="premium"></div>
+           <% end %>
+        <% end %>
+   <div class="inlineB full">
+   <div class="hr listviewHR"></div>                    
+     <!--list  description-->
+     <div class="grid_1 alpha pad_bot listJsH hover<%= listing.id %>" onmouseover="hoverJSin(<%= listing.id %>)" onmouseout="hoverJSout()">
+       <a href="<%= form_url(listing) %>"><div class="square_dep">
+       <% if listing.listing_type == "place" %>
+         <img src="<%= listing.listable.profile_image.image(:super_thumb) rescue get_missing_image(listing.listable, 't') %>">
+       <% else %>
+         <img src="<%= listing.listable.pictures.first.image(:super_thumb) rescue get_missing_image(listing.listable, 't') %>">
+       <% end  %>
+   			</div>
+       <div class="bgHoverList radius5"></div>
+       <div class="bgImg radius5"></div></a>
+     </div>
+     <div class="contentListView">
+      <a href="<%= form_url(listing) %>" class="listJsH hover<%= listing.id %>" onmouseover="hoverJSin(<%= listing.id %>)" onmouseout="hoverJSout()"><h4 class="align_left fleft"><%= truncate(listing.name, :length => 60, :omission => "...") %></h4></a>
+      <div class="container_12 inlineB gray full">
+     <div class="grid_4 autowidth">Category : <a href="/?search=<%= CGI::escape(listing.listable.place.category.name) rescue '' %>&btnSearch=search"><%= listing.listable.place.category.name rescue '' %></a></div>
+
+<% unless listing.listable.place.sub_category.nil? 
+  cat_ids = listing.listable.place.sub_category.split(",").compact
+  subcategory = Category.find(cat_ids)
+%>
+<div class="fleft pad_right10 pad_left">|</div>
+          <div class="grid_4 autowidth">Subcategory : 
+  <% subcategory.each do |scat| %>
+    <a href="/?search=<%= CGI::escape(scat.name) %>&btnSearch=search"><%= scat.name %></a>
+    <% if subcategory.index(scat) != (subcategory.length-1) %>
+     /
+    <% end %>
+  <% end %>
+</div>
+<% end %>
+          <div class="clearfix"></div>
+<% if listing.listing_type == "place" %>
+          <div class="grid_2 tel autowidth"><%= listing.listable.place.telephone_numbers rescue '' %></div>
+<% else %>
+          <div class="grid_2 tel autowidth"><%= listing.listable.telno rescue '' %></div>
+<% end %>
+          <div class="grid_9 address no_margin" title="<%= listing.listable.map_address.complete_address rescue '' %>">
+            <%= truncate((listing.listable.map_address.complete_address rescue ''), :length => 96, :omission => "...") %>
+          </div>
+          
+      </div>
+      <div class="clearfix"></div>
+       <p class="gray small2 align_left"><%= truncate(listing.description, :length => 270, :omission => "...") %></p>
+     </div>
+     </div>
+      
+  </div>
+ <!-- ****** END LIST VIEW AREAS****** -->
+</li>
+
+
+<% end %>

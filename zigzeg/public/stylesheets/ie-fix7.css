@@ -1,0 +1,19 @@
+.dpBreadEndPage{
+	z-index:2;
+	width:65%;
+	height:40px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	behavior: url(PIE.htc);
+}
+.sidebar{
+	position:absolute;
+	right:50px;
+}
+#dashboardEvent{
+		-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	behavior: url(PIE.htc);
+}

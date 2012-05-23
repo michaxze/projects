@@ -1,0 +1,45 @@
+<div class="messageBox clearfix"> 
+<h6 class="bold grid_7">ADMINISTRATOR LIST</h6><a  href="<%= new_admin_administrator_path %>" class="checkButton cursor  fright ">Create Administrator</a>
+			<div class="container_12">
+          <div class="header">
+              <div class="grid_4">Admin Names</div>
+              <div class="grid_3">Admin Email</div>
+              <div class="grid_3">Type</div>
+              <div class="grid_2">Date created</div>
+              <div class="">&nbsp;</div>
+          </div>
+          <div class="body">
+
+<% @admins.each do |admin| %>
+          <div class="row new admins_row_<%=admin.id%>">
+              <div class="grid_4"><a href="<%= edit_admin_administrator_path(admin)%>" data-id="<%= admin.id %>"><%= admin.name_or_email %></a></div>
+              <div class="grid_3"><%= link_to admin.email, "mailto:#{admin.email}" %></div>
+              <div class="grid_3"><%= show_user_type(admin) %></div>
+              <div class="grid_2" ><%= formatted_date(admin.created_at, 'ddmmyyyy') %></div>
+              <div class="grid_1"><input type="checkbox" name="checkZig" value="<%= admin.id%>" /></div>
+          </div>
+<% end %>
+
+          </div><!-- end body -->
+          <div class="footer">
+              <div class="grid_7">
+                <% if @admins.total_pages > 1 %>
+                <span>Page</span>
+                <%= will_paginate @admins %>
+                <% end %>
+              </div>
+              <div class="grid_4 align_right fright">
+              <% if current_user.is_master_admin? %>
+                <a href="/admin/administrators/remove_admins" class="checkButton cursor removeSelected">Delete admin</a>
+              <% end %>
+              </div>
+          </div>
+      </div>
+</div>
+</div>
+
+<style>
+span.previous_page, a.next_page {
+  display: none;
+}
+</style>

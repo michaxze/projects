@@ -1,0 +1,351 @@
+<!--start content-->
+<section id="" class="fgrid_12 clearfix">
+  <div id="main" class="full_width alpha no_margin pad no_margin welcomeStep">
+	<script type="text/javascript">
+					$(function() {
+						$("#announcementFrm").validate({
+								submitHandler: function(form) {
+									alert('for submission');
+								} 
+						});
+								
+					});
+          $(document).ready(function() {
+						
+					$('.imageContain.delete').live('click',function(){
+					if($(this).find('div.del').hasClass('selected')){
+							$(this).find('div.del').removeClass('selected');
+							$(this).find('input:checkbox').attr('checked', false);
+					}else{
+							$(this).find('div.del').addClass('selected');
+							$(this).find('input:checkbox').attr('checked', true);
+							$('.delImgLnk').show();
+					}
+		});
+		$('.selectAllCB').live('click',function(e){
+			e.preventDefault();
+				if($(this).hasClass('unselect')){
+						$('.imageContain.delete div.del').removeClass('selected');
+					$('.imageContain.delete div.del input:checkbox').attr('checked', false);
+					$('.selectAllCB').removeClass('unselect').text('Select All');
+					$('.delImgLnk').hide();
+				}else{
+					$('.imageContain.delete div.del').addClass('selected');
+					$('.imageContain.delete div.del input:checkbox').attr('checked', true);
+					$('.selectAllCB').addClass('unselect').text('Deselect All');
+					$('.delImgLnk').show();
+				}
+		});
+		$('.delImgLnk').click(function(e){
+			e.preventDefault();
+			id_array = new Array();
+			place_id = $("#place_id").val();
+			$('.delCB').each(function(index) {
+                          if($(this).is(':checked')){
+                             id_array.push($(this).val());
+                          }
+                        });
+       window.location.href = "/welcome/delete_images?id=" + place_id + "&picture_ids=" + id_array;
+		});
+
+            str = "";	
+
+function createUploader(){  
+  var uploader = new qq.FileUploader({
+  element: document.getElementById('imageUploader'),
+  allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'], 
+  onSubmit: function(id, fileName){$('#uploadBtn .grayLoader').css('display','block');},
+  //this is use for additional paramater like the userid
+  params: {
+    authenticity_token: $("meta[name=csrf-token]").attr("content"),
+    id: <%= @place.id %>,
+  },
+  onProgress: function(id, fileName, loaded, total){
+    str+=id+",";
+    if(loaded==total)
+      str = str.split(id+',').join("")
+    else
+      $('#uploadBtn .grayLoader').css('display','block');
+  },
+  onComplete: function(id, fileName, responseJSON){
+    console.log(responseJSON);
+														if ( responseJSON.html != "" && responseJSON.error == undefined) {
+															html = responseJSON.html.replace("&lt;", "<");
+															html = html.replace(/&lt;/g, '<');
+															html = html.replace(/&gt;/g, '>');
+          								    $(".galleryImages").append(html).fadeIn();
+          								    $("#image_counter").text(responseJSON.remaining);
+															if($.browser.msie)
+																$('#uploadBtn .grayLoader').css('display','none');
+                            }
+														if(str=="")
+																$('#uploadBtn .grayLoader').css('display','none');
+														else
+																$('#uploadBtn .grayLoader').css('display','block');		
+
+
+<% if !current_user.premium_subscriber? %>
+    if(parseInt(responseJSON.remaining) < 1) {
+      $('#imageUploader,#overlay').remove();
+			$('#boxClick').show();
+    }
+    if($('#galErr.msgErr').css('display')=='none'){
+      if ( responseJSON.success == "full"){
+         $('#galErr.msgErr').fadeIn(300);
+         $('#imageUploader').remove();
+				 $('#boxClick').show();
+      }
+    }
+<% end %>
+
+if (responseJSON.error != undefined) {
+  $("qq-upload-list").empty();
+  $('#uploadBtn .grayLoader').css('display','none');
+}
+														//$('.qq-upload-list').empty();
+														$('.qq-upload-list').append('<li class="bold center">Image uploaded</li>').fadeOut(300);	
+          								},
+                          action: '/welcome/upload_images_place',
+                          sizeLimit: 2048000,
+                          multiple: true
+                      });           
+                  }
+
+           <% if current_user.place_remaining_images  > 0 || current_user.premium_subscriber? %>
+            createUploader();
+          <% end %>
+            
+						var uploadify_script_data = {};
+            <% session_key_name = Rails.application.config.session_options[:key] %>
+
+                // Fetch the CSRF meta tag data
+                var csrf_token = $('meta[name=csrf-token]').attr('content');
+                var csrf_param = $('meta[name=csrf-param]').attr('content');
+
+                // Now associate the data in the config, encoding the data safely
+                uploadify_script_data[csrf_param] = encodeURI(csrf_token);
+ 					
+						$(".galDesc").live('mouseover',function(){							
+									$(this).fancybox({
+									'titlePosition'		: 'outside',
+									'transitionIn'		: 'none',
+									'transitionOut'		: 'none',
+									'titleShow'				: false
+									});
+						});
+						$('#galErr a').click(function(e) {$('#galErr').hide();});
+						$('#boxClick').click(function(e) {
+								if($('#imageUploader').length){
+									$('#imageUploader input').click();
+								}else{
+									if($('#galErr.msgErr').css('display')=='none')
+										$('#galErr.msgErr').fadeIn(300);
+								}
+            });	
+						if ( !$.browser.msie ) {
+							$('#overlay').show();
+							$('#overlay').click(function(e) {
+                $('#imageUploader input').click();
+              });
+						}
+					});
+          </script>
+
+      
+      	<div class="width90 container_12">
+        <h2 class="bold">UPLOAD YOUR IMAGES <a href="#galleryInfo" name="help" class="blue example cursor desc noDecor">&nbsp;</a></h2>
+  <form id="deleteForm">
+        	  <%= hidden_field_tag "place_id", @place.id %>
+            
+           		<div class="box pad no_margin createPage full_width">
+              		<div class="container_12">
+                  <div class="grid_8 bold">
+                    <% if !current_user.premium_subscriber? %>
+                    You have <span id="image_counter"><%= current_user.place_remaining_images %></span>  images remaining 
+                    <% end %>&nbsp;
+                  </div>
+                  <div class="grid_4 pad_bot" align="right"><a href="" class="selectAllCB">Select all</a>
+                  <a href="" class="margin_left_20 delImgLnk dispNone">Delete images</a></div>
+                  
+                  </div>
+                 <div class="advertcms "> 
+                  <div class="container_12 galleryImages">
+                  <div class="full borderBot"></div>
+                  
+                   
+                    <div class="grid_12 clearfix pad_top20 relative">
+                     <div class="msgErr radius15 shadow dispNone marginTop30" id="galErr">
+                  	<div class="container_12">
+                  		<div class="grid_12 bold">IMAGE LIMIT EXCEEDED</div>
+<<<<<<< HEAD
+                      <div class="grid_12 pad_top" align="justify">You have exceeded the image gallery limit allowed for your account type. To upload more images, you can upgrade to an account which provides more features.<br /><br />
+											<a href='/help' class="hoverGray" target="_blank">Click here</a> to learn more about other Zigzeg for Business account types<br /><br />
+=======
+                      <div class="grid_12 pad_top" align="justify">You have exceeded the image gallery limit allowed for your account type. To upload more images, you can upgrade to a basic or premium account which provides more features.<br /><br />
+>>>>>>> 552fb8504cfe6060065c49840d42a8cdf2182145
+<a class="button bgGray close">Continue</a>
+</div>
+                  </div>
+                  </div>
+                  
+                  
+                     <div class="msgErr radius15 shadow marginTop30 dispNone" id="previewFirst">
+                  	<div class="container_12"><img src="/images/closeRed.png" class="cursor prevCancel absolute" alt="close" title="close" style="top:10px; right:10px;"/>
+                  		<div class="grid_12 bold">Would you like a preview? </div>
+                      <div class="grid_12 pad_top" align="justify"> You can have a preview of the information you provided in the previous sections to have an idea of how your information will appear to other users. Do note that all the information entered here can be updated later in your account page.<br /><br />
+
+<a id="prevYes" href="/places/preview?id=<%= @place.id %>" target="_new" class="button bgGray close cursor">YES</a> <a href="/welcome/complete" class="button bgGray close margin_left_20">NO, allow me to continue</a>
+</div></div></div></div> 
+                    
+                    <div class="grid_3 empty">
+                    
+                       <% if current_user.place_remaining_images  > 0 || current_user.premium_subscriber? %>
+                         <div id="overlay" class="imageContain absolute cursor dispNone">&nbsp;</div>
+                         <div id="imageUploader" class="imageContain"></div>
+                         <div id="boxClick" class="imageContain dispNone">&nbsp;</div>
+                         
+                       <% else %>
+                       		<div id="boxClick" class="imageContain">&nbsp;</div>
+                       <% end %>
+                       
+                       <div class="imageText" id="uploadBtn"> <div class="grayLoader full no_margin">Uploading image...</div></div>
+                    </div>
+                   <% @place.pictures.each do |pic|%>
+                     <%= render :partial => "picture", :locals => { :picture => pic }%>
+                   <% end %>
+                </div>
+                </div>
+                <div class="container_12 pad_top">
+                	<div class="full borderBot"></div>
+                   <div class="grid_8 pad_top"><p>* Please note that images larger than 4MB are not allowed.<br /> * Only images in JPEG, PNG & GIF formats are allowed.<br />* Upload an image of 650px by 650px for optimum view. <a class="blue example cursor"  name="helpInfo" href="#imgRec" title="click to view more information..." data-id="<h6>Image size explanation</h6>Minimum image dimension required for an optimized view is 650px either in width or height of an image.<br /><br />
+To check an image dimension, right-click on an image, select ‘Properties’, then select ‘Details’. For Mac, control + click on an image, select ‘Get info’, then select ‘More info’ to get image dimension information.">View an example</a></p></div>
+                   <div class="grid_4 pad_top" align="right"><a href="" class="selectAllCB">Select all</a>
+                  <a href="" class="margin_left_20 delImgLnk dispNone">Delete images</a></div>
+                </div>
+               <div class="clearfix ">&nbsp;</div>
+                <div class="container_12 full pad_top30">
+               <div class="grid_4">&nbsp;</div>
+               <div class="grid_3">
+                <a href="/welcome/complete" id="savePlace" class="blue radius5 fright userButton white bold create">Save & Continue</a>
+               
+               </div>
+               <div class="grid_2"><a href="/welcome/category_page" class="blue radius5 bgGray white fright bold backbtn userButton create" >Back</a></div>
+               <div class="grid_3"><a id="previewBtn" href="/places/preview?id=<%= @place.id %>" target="_blank" data-id="2" class="blue radius5  fright userButton white bold create">Preview page</a></div>
+
+              </div>
+              </div>
+				</form>
+
+        </div>
+
+
+        <div class="dispNone">
+        <div id="companyImage" class="imagePopup">
+			<!--contact form-->
+        <h4 class="bold">Image Gallery</h4>
+
+       <%= form_tag upload_gallery_welcome_path, :id => "galform3", :method => "post", :class => "validateform" do -%>
+        <%= hidden_field_tag :gallery_id, nil %>
+        <div class="container_12 no_margin full">
+        	 <div class="grid_7 no_margin">
+           		<div id="imgGallery" class="imageArea radius5"><a href="#companyImage" id="profilePop" class="imagePlus cursor"></a></div>
+           </div>
+           <div class="pad_top">
+           		<input type="button" name="uploadeImage" id="galFileShow" value="CHOOSE FROM PC" class="radius5 pad10 fancybutton blkBg bold btnImageUpload cursor white no_margin ">					 	
+                        <input type="file" name="upload_image" id="galFileHidden" class="dispNone">
+              <p>* Do not upload image more 
+than 2MB. Only support .jpg, .gif, .png.</p>
+           </div>
+           <div class="grid_12 pad_top">Image gallery type</div>
+           <div class="grid_12"><select name="photo_type" class="fancyinput required radius5" >
+
+<option value="">Choose one</option>
+<option value="product">Product</option>
+<option value="service">Service</option>
+<option value="brand">Brand</option>
+<option value="misc">Other images</option>
+</select></div>
+           <div class="grid_12 pad_top">Title</div>
+           <div class="grid_12"><input type="text" value="" name="title" id="cname" placeholder="title of the image" class="width90 radius5 fancyinput "></div>
+           <div class="grid_12 pad_top">Description</div>
+           <div class="grid_12 pad_bot"><textarea id="cdescription" name="description"  class="radius5 fancyinput width70" rows="5"></textarea></div>
+           <div class="grid_12 pad_top"><a  id="modalSend" class="blue radius15 userButton white bold create" >Save</a>
+             <%= show_loader("gallery") %>
+             <span id="gallery_notifier" style="padding-left: 10px" class="blue"></span>
+           </div>
+           
+           
+        </div>
+     <% end %>
+        
+        <!--end form-->
+				</div>
+		</div>
+<script>
+$(document).ready(function() {
+	$('#savePlace').click(function(e) {
+    e.preventDefault();
+		if($('#previewBtn').hasClass('clicked'))
+			window.location = $(this).attr('href');
+		else
+		  $('#previewFirst').fadeIn();
+  });
+	$('#previewBtn').click(function(e) {
+    $(this).addClass('clicked');
+  });
+	$('#prevYes').click(function(e) {
+		 e.preventDefault();
+		 $('#previewBtn').addClass('clicked');
+		 $('#previewFirst').fadeOut();
+<<<<<<< HEAD
+		 window.open($(this).attr('href'))
+  });
+=======
+		 window.open($(this).attr('href'),"_blank")
+	});
+>>>>>>> 552fb8504cfe6060065c49840d42a8cdf2182145
+	$('.prevCancel').click(function(e) {
+    e.preventDefault();
+		$('#previewFirst').fadeOut();
+  });
+    $("#save_gallery").click(function() {
+      var ti_id = $("#gallery_id").val();
+      if (ti_id == '')
+        return false;
+
+      $("#loader_gallery").show();
+      $.ajax({
+        type: "POST",
+        cache: false,
+        url: "/welcome/update_gallery?ti_id=" + ti_id,
+        data: $("#galform").serializeArray(),
+        success: function(data) {
+          $(".galleryThumb").append(data).fadeIn();
+          $("#loader_gallery").hide();
+          $("#gallery_notifier").empty().show();
+          $("#gallery_notifier").append("Saved").fadeOut(1000);
+        }
+      });
+    });
+
+    $("#place_category_id").change(function() {
+      var cat_id = $("#place_category_id").val();
+      $("#loader_category").show();
+      $.ajax({
+        type: "GET",
+        cache: false,
+        url: "/welcome/load_select_subcategories?cat_id=" + cat_id,
+        data: $(this).serializeArray(),
+        success: function(data) {
+          $("#subcategory_id").empty();
+          $("#subcategory_id").append(data).fadeIn();
+          $("#loader_category").hide();
+        }
+      });
+    });
+});
+</script>
+
+
+</div>
+</section>    

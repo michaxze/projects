@@ -1,0 +1,1013 @@
+<%
+lat = 3.13
+lng = 101.62
+unless @place.nil?
+  unless @place.address.nil?
+    lat = @place.address.lat
+    lng = @place.address.lng
+  end
+end
+%>
+
+<script type="text/javascript">
+
+var changed = false;
+var formData = {};
+$(function() {
+  $('#createpage').each(function() {
+    var action = "createpage";
+    formData[action] = {};
+    // Only checking text fields for now...
+    $('input[type=text]', this).each(function() {
+      formData[action][this.name] = this.value;
+      	if (!this.addEventListener) {
+						this.attachEvent('change',
+					function() {check_modified(this.name, this.value);},
+					false
+					);
+				}
+				else {
+					this.addEventListener('change',
+					function() {check_modified(this.name, this.value);},
+					false
+					);
+				}
+
+    });
+  });
+});
+
+function check_modified(name, value)
+{
+  if (formData["createpage"][name] != value)
+    changed = true;
+}
+
+
+  function update_map(lat, lng, draggable) {
+    if ( markersArray.length > 0 ) {
+      if (draggable){
+        $("#lock_marker").text("Lock Marker");
+      }else{
+        $("#lock_marker").text("Unlock Marker");
+      }
+      markersArray[0].draggable = draggable;
+      markersArray[0].setMap(map);
+    }
+  }
+
+  function lockmarker(draggable){
+    if (draggable){
+      $("#lock_marker").text("Unlock Marker");
+    }else{
+      $("#lock_marker").text("Lock Marker");
+    }
+
+    lat = "'" + $("#address_lat").val() + "'";
+    lng = "'" + $("#address_lng").val() + "'";
+    update_map(lat, lng, draggable);
+  }
+
+
+window.onbeforeunload = function() {
+    //return "Leaving this page will reset the wizard";
+  if (changed){
+    return "Leaving this page will cause newly entered data to be lost as it has yet to be saved."
+  }
+};
+
+  var geocoder;
+  var map;
+  var markersArray = [];
+  geocoder = new google.maps.Geocoder();
+
+  function clearOverlays() {
+    if (markersArray) {
+      for (i in markersArray) {
+        markersArray[i].setMap(null);
+      }
+    }
+    markersArray = [];
+  }
+
+  function initialize() {
+    locateAddress(true);
+    clearOverlays();
+    var pinkParksStyles = [{featureType: "poi", stylers: [{ saturation: -80 }, { visibility: "off"}]}, {featureType: "all", stylers: [{ saturation: -80 }]} ];
+    var pinkMapType = new google.maps.StyledMapType(pinkParksStyles, {name: "Map"});
+    var myLatlng = new google.maps.LatLng('<%= lat %>', '<%= lng %>');
+    var myOptions = {
+      zoom: 14,
+      center: myLatlng, 
+      panControl: false,
+        zoomControl: true,
+				zoomControlOptions: {
+					style: google.maps.ZoomControlStyle.SMALL,
+					position: google.maps.ControlPosition.TOP_RIGHT
+				},
+				mapTypeControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        overviewMapControl: false,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById('mapcanvas'), myOptions);
+                map.mapTypes.set('pink_parks', pinkMapType);
+        map.setMapTypeId('pink_parks');
+    var image = '/images/places_32.png';
+    var marker = new google.maps.Marker({
+      map: map, 
+      position: myLatlng,
+      draggable: true,
+      icon: image,
+      animation: google.maps.Animation.DROP
+    });
+
+    markersArray.push(marker);
+    google.maps.event.addListener(marker, 'dragend', function() {
+      var position = marker.getPosition();
+      $("#address_lat").val(marker.getPosition().lat());
+      $("#address_lng").val(marker.getPosition().lng());
+     });
+  }
+  google.maps.event.addDomListener(window, 'load', initialize);
+
+
+
+</script>
+
+
+<!--start content-->
+<section id="" class="fgrid_12 clearfix">
+  <div id="main" class="full_width alpha pad welcomeStep">
+
+<script language="javascript">
+  $(document).ready(function(){
+
+  <% if @place.nil? %>
+   $("#country_name").val("Malaysia");
+  <% else
+     if !@place.is_published? %>
+       $("#country_name").val("Malaysia");
+     <% end %>
+  <% end %>
+
+
+  $("#lock_marker").live("click", function() {
+    text = $(this).text();
+    if (text == "Lock Marker"){
+      $(this).text("Unlock Marker");
+      draggable = false;
+    }else{
+      $(this).text("Lock Marker");
+      draggable = true;
+    }
+    lockmarker(draggable);
+  });
+
+
+  $("#save_button").click(function(){
+    $("#createpage").submit();
+  });
+	$('#telephone_numbers,#fax_numbers').keyup(function(e) {
+			val = $(this).val().replace(/ /g, '');
+    	$(this).val(val);
+  });
+	jQuery.validator.addMethod("complete_url", function(val, elem) {
+    // if no url, don't do anything
+    if (val.length == 0) { return true; }
+    // if user has not entered http:// https:// or ftp:// assume they mean http://
+    if(!/^(https?|ftp):\/\//i.test(val)) {
+			val = val.replace(/http:\/\//gi, "");
+			val = val.replace(/www/gi, "");
+			val = val.replace(/com/gi, "");
+			val = val.replace(/\./g, "");
+        var type = $(elem).attr('name');
+				if(type == 'place[facebook]'){
+					val = val.replace(/facebook/gi, "");
+					val = 'http://www.facebook.com/'+val; // set both the value
+				}
+				else if(type == 'place[twitter]'){
+					val = val.replace(/twitter/gi, "");
+					val = 'http://www.twitter.com/'+val; // set both the value
+				}
+				else{
+         if (val == "http:/")
+            val = "http://"
+         else
+	          val = 'http://'+val; // set both the value
+				}
+        $(elem).val(val); // also update the form element
+    }
+    return /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&amp;'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(val);
+}, 'You must enter a valid URL');
+  $("#createpage").validate({
+    invalidHandler: function() {
+					$('#errorHours').text('Fields in red are required.');
+  	},submitHandler: function(form) {
+      changed = false;
+      $('.grayLoader').show();
+      form.submit();
+    },
+		rules:{
+			"place[website_url]": "complete_url",
+			"place[facebook]": "complete_url",
+			"place[twitter]": "complete_url"
+			
+		},
+    messages:{
+      "map_error": {
+        required: "There seems to be some errors in your address. Please check.",
+      },
+      "valid_state": {
+        required: "Please verify your state.",
+      },      
+      "address_lat": {
+        required: ""
+      },
+      "address_lng": {
+        required: ""
+      },
+			"uploadChecker":{
+				required:"Profile image is required."
+			}
+    }
+     
+  });
+	$('.urlCheck').keypress(function(e) {
+		$(this).valid();
+  });
+	$('#normalHours,.oHours,.cbClose,.secondTime').click(function(e) { checkHours();});	
+	function checkHours(){
+		if($("#normalHours").is(':checked')){
+			$('.time').addClass('required');
+			if($(".secondTime").is(':checked')){
+				$('.dayFromPm,.dayToPm ').addClass('required');
+				$('.timeApply').addClass('bBot');
+			}else{
+				$('.dayFromPm,.dayToPm ').removeClass('required');
+				$('.timeApply').removeClass('bBot');
+			}$('.cbClose').each(function(index, element) {
+					if($(this).is(':checked')){
+						$("."+$(this).val()+"Select").rules("remove", "required");
+						$("."+$(this).val()+"Select").removeClass('error');
+						var pClass = $(this).val();
+							$('.'+pClass+'Select').attr('disabled','true');
+					}
+			});
+		}else{
+				$('.time').removeClass('required');
+		}
+	}
+	checkHours();
+  $("#lot_number, #street, #building_name, #section_name, #postcode, #city_name, #state_name, #country_name").live("change", function(){
+    locateAddress();
+  });
+
+  $("#state_name").autocomplete("/business/search_state_autocomplete", {
+    width: 150,
+    selectFirst: false,
+  });  
+  $("#state_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#state_name").val(data[1]);
+      $("#country_name").val(data[2]);
+      update_address();
+      locateAddress();
+    }
+  });
+  
+
+  $("#section_name").autocomplete("/business/search_section", {
+    width: 150,
+    selectFirst: false,
+  });
+
+  $("#section_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#section_name").val(data[1]);
+      $("#postcode").val(data[2]);
+      $("#city_name").val(data[3]);
+      $("#state_name").val(data[4]);
+      $("#country_name").val(data[5]);
+      update_address();
+      locateAddress();
+    }
+  });
+
+
+  $("#city_name").autocomplete("/business/search_city", {
+    width: 150,
+    selectFirst: false,
+  });
+
+  $("#city_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#city_name").val(data[1]);
+      $("#state_name").val(data[2]);
+      $("#country_name").val(data[3]);
+      update_address();
+      locateAddress();
+    }
+  });
+
+
+  $("#postcode").autocomplete("/business/search_postcode", {
+    width: 150,
+    selectFirst: false,
+  });
+
+  $("#postcode").result(function(event, data, formatted) {
+    if (data) {
+      $("#postcode").val(data[1]);
+      $("#city_name").val(data[2]);
+      $("#state_name").val(data[3]);
+      $("#country_name").val(data[4]);
+      update_address();
+      locateAddress();
+    }
+  });
+
+  
+  $("#country_name").autocomplete("/business/search_country_autocomplete", {
+    width: 150,
+    selectFirst: false,
+  });
+  $("#country_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#country_name").val(data[0]);
+      update_address();
+      locateAddress();
+    }
+  });
+
+  
+  $("#building_name").autocomplete("/business/search_building", {
+    width: 150,
+    selectFirst: false,
+  });
+
+  $("#building_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#notfound").attr('checked', false);
+      $("#address_details").fadeOut();
+
+      lot_number    = $("#lot_number").val();
+      building_name = $("#building_name").val();
+      temp_address = lot_number + " " + building_name + " " + data[2];
+      showMapAddress(temp_address);
+      $("#your_address").text(temp_address).hide().fadeIn();
+      $("#street").val(data[2]);
+      $("#map_address_id").val(data[1]);
+
+      $("#street").val(data[2]);
+      $("#section_name").val(data[3]);
+      $("#postcode").val(data[4]);
+      $("#city_name").val(data[5]);
+      $("#state_name").val(data[6]);
+      $("#country_name").val(data[7]);
+      update_address();
+    }
+  });
+
+  $("#street").autocomplete("/business/searchaddress", {
+    width: 150,
+    selectFirst: false,
+  });
+  
+  $("#street").result(function(event, data, formatted) {
+    if (data) {
+      $("#notfound").attr('checked', false);
+      $("#street").val(data[2]);
+
+      $("#street").val(data[2]);
+      $("#section_name").val(data[3]);
+      $("#postcode").val(data[4]);
+      $("#city_name").val(data[5]);
+      $("#state_name").val(data[6]);
+      $("#country_name").val(data[7]);
+      update_address();
+
+      if (data[8] != "" && data[9] != "") {
+        $("#map_address_id").val(data[1]);
+        showMapLatLng(data[8], data[9]);
+      }else{
+        $("#map_address_id").val(data[1]);
+      }
+    }
+  });
+  
+
+ createUploader('btnFileShow');
+
+   $("#galleryPop").click(function(){
+     $("gallery_id").val('');
+     $("#galform #cname").val('');
+     $("#galform #cdescription").val('');
+   });
+  
+			$("#galleryPop").fancybox({
+				'titlePosition'		: 'outside',
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none'
+			});
+
+  <% unless @place.nil? %>
+		<% if @place.operation_hours == "normal" %>
+			$('.scheduleList').slideDown();
+			
+			<% unless @place.operation_times.nil? %>
+			  <% if @place.operation_times[:times]['second_date'] == 'yes' %>
+			    $('.bHours .extra').css('display','block');
+			  <% end %>
+			  
+			  <% if @place.operation_times[:times]['mon_close'] == "mon" %>
+  	      $('.monSelect').attr("disabled", 'true');
+  			  $('.monSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['tue_close'] == "tue" %>
+  	      $('.tueSelect').attr("disabled", 'true');
+  			  $('.tueSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['wed_close'] == "wed" %>
+  	      $('.wedSelect').attr("disabled", 'true');
+  			  $('.wedSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['thu_close'] == "thu" %>
+  	      $('.thuSelect').attr("disabled", 'true');
+  			  $('.thuSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['fri_close'] == "fri" %>
+		      $('.friSelect').attr("disabled", 'true');
+				  $('.friSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['sat_close'] == "sat" %>
+		      $('.satSelect').attr("disabled", 'true');
+				  $('.satSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['sun_close'] == "sun" %>
+			    $('.sunSelect').attr("disabled", 'true');
+					$('.sunSelect').val('');			    
+			  <% end %>
+			  
+			<% end %>
+		<% end %>
+	<% end %>
+
+<% unless current_user.nil? %>
+	<% if TempImage.get_profile_image_url(current_user, 'profile').nil? || TempImage.get_profile_image_url(current_user, 'profile') == ''  %>
+		$('#withImage').val('');
+		$('#imgProfile').css("background","url('/images/building.png')").css('background-size','cover');
+	<% else %>
+		$('#withImage').val('true');
+		$('#imgProfile').css("background","url('<%= TempImage.get_profile_image_url(current_user, 'profile') %>')");
+	<% end %>
+<% end %>
+  $('.time').timepicker({});
+  
+
+});
+
+function toggleAddressDetails()
+{
+  if ( $("#notfound").is(':checked') ) {
+    $("#address_details").fadeIn();
+  }else{
+    $("#address_details").fadeOut();
+  }
+}
+
+function update_address()
+{
+  var fulladdress = "";
+  
+  $("#lot_number").val($("#lot_number").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#building_name").val($("#building_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#street").val($("#street").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#section_name").val($("#section_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#postcode").val($("#postcode").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#city_name").val($("#city_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#state_name").val($("#state_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#country_name").val($("#country_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	
+   if ($("#lot_number").val() != "") 
+    fulladdress += $("#lot_number").val() + ", ";
+  if ($("#building_name").val() != "")
+    fulladdress += $("#building_name").val() + ", ";
+  if ($("#street").val() != "")
+    fulladdress += $("#street").val() + ", ";
+  if ($("#section_name").val() != "")
+    fulladdress += $("#section_name").val() + ", ";
+  if ($("#postcode").val() != "")
+    fulladdress += $("#postcode").val() + " ";
+  if ($("#city_name").val() != "")
+    fulladdress += $("#city_name").val() + ", ";
+  if ($("#state_name").val() != "")
+    fulladdress += $("#state_name").val() + ", ";
+  if ($("#country_name").val() != "")
+    fulladdress += $("#country_name").val();
+
+
+  $("#your_address").text(fulladdress);
+}
+
+function locateAddress(map)
+{
+  var fulladdress = "";
+  
+  $("#lot_number").val($("#lot_number").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#building_name").val($("#building_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#street").val($("#street").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#section_name").val($("#section_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#postcode").val($("#postcode").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#city_name").val($("#city_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#state_name").val($("#state_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#country_name").val($("#country_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	
+   if ($("#lot_number").val() != "") 
+    fulladdress += $("#lot_number").val() + ", ";
+  if ($("#building_name").val() != "")
+    fulladdress += $("#building_name").val() + ", ";
+  if ($("#street").val() != "")
+    fulladdress += $("#street").val() + ", ";
+  if ($("#section_name").val() != "")
+    fulladdress += $("#section_name").val() + ", ";
+  if ($("#postcode").val() != "")
+    fulladdress += $("#postcode").val() + " ";
+  if ($("#city_name").val() != "")
+    fulladdress += $("#city_name").val() + ", ";
+  if ($("#state_name").val() != "")
+    fulladdress += $("#state_name").val() + ", ";
+  if ($("#country_name").val() != "")
+    fulladdress += $("#country_name").val();
+
+  $("#your_address").text(fulladdress);
+  if(map == undefined) {
+    showMapAddress(fulladdress);
+  }
+  
+}
+ function showMapAddress(address) {
+    $("#map_error").val('none');
+    clearOverlays();    
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        map.setCenter(results[0].geometry.location);
+        
+        var image = '/images/places_32.png';
+        var marker = new google.maps.Marker({
+          map: map, 
+          icon: image,
+          position: results[0].geometry.location,
+          draggable: true,
+          animation: google.maps.Animation.DROP
+        });
+
+        $("#address_lat").val(marker.getPosition().lat());
+        $("#address_lng").val(marker.getPosition().lng());
+
+        if ($("#state_name").val() != "") {
+  				$.ajax({
+  				  type: "GET",
+  				  url: "/business/search_state?s=" + $("#state_name").val(),
+  				  success:function(data){
+  				    if (data == "true"){
+  				      $("label[for=valid_state]").hide();
+  				      $("#valid_state").val("valid");
+  				    }else{
+  				      $("#valid_state").val("valid");
+				      }
+  				  }
+  				});
+        }
+        
+    clearOverlays();    
+        markersArray.push(marker);
+        google.maps.event.addListener(marker, 'dragend', function() {
+          var position = marker.getPosition();
+          $("#address_lat").val(marker.getPosition().lat());
+          $("#address_lng").val(marker.getPosition().lng());
+        });
+
+      } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS ) {
+        $("#address_lat").val('');
+        $("#address_lng").val('');
+        $("#map_error").val('');
+
+        if ($("#state_name").val() != "") {
+  				$.ajax({
+  				  type: "GET",
+  				  url: "/business/search_state?s=" + $("#state_name").val(),
+  				  success:function(data){
+  				    if (data == "true"){
+  				      $("label[for=valid_state]").hide();
+  				      $("#valid_state").val("valid");
+  				    }else{
+  				      $("#valid_state").val("valid");
+				      }
+  				  }
+  				});
+        }
+      } else {
+        $("#map_error").val('');
+//        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+  }
+
+
+  function showMapLatLng(lat, lng) {
+    clearOverlays();
+    var myLatlng = new google.maps.LatLng(lat, lng);
+    var myOptions = {
+      zoom: 16,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    map = new google.maps.Map(document.getElementById('mapcanvas'), myOptions);
+
+    var image = '/images/places_32.png';    
+    var marker = new google.maps.Marker({
+        position: myLatlng, 
+        map: map,
+        draggable:true,
+        icon: image,
+        animation: google.maps.Animation.DROP
+    }); 
+
+    markersArray.push(marker);
+    google.maps.event.addListener(marker, 'dragend', function() {
+      var position = marker.getPosition();
+      $("#address_lat").val(marker.getPosition().lat());
+      $("#address_lng").val(marker.getPosition().lng());
+     });
+
+
+  }
+
+
+</script>
+      <h2 class="bold">CREATE YOUR PAGE</h2>
+        
+      	<div class="full_width container_12 no_margin">
+<%= form_tag create_page_welcome_path,  :id => "createpage", :method => :post do -%>
+
+<%= hidden_field_tag "map_address_id", ""  %>
+
+           		<div class="box pad no_margin createPage">
+              		<div class="grid_6">
+                  			<div class="grid_12 pad_bot">
+                        		<span class="bubble fleft">&nbsp;A&nbsp;</span><h5 class="bold fleft">Tell others about your company</h5>
+                        </div>
+                        <div class="prefix_1 grid_11 pad_top">Company profile image (optional)</div>
+                        <div class="prefix_1 grid_5 no_margin">
+                          <div id="imgProfile" class="imageArea radius5 crt noCursor" align="center"></div>
+                        <input type="hidden" name="uploadChecker" id="withImage" value="" class="" />
+                        </div>
+                        <div class="grid_5 suffix_1 no_margin">
+                        <div id="btnFileShow" class="radius5"></div>
+                        <div class="relative" ></div>
+                        <p>* Please note that images larger than 4MB are not allowed.<br />* Only images in JPEG, PNG & GIF formats are allowed.</p>
+                        </div>
+                       <div class="prefix_1 suffix_1 grid_10 pad_top20 pad_bot"><div class=" hr full_width"></div></div>
+			 <div class="prefix_1 grid_11 ">Your company name</div>
+			 <div class="prefix_1 grid_11"><input type="text" value="<%= (current_user.places.length > 0) ? current_user.places.first.name : current_user.advert_company_name %>" name="place[name]" id="cname" class="fancyinput required"><br /><label for="cname" generated="false" class="error"></label></div>
+			 <div class="prefix_1 grid_11 pad_top">Buzzword (optional)</div>
+			 <div class="prefix_1 grid_11 pad_top"><input type="text" maxlength="140" value="<%= (current_user.places.length > 0) ? current_user.places.first.buzzword : '' %>" name="place[buzzword]" id="buzzword" class="fancyinput "></div>
+
+											 <div class="prefix_1 grid_11 pad_top">About your company | <a class="blue example cursor" id="cmpExample" name="helpInfo" href="#cmpDialog" title="click to view more information..." data-id="<h6>About your company</h6>This section allows you to share information about your company. You can tell others the history of your company, how it started, what it does and so on.<br /><br />
+It is basically an introduction of your company and what it does. A well-written and interesting introduction will help attract people to what you have to offer.<br /><br />
+
+<span class='white underline'>Example</span><br />                       
+The Zigzeg Story<br /><br />
+Ever had difficulty looking for a shop or location in your city? <br />
+Ever wondered what services & products are on offer in your city? <br />
+Ever felt bored and don't know what to do but would like to know <br />
+what is on your city's menu?<br /><br />
+
+Well, we at Zigzeg would like to help. We bring the city to you via <br />
+our city information system. We call it the ‘Total Urban <br />
+Awareness System’...<br /><br />
+
+The above is a portion of our story. What is yours?">view example</a></div>
+											 <div class="prefix_1 grid_11"><textarea id="description" name="place[description]" class="radius5 fancyinput required" rows="5"><%= current_user.places.first.description unless current_user.places.empty? %></textarea>
+											   <br/><label for="description" generated="false" class="error"></label>
+											   </div>
+											 
+                       
+                      <div class="prefix_1 suffix_1 grid_10 pad_top"><div class=" hr full_width"></div></div>
+											 
+                    <div class="grid_12 bHours pad_top welcome pad_bot">
+                      <div class="grid_11 prefix_1">Operating Hours of your business
+                        <br/>
+                      <label for="hours" generated="false" class="error"></label>  
+                      </div>
+
+                      <div class="grid_11 prefix_1">
+                        <input type="radio" name="hours" value="24" class="oHours autowidth required" <%= @place.operation_hours == '24' ? " checked" : "" rescue "" %>><span class="absolute">My Business operates 24 hours a day</span>
+                      </div>
+                      <div class="grid_11 prefix_1">
+                        <input type="radio" name="hours" id="normalHours" value="normal" class="oHours autowidth required" <%= @place.operation_hours == 'normal' ? " checked" : "" rescue "" %>><span class="absolute">My Business operates during normal hours</span>
+                     </div>
+
+
+                      <div class="clearfix"></div>
+                      <div class="scheduleList dispNone">
+                      	<div class="prefix_2 grid_5 bold dispNone" id="errorHours">&nbsp;</div>
+                      <div class="clearfix"></div>
+                      <div class="prefix_1 grid_1">Mon</div>
+                      <div class="grid_10">
+                     		<input type="text" class="time monSelect" id="monFromAm" name="times[monFrom]" value="<%= @place.operation_times[:times]['monFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                        
+                     		<input type="text" class="time monSelect" id="monToAm" name="times[monTo]" value="<%= @place.operation_times[:times]['monTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[mon_close]" class="cbClose" value="mon" <%= @place.operation_times[:times]['mon_close'] == 'mon' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                        <br />
+                        <div class="grid_5 inlineB"><label for="monFromAm" generated="false" class="error"></label></div>
+                        <div class="grid_5 suffix_2 fright"><label for="monToAm" generated="false" class="error"></label></div>											
+                      </div>
+                      <div class="grid_10 prefix_2 extra noBorder">
+                     		<input type="text" class="time monSelect dayFromPm" id="monFromPm" name="times[monFromPm]" value="<%= @place.operation_times[:times]['monFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time monSelect dayToPm" id="monToPm" name="times[monToPm]" value="<%= @place.operation_times[:times]['monToPm'] rescue '' %>">
+                      </div>
+                      <div class="prefix_2 grid_10 timeApply noPtop"><a class="cursor applyTime"><label class="blue cursor">Apply time to all</label></a></div>
+                      <div class="prefix_1 grid_1">Tue</div>
+                      <div class="grid_10">
+                     		<input type="text" class="time tueSelect dayFrom" name="times[tueFrom]" value="<%= @place.operation_times[:times]['tueFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time tueSelect dayTo" name="times[tueTo]" value="<%= @place.operation_times[:times]['tueTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[tue_close]" class="cbClose" value="tue" <%= @place.operation_times[:times]['tue_close'] == 'tue' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                      </div>
+                      <div class="grid_10 prefix_2 extra">
+                     		<input type="text" class="time tueSelect dayFromPm" name="times[tueFromPm]" value="<%= @place.operation_times[:times]['tueFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time tueSelect dayToPm" name="times[tueToPm]" value="<%= @place.operation_times[:times]['tueToPm'] rescue '' %>">
+                     </div><div class="clearfix"></div>
+                     <div class="prefix_1 grid_1">Wed</div>
+                     <div class="grid_10">
+                     		<input type="text" class="time wedSelect dayFrom" name="times[wedFrom]" value="<%= @place.operation_times[:times]['wedFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time wedSelect dayTo" name="times[wedTo]" value="<%= @place.operation_times[:times]['wedTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[wed_close]" class="cbClose" value="wed" <%= @place.operation_times[:times]['wed_close'] == 'wed' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                     </div>
+                     <div class="grid_10 prefix_2 extra">
+                     		<input type="text" class="time wedSelect dayFromPm" name="times[wedFromPm]" value="<%= @place.operation_times[:times]['wedFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time wedSelect dayToPm" name="times[wedToPm]" value="<%= @place.operation_times[:times]['wedToPm'] rescue '' %>">
+                     </div><div class="clearfix"></div>
+                     <div class="prefix_1 grid_1">Thu</div>
+                     <div class="grid_10">
+                     		<input type="text" class="time thuSelect dayFrom" name="times[thuFrom]" value="<%= @place.operation_times[:times]['thuFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time thuSelect dayTo" name="times[thuTo]" value="<%= @place.operation_times[:times]['thuTo'] rescue '' %>">
+                    		<input type="checkbox" name="times[thu_close]" class="cbClose" value="thu" <%= @place.operation_times[:times]['thu_close'] == 'thu' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                     </div>
+                     <div class="grid_10 prefix_2 extra">
+                     		<input type="text" class="time thuSelect dayFromPm" name="times[thuFromPm]" value="<%= @place.operation_times[:times]['thuFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time thuSelect dayToPm" name="times[thuToPm]" value="<%= @place.operation_times[:times]['thuToPm'] rescue '' %>">
+                     </div><div class="clearfix"></div>
+                     <div class="prefix_1 grid_1">Fri</div>
+                     <div class="grid_10">
+                     		<input type="text" class="time friSelect dayFrom" name="times[friFrom]" value="<%= @place.operation_times[:times]['friFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time friSelect dayTo" name="times[friTo]" value="<%= @place.operation_times[:times]['friTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[fri_close]" class="cbClose" value="fri" <%= @place.operation_times[:times]['fri_close'] == 'fri' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                     </div>
+                     <div class="grid_10 prefix_2 extra">
+                     		<input type="text" class="time friSelect dayFromPm" name="times[friFromPm]" value="<%= @place.operation_times[:times]['friFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time friSelect dayToPm" name="times[friToPm]" value="<%= @place.operation_times[:times]['friToPm'] rescue '' %>">
+                     </div><div class="clearfix"></div>
+                     <div class="prefix_1 grid_1">Sat</div>
+                     <div class="grid_10">
+                     		<input type="text" class="time satSelect dayFrom" name="times[satFrom]" value="<%= @place.operation_times[:times]['satFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time satSelect dayTo" name="times[satTo]" value="<%= @place.operation_times[:times]['satTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[sat_close]" class="cbClose" value="sat" <%= @place.operation_times[:times]['sat_close'] == 'sat' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                     </div>
+                     <div class="grid_10 prefix_2 extra">
+                     		<input type="text" class="time satSelect dayFromPm" name="times[satFromPm]" value="<%= @place.operation_times[:times]['satFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time satSelect dayToPm" name="times[satToPm]" value="<%= @place.operation_times[:times]['satToPm'] rescue '' %>">
+                    </div><div class="clearfix"></div>
+                     <div class="prefix_1 grid_1">Sun</div>
+                		 <div class="grid_10">
+                     		<input type="text" class="time sunSelect dayFrom" name="times[sunFrom]" value="<%= @place.operation_times[:times]['sunFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+
+                     		<input type="text" class="time sunSelect dayTo" name="times[sunTo]" value="<%= @place.operation_times[:times]['sunTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[sun_close]" class="cbClose" value="sun" <%= @place.operation_times[:times]['sun_close'] == 'sun' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                     </div>
+                     <div class="grid_10 prefix_2 extra">
+                     		<input type="text" class="time sunSelect dayFromPm" name="times[sunFromPm]" value="<%= @place.operation_times[:times]['sunFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time sunSelect dayToPm" name="times[sunToPm]" value="<%= @place.operation_times[:times]['sunToPm'] rescue '' %>">
+                     </div>
+                     
+                    	<div class="prefix_1 grid_11 margin_left_20 pad_top pad_bot"><input type="checkbox" name="times[second_date]" class="margin_left_20 secondTime autowidth" value="yes" <%= @place.operation_times[:times]['second_date'] == 'yes' ? "checked" : "" rescue "" %>>
+                      <span class="absolute margin_left_10 ">Allow me to enter 2 sets of time for a day<br>(Example: 830-11:30am & 2:00-5:30am)</span>
+                      <div class="clearfix pad_bot"></div>
+                      </div>
+                      </div>
+
+                      <div class="grid_11 prefix_1">
+                        <input type="radio" name="hours" id="notSpecified" value="notspecified" class="oHours autowidth required" <%= @place.operation_hours == 'notspecified' ? " checked" : "" rescue "" %>>
+                        <span class="absolute">Not specified</span>
+                      </div>
+
+                     </div>
+
+                     <div class="prefix_1 suffix_1 grid_10 pad_bot pad_top"><div class=" hr full_width"></div></div>
+											 
+                     <div class="prefix_1 grid_11 ">Social media pages (optional) | 
+                       <a class="blue example cursor"  name="helpInfo" href="#cmpDialog"title="click to view more information..." data-id="<h6>Social Media</h6>Type in your Facebook URL & Twitter ID here to allow others to link to them from Zigzeg<br /><br />
+                       Leave these fields empty if you do not have a Facebook or Twitter account.<br /><br />
+                       <span class='white underline'>Example</span><br />
+                       Facebook example: www.facebook.com/<b>your_account_page</b>. <br />
+                       All you need to enter into the text field for Facebook is your Facebook page’s name. In the example above, it is <b>your_account_page</b>.<br /><br />
+                       Twitter example: www.twitter.com/<b>your_account_ID</b>.<br />
+                       All you need to enter into the text field for Twitter is your Twitter’s handle or ID name. In the example above, it is <b>your_account_ID</b>.
+">view example</a>
+                     </div>
+                     <div class="prefix_1 grid_11">
+                       <img src="/images/fb.jpg">
+                       <input type="text" value="<%= @place.facebook rescue nil%>" name="place[facebook]" id="fbInput" class="radius5 fancyinput social urlCheck margin_left_10"><br />
+                       <label for="fbInput" generated="false" class="error"></label>
+                     </div>
+                     <div class="prefix_1 grid_11 pad_top">
+                       <img src="/images/twitter.jpg">
+                       <input type="text" value="<%= @place.twitter rescue nil%>" name="place[twitter]" id="twitInput" class="radius5 fancyinput social urlCheck margin_left_10"><br />
+                       <label for="twitInput" generated="false" class="error"></label>
+                     </div>
+
+                     
+                <div class="prefix_1 grid_11 pad_top">Email address</div>
+                <div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.email rescue current_user.email %>" name="place[email]" id="email_add" class="radius5 fancyinput required email"><br /><label for="email_add" generated="false" class="error"></label>
+                </div>
+                <div class="prefix_1 grid_11 pad_top">Website (optional) | 
+                  <a class="blue example cursor"  name="helpInfo" href="#cmpDialog" title="click to view more information..." data-id="<h6>Website</h6>A URL is the web address of your site. Type in your website’s URL (web address) here. If you are unsure of your website’s URL, you can check with the people who designed/developed your site. They will surely be able to provide you with the correct URL to your website.<br /><br />
+Leave this field empty if you do not have a website.<br /><br />
+<span class='underline white'>Example</span><br />
+Zigzeg’s web URL is <b>www.zigzeg.com</b><br /><br />
+
+Your company’s web URL may be something like this: <b>www.your_company_name.com</b>
+
+">view example</a>
+                </div>
+                <div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.website_url rescue nil%>" name="place[website_url]" id="website_url" class="radius5 urlCheck fancyinput"><br /><label for="website_url" generated="false" class="error"></label>
+                </div>
+									</div>
+
+
+                <div class="grid_6 no_margin">
+                  <span class="bubble fleft">&nbsp;B&nbsp;</span>
+                  <h5 class="bold fleft">How to find you</h5>
+
+                <div class="prefix_1 grid_11 pad_top">
+                </div>
+                
+                <div class="prefix_1 grid_11 pad_top">Unit number (optional)</div>
+                <div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.address.address_lot_number  rescue '' %>" name="address[address_lot_number]" id="lot_number" class="radius5 fancyinput "><br /><label for="lot_number" generated="false" class="error"></label>
+                </div>
+
+                <div class="prefix_1 grid_11 pad_top">Building name (optional)</div>
+                <div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.address.building_name rescue ''%>" name="address[building_name]" id="building_name" class="radius5 fancyinput">
+                </div>
+
+                <div class="prefix_1 grid_11 pad_top">Street</div>
+                <div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.address.street rescue '' %>" name="address[street]" id="street" class="radius5 fancyinput required">
+                  <br/><label for="street" generated="false" class="error"></label>
+                </div>
+
+                <div class="prefix_1 grid_11 pad_top">Section (optional)</div>
+                <div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.address.section_name rescue ''%>" name="address[section_name]" id="section_name" class="radius5 fancyinput">
+                </div>
+
+                <div class="prefix_1 grid_11 pad_top">Postcode</div>
+                <div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.address.postcode rescue '' %>" name="address[postcode]" id="postcode" class="radius5 fancyinput required"><br /><label for="postcode" generated="false" class="error"></label>
+                </div>
+
+                <div class="prefix_1 grid_11 pad_top">City/Town</div>
+                <div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.address.city_name rescue '' %>" name="address[city_name]" id="city_name" class="radius5 fancyinput required"><br /><label for="city_name" generated="false" class="error"></label>
+                </div>
+
+                <div class="prefix_1 grid_11 pad_top">State/Region </div>
+		<div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.address.state_name rescue '' %>" name="address[state_name]" id="state_name" class="radius5 fancyinput required"><br />
+                  <%= hidden_field_tag "valid_state", 'valid', :class => "required"  %>
+                  <label for="state_name" generated="false" class="error"></label>
+                  <%= hidden_field_tag "address_lat", (@place.address.lat rescue ''), :class => "required"  %>
+                  <%= hidden_field_tag "address_lng", (@place.address.lng rescue ''), :class => "required"  %>                  
+                <label for="address_lat" generated="false" class="error"></label>
+                </div>
+
+                <div class="prefix_1 grid_11 pad_top">Country </div>
+                <div class="prefix_1 grid_11">
+                  <input type="text" value="<%= @place.address.country_name rescue '' %>" name="address[country_name]" id="country_name" class="radius5 fancyinput required"><br /><label for="country_name" generated="false" class="error"></label>
+                </div>
+
+                <div class="prefix_1 grid_11 pad_top">Your full address </div>
+                <div class="prefix_1 grid_10 suffix_1 inlineB ">
+                   <span class="bgGray inlineB radius5 pad10 width90 bold" id="your_address">
+                        
+                   </span><br>
+                 </div>
+                 
+                <div class="prefix_1 grid_11 pad_top">
+
+                  <div id="mapcanvas" style="width:300px; height:240px"></div>
+                </div>
+                <div class="prefix_1 suffix_1 grid_10 pad_top20"><div class=" hr full_width"></div></div>
+	
+                <div class="prefix_1 grid_5 pad_top">Telephone Number</div><div class="suffix_1 grid_5 pad_top">Fax Number (optional)</div>
+                <div class="prefix_1 grid_5">
+                  <input type="text" value="<%= @place.telephone_numbers unless @place.nil? %>" name="place[telephone_numbers]" id="telephone_numbers" class="radius5 fancyinput half no_space required validTelno"><br /><label for="telephone_numbers" generated="false" class="error"></label><div class="clearfix"></div>
+                  e.g.: +06-03-12345678
+                </div>
+                <div class="suffix_1 grid_5">
+                  <input type="text" value="<%= @place.fax_numbers unless @place.nil? %>" name="place[fax_numbers]" id="fax_numbers" class="radius5 half fancyinput validTelno ">
+                  e.g.: +06-03-12345678
+                </div>
+
+                <div class="prefix_1 grid_11 pad_top"></div>
+                <div class="prefix_1 grid_11">
+                     <%= hidden_field_tag "map_error", 'none', :class => "required" %>
+                     <label for="map_error" generated="false" class="error"></label>
+                </div>
+
+
+              </div>
+
+               <div class="grid_12 border"></div>
+               <div class="clearfix ">&nbsp;</div>
+               <div class="container_12 pad_top30 pad_bot">
+               <div class="grid_3 prefix_4">
+                <a href="javascript:" data-id="3" class="blue radius5 userButton white bold create nextStep" id="save_button">Save & Continue</a>
+                </div>
+               <div class="grid_2">
+                <a href="/welcome" class="blue radius5 bgGray white bold backbtn userButton create" >Back</a>
+                 </div>
+              	<div class="clearfix ">&nbsp;</div>
+              </div>
+              
+              </div>
+
+             
+<% end %>
+
+        </div>
+
+
+<script>
+
+    $("#save_gallery").click(function() {
+      var ti_id = $("#gallery_id").val();
+      if (ti_id == '')
+        return false;
+
+      $("#loader_gallery").show();
+      $.ajax({
+        type: "POST",
+        cache: false,
+        url: "/welcome/update_gallery?ti_id=" + ti_id,
+        data: $("#galform").serializeArray(),
+        success: function(data) {
+          $(".galleryThumb").append(data).fadeIn();
+          $("#loader_gallery").hide();
+          $("#gallery_notifier").empty().show();
+          $("#gallery_notifier").append("Saved").fadeOut(1000);
+        }
+      });
+    });
+
+    $("#place_category_id").change(function() {
+      var cat_id = $("#place_category_id").val();
+      $("#loader_category").show();
+      $.ajax({
+        type: "GET",
+        cache: false,
+        url: "/welcome/load_select_subcategories?cat_id=" + cat_id,
+        data: $(this).serializeArray(),
+        success: function(data) {
+          $("#subcategory_id").empty();
+          $("#subcategory_id").append(data).fadeIn();
+          $("#loader_category").hide();
+        }
+      });
+    });
+</script>
+
+
+</div>
+</section>    

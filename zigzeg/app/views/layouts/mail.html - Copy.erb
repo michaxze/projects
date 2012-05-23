@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" /> 
+  </head>
+  <body style="margin:0;padding:0;">
+  <table style="width:600px; color:#959595; font-family:Verdana, Helvetica, Arial, sans-serif; font-size:.9em;" cellspacing="0">
+  <tr>
+  	<td valign="middle" style="background-color:#525252;padding:0 20px; font-weight:bold; font-size:1.2em; height:40px; color:#9e9e9e; position:relative;">
+    <img alt="ZIGZEG" height="27" width="77" src="<%= Constant::DOMAIN_ROOT %>/images/template/logo.png" >
+  	</td>
+    <td style="background-color:#525252;padding:2px 20px;height:40px; "><a href="zigzeg.com" style="float:right;color:#00C6FF; font-size:.75em; text-decoration:none;">Go to Zigzeg.com</a></td>
+  </tr>
+  
+	<tr><td style="padding:10px 20px 0 20px;" colspan="2">
+	
+	<%= yield%>
+	
+	</td></tr>
+	<tr><td style="padding:0 20px;" colspan="2"><p style="margin:20px 0 0 0">Regards</p></td></tr>
+<tr><td style="padding:0 20px;" colspan="2"><b style="color:#000; font-style:italic;">The Zigzeg Team</b></td></tr>
+<tr><td colspan="2" style="font-size:.75em;border-bottom:2px #000000 solid; padding:30px 0 5px 5px;">This message was sent to <span style=" text-decoration:underline;color:#00C6FF;"><%= @to %> </span><td></tr>
+<tr>
+	<td style="font-size:.75em;padding:20px 5px 0 5px;"><b>Zigzeg</b>, the city @ your fingertips</td>
+	<td style="font-size:.75em; float:right;padding:20px 5px 0 5px;">Copyright © 2011 Zigzeg, All rights reserved</td>
+</tr>
+  </table>
+  </body>
+</html>

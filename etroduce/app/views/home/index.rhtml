@@ -1,0 +1,120 @@
+<div style="margin-bottom:4px; margin-left: auto; margin-right: auto; text-align: center">
+  <form method="get" action="<%= opportunities_path %>"> 
+    <span style="font-size: 14px; color: #007099; font-weight: bold">I'm looking for </span>
+    <input name="search_str" class="rounded bigtextfield" type="text" placeholder="jobs, people, housing, items for sale, deals" value="" style="width:500px;" /> 
+    <button type="submit" value="search" class="rounded greybutton">Search</button> 
+  </form> 
+</div> 
+
+<div class="mostpopular">
+  <div id="mp2" >
+    <h1 style="padding-bottom: 10px"> Most popular </h1>
+    <% if @opportunities.empty? %>
+    <p style="padding-bottom: 15px; font-weight: bold; padding-left: 14px">No opportunities found.</p>
+    <% end %>
+    <table cellpadding="0" cellspacing="0" style="margin-left: 12px">
+      <thead>
+        <tr>
+          <td width="10">&nbsp;</td>
+          <td width="690">Opportunity </td>
+          <td width="118">Date</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% @opportunities.each do |opp|%>
+        <tr height="26"  onclick="open_opp_details(<%= opp.id%>)" style="cursor: pointer" onmouseover="$(this).css('background-color', '#EFEBE3')" onmouseout="$(this).css('background-color','')" >
+          <td><img src="images/bullet1.jpg" /></td>
+          <td ><%= opp.subject.titleize%><%= show_price(opp) %></td>
+          <td><%= opp.created_at.strftime("%B %d, %Y") %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div style="width: 500px; padding-left: 15px; position: relative">
+  <ul style="list-style-type: none; display: block; margin: 0px;">
+    <% @categories.each do |cat|%>
+      <li style="list-style: none; float: left; font-size: 14px; padding: 0px 15px"><%= link_to cat.name.titleize, opportunities_path(:c => cat.code)%> </li>
+      <% if @categories.index(cat) != @categories.length-1%>
+      <li style="list-style: none; float: left"> | </li>
+      <% end %>
+    <% end %>
+  </ul>
+</div>
+
+<div id="watch_demo_container">
+  <%= link_to "View all posts", opportunities_path %>
+</div>
+  
+<div class="clr"></div>
+<br/>
+<p style="text-align:center">
+  <button class="rounded bluebutton" href="#signup_form" id="signup_button" type="button">
+  Sign up, its FREE!
+  </button>
+</p>
+<%= render("home/signup_form") %>
+
+<div class="clr"></div>
+
+<script>
+  $("#signup_button").fancybox({
+  	'scrolling'		: 'no',
+  	'titleShow'		: false
+  });
+
+  function new_open_opp_details(opp_id) {
+    $.fancybox.showActivity();
+
+    $.ajax({
+      url   : "/opportunities/view/",
+      type	: "POST",
+      data	: 'id=' + opp_id,
+      success: function(data) {
+        $(".mostpopular").css('width', 360);
+        $(".home_register").hide();
+        
+        $("#opp_details").empty();
+        $.fancybox.hideActivity();
+        $("#opp_details").append(data).show();
+      }
+    });
+  };
+  
+  function close_opp_details(opp_id) {
+    $("#opp_details").hide();
+    $(".home_register").show();
+    $(".mostpopular").css('width', 580);
+  }
+
+  function open_opp_details(opp_id) {
+    window.location.href = "/opportunities/" + opp_id;
+  };
+
+  $("#signup_form").bind('submit', function() {
+
+    $.fancybox.showActivity();
+    $.ajax({
+      type  : "POST",
+      cache : false,
+      url  : "/signup",
+      data  : "username=" + $("#username").val() + "&password=" + $("#password").val() + "&email=" + $("#email").val(),
+      success: function(data) {
+        $.fancybox.hideActivity();
+        if (data == 'success') {
+          $("#username").val('');
+          $("#email").val('');
+          $("#password").val('');
+          $.fancybox("You have successfully created your account. Please check your email to activate your account.");          
+        }else{
+          alert(data);
+        }
+      }
+    });
+
+    return false;
+  });  
+
+</script>

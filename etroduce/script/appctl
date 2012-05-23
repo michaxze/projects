@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require File.expand_path(File.join(File.dirname(__FILE__), '../config/boboot'))
+
+# if there's a gem, use this
+#  require 'palmade/puppet_master'
+gem 'puppet_master'
+require 'palmade/puppet_master'
+Palmade::PuppetMaster.runner!(ARGV)

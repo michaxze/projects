@@ -1,0 +1,6 @@
+<% section_id = address.section_id rescue nil %>
+<% unless sections.empty? %>
+  Select a section:
+  <%= select_tag "address[section_id]", options_for_select(sections, section_id), :include_blank => true, :id => "sections_select" %>
+
+<% end %>

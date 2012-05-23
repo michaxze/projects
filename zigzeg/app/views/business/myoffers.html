@@ -1,0 +1,124 @@
+      <div class="packageBox pad_top20 pad_bot20 full depList">
+      <div class="container_12">
+				<div class="grid_12 numberMsg">
+          <h6 class="grid_7 bold no_margin half fleft pad_top">MY OFFER LIST &nbsp;
+
+              <% if !current_user.premium_subscriber?%>
+                |&nbsp; 
+                <div class="bubble"><%= current_user.remaining_events %></div> post remaining <a href="#cmpBizInfo" name="help" class="blue example cursor desc"></a>
+              <% end%>
+            
+            
+          </h6>
+
+          <% if current_user.remaining_events  > 0 || current_user.premium_subscriber? %>
+          <a  class=" menuBar checkButton cursor removeSelectedx fright createData" href="<%= new_business_offer_path %>">CREATE OFFER</a>
+          <% end %>
+      </div>
+      </div>
+      <div class="container_12 pad_top eventListContain">
+              <div class="header clearfix bgGray">
+                  <div class="grid_5">Offer Title</div>
+                          <div class="grid_1 spW">Created</div>
+                          <div class="grid_1 spW">Starts</div>
+                          <div class="grid_1 spW">Ends </div>
+                          <div class="grid_1">Status</div>
+                          <div class="grid_1" align="center">Edit</div>
+                          <div class="pad_right5" align="right"><input type="checkbox" name="checkAll" id="checkAll"/></div>
+              </div>
+              <div class="body full minHt"> 
+<% reload_page = nil %>
+              <% @offers.each do |offer|%>
+<%
+case offer.mystatus
+when Constant::EXPIRED
+  if offer.mystatus != offer.status
+    offer.update_attribute(:sort_status, 4)
+    offer.update_attribute(:status, Constant::EXPIRED)
+    reload_page = true
+  end
+when Constant::PUBLISHED
+  offer.update_attribute(:sort_status, 1)
+end
+%>
+              <div class="row offer_row_<%= offer.id %>">
+                  <div class="grid_5">
+                    <% if offer.is_complete? || offer.is_published? || offer.expired? || offer.is_deleted?%>
+                      <a class="cursor" target="_new" href="<%= form_url(offer) %>"><%= offer.name rescue '' %>&nbsp;</a>
+                    <% else%>
+                      <%= offer.name rescue '' %>&nbsp;
+                    <% end %>
+                  </div>
+                  <div class="grid_1 spW"><%= formatted_date(offer.created_at, 'ddmmyy')%>&nbsp;</div>
+                  <div class="grid_1 spW"><%= formatted_date(offer.start, 'ddmmyy')%>&nbsp;</div>
+                  <div class="grid_1 spW">
+                    <% if offer.ongoing %>
+                      on-going
+                    <% else %>
+                      <%= formatted_date(offer.end, 'ddmmyy')%>&nbsp;
+                    <% end %>
+                  </div>
+                  <!-- FOR PUBLISHED OFFER/EVENT add class published or else remove class add/remove also a title attribute on a-->
+                   <!-- status classes: expired, notlive, inc, complete, published,deleted -->
+                   <% dispDate = ''
+                     	period = case offer.mystatus
+                       when "notlive"
+                         dispDate = 'on '+formatted_date(offer.start, 'ddmmyy')
+                       end
+                    %>
+                   
+                  <div class="grid_1">
+                    <a title="<%= get_status_msg(offer.mystatus,'offer') %> <%= dispDate rescue ''%>" class="pubStat noCursor noDecor">
+                      <div class="<%= offer.mystatus %>">&nbsp;</div>
+                    </a>
+                  </div> 
+                  <div class="grid_1" align="center">
+                    <% if offer.mystatus != Constant::EXPIRED %>
+                      <% if [Constant::PUBLISHED, Constant::DELETED].include?(offer.status)  && !offer.editable? %>
+                      	<a class="blue noCursor editIconD noDecor" title="Offer already <%= offer.status %>. Cannot modify this offer.">&nbsp;</a>
+                      <% else %>
+                      	<a class="blue cursor editIcon noDecor" title="Edit this offer" data-id="<%= offer.id %>" href="<%= edit_business_offer_path(offer) %>">&nbsp;</a>
+                      <% end %>
+                    <% else %>
+                      	<a class="blue noCursor editIconD noDecor" title="Offer already <%= offer.status %>">&nbsp;</a>
+                    <% end %>
+                  </div>
+                  <div class="pad_right5" align="right">
+                    <% if offer.status != Constant::DELETED %>
+                    <input type="checkbox" value="<%= offer.id %>" name="checkZig"  class="checkList">
+                    <% end %>
+                  </div>
+              </div>
+              <% end %>
+
+
+              <% if @offers.empty? %>
+                 <div class="row center">
+                   Your Offer list is currently empty.
+                  </div>
+                  </div><!-- end body -->
+              <% end %>
+             
+              </div><!-- end body -->
+             <div class="footer">
+             <div class="grid_9">
+              <div class="my_pagination pad_top5">
+              	<%= will_paginate @offers %>
+              </div>
+             &nbsp;</div>
+    <% if @offers.length > 0 %>
+    <div class="grid_3 align_right fright pad_top">   <a class="checkButton cursor removeSelected" href="<%= remove_business_offers_path %>">Delete</a></div>
+    <% end %>
+</div>
+          </div>
+      </div>
+<script>
+
+$(document).ready(function() {
+  <% unless reload_page.nil? %>
+    location.reload();
+  <% end %>
+  $('.next_page,.previous_page').text('');
+});
+
+</script>

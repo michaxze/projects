@@ -1,0 +1,26 @@
+payment:
+  - Cash: cash.png
+  - Credit Card: cred-card.png
+  - ATM Card: atm-card.png
+  - Bank Transfer: wire.png
+  - Cheque: cheque.png
+  - Online Payment: online-pay.png
+parking:
+  - Free parking: fr-park.png
+  - Pay parking: py-park.png
+  - Difficult to park: nopark.png
+  - Valet service: valet.png
+provides:
+  - Free Wi-Fi: wifi.png
+  - Air-conditioned: air-con.png
+  - ATM machine: atm-mchn.png
+  - Member discount: member-disc.png
+  - No smoking: no-smoking.png
+  - Smoking section: smoking.png
+  - Pets allowed: pets.png
+  - Public Toilet: toilet.png
+  - Pay delivery: paid-del.png
+  - Free delivery: free-del.png
+  - Repair & Servicing: repair.png
+  - Rental & Leasing: lease.png
+  - Halal-certified: halal.png

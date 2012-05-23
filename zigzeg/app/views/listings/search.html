@@ -1,0 +1,70 @@
+<section id="content" class="grid_12">
+  <input type="hidden" name="pageNumber" id="pageNumber" value="1"/>
+  <%= hidden_field_tag "page_params", formatted_params(params) %>
+
+  <div id="depSlideContainer">
+    <div id="depWrapper">
+      <div id="depSlide">
+        <a class="ui-slider-handle ui-state-default ui-corner-all" href="#" >
+        <%= image_tag "buttonbar.png"%>
+        </a>
+      </div>
+
+      <div>
+        <ul>
+	  <li class="latest grid_3" id="liLatest"><span>Latest <div class="bubble latest"><%= @total_all %></div></span></li>
+	  <li class="places grid_3" id="liPlaces"><span>Places<div class="bubble places"><%= @total_places %></div></span></li>
+    <li class="deals grid_3" id="liDeals"><span>Deals<div class="bubble deals"><%= @total_deals %></div></span></li>
+	  <li class="events grid_3" id="liEvents"><span>Events<div class="bubble events"><%= @total_events %></div></span></li>   
+	      </ul>
+      </div>
+
+    </div>
+  </div>
+        
+  <div align="right" class="pad_bot20 pad_top20 pad_right">
+    <a class="switch_thumb">&nbsp;</a> 
+  </div>
+
+  <div>
+    <div id="tabs" class="mainTabContainer">
+      <ul id="tabHeader">
+        <li><a href="#tabAll">all</a></li>
+	<li><a href="/search?type=place<%= formatted_params(params) %>">places</a></li>
+  <li><a href="/search?type=deal<%= formatted_params(params) %>">deals</a></li>
+	<li><a href="/search?type=event<%= formatted_params(params) %>">events</a></li>
+	    </ul>
+      <div class="imageLoader dispNone"></div>
+
+      <div id="tabAll">
+        <div class="selecterContent">
+	  <ul class="listview imglist" id="allView">
+	    <%= render :partial => "listing", :collection => @listings %>
+	  </ul>
+    	</div>
+    </div>
+	</div>
+  <% if @listings.count == 0 %>
+  <div class="container_12">
+           <div class="grid_12 no_margin">
+           <h6 class="bold">Your search for <b class="blue"><%= params[:search] %>&nbsp;</b> returned  <b class="blue">0</b>  matches. Did you mean: <b class="blue">wave</b>?</h6>
+           </div>
+           <div class="grid_12 pad_top">
+           <h6 class="bold margin_left_20">Suggestions</h6>
+						<ul class="listNone margin_left_20">		
+               <li>- recheck your spelling</li>
+               <li>- try to search using more general keywords</li>
+            </ul>
+           </div>
+       </div>	
+       <% end %>
+  
+  
+  </section>
+  <!--end content-->
+ 
+     
+  <% if @listings.count > 0 %>
+  <div align="center"><h4><a id="showMore" class="cursor">show more</a></h4></div>
+  <% end %>
+  <div class="imageLoader dispNone"></div>

@@ -1,0 +1,50 @@
+<div id="blogs" style="width: 850px; margin: 0 auto">
+
+  <div class="container">
+    
+    
+    
+    <div class="row">
+
+      <div class="span8">
+          <div id="blog-row">
+            <h2><%= link_to @blog.title, "/blogs/#{@blog.page_code}"%></h2>
+            <p><%= raw @blog.contents %></p>
+            <div class="photos">
+              <% @blog.assets.each do |pic| %>
+                <a href="<%= pic.file.url(:large) %>" rel="fancybox">
+                  <%= image_tag pic.file.url(:medium)%>
+                </a>
+              <% end %>
+            </div>
+          </div>
+          
+
+          <ul class="pager">            
+            <% unless @prev.nil?%>
+            <li class="next">
+              <a href="/blogs/<%= @prev.page_code %>">Older &rarr;</a>
+            </li>
+            <% end%>
+            
+            <% unless @next.nil?%>
+            <li class="previous">
+              <a href="/blogs/<%= @next.page_code %>">&larr; Newer</a>
+            </li>
+            <% end %>
+            
+          </ul>
+
+          
+      </div>
+
+      <%#= render "/blogs/sidebar"%>      
+
+    </div>
+    
+
+    
+    
+  </div>
+
+</div>

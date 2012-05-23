@@ -1,0 +1,47 @@
+
+<div class="messageBox clearfix">
+<h6 class="bold grid_7">ANNOUNCEMENTS LIST</h6>
+<a href="<%= new_admin_announcement_path %>" class="checkButton cursor fright ">Create announcement</a>
+			<div class="container_12"> 
+          <div class="header">
+              <div class="grid_5">Announcement</div>
+              <div class="grid_2">Type</div>
+              <div class="grid_2">Banner</div>
+              <div class="grid_2">Start Date</div>
+              <div class="grid_1">Duration</div>
+              <div>&nbsp;</div>
+          </div>
+          <div class="body">
+
+<% @announcements.each do |a| %>
+          <div class="row new announcement_row_<%= a.id %>">
+              <div class="grid_5"><a href="<%= edit_admin_announcement_path(a) %>" data-id="<%= a.id %>" ><%= a.title %></a></div>
+              <div class="grid_2"><%= a.announce_type %></div>
+              <div class="grid_2"><%= a.banner.exists? ? "Yes" : "No" %></div>
+              <div class="grid_2"><%= formatted_date(a.created_at, 'ddmmyyyy') %></div>
+              <div class="grid_1">7 days</div>
+              <div class="pad_left"><input type="checkbox" name="checkZig" value="<%= a.id %>" /></div><div></div>
+          </div>
+<% end %>
+          
+          </div><!-- end body -->
+          <div class="footer">
+              <div class="grid_7">
+
+                <% if @announcements.total_pages > 1 %>
+                <span>Page</span>
+                <%= will_paginate @announcements %>
+                <% end %>
+
+                </div>
+              <div class="grid_4 align_right fright"><a href="/admin/announcements/remove_announcements" class="checkButton cursor removeSelected">Delete announcements</a></div>
+          </div>
+      </div>
+</div>
+
+
+<style>
+span.previous_page, a.next_page {
+  display: none;
+}
+</style>

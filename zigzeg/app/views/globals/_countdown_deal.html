@@ -1,0 +1,108 @@
+<script>
+function zeroPad(num){
+  var numZeropad = num + '';
+  while(numZeropad.length < 2) {
+    numZeropad = "0" + numZeropad;
+  }
+  return numZeropad;
+}
+	
+function start_countdown(dateVal){
+  var nowTime = new Date("<%= "#{Time.now.strftime('%B %d, %Y %H:%M:%S')}"%>");
+	var targetTime = new Date(dateVal);
+	var timeDiff = targetTime.valueOf() - nowTime.valueOf();
+  diffSecs = Math.floor(timeDiff/1000);
+  secs = diffSecs % 60;
+  mins = Math.floor(diffSecs/60)%60;
+  hours = Math.floor(diffSecs/60/60)%24;
+  days = Math.floor(diffSecs/60/60/24);
+
+  if (timeDiff <= 0) {
+    secs = 0;
+    mins = 0;
+    hours = 0;
+    days = 0;
+  }
+  timeCount = zeroPad(days)+":"+zeroPad(hours)+":"+zeroPad(mins)+":"+zeroPad(secs);
+  $(function(){
+    $('#counter').countdown({
+      image: '/images/digits.png',
+      startTime:timeCount,
+    });
+  });
+
+}
+if ($.browser.msie && parseInt($.browser.version) < 9){
+		<% unless deal.ongoing? %>
+		liftoffTime = new Date("<%= "#{deal.end.strftime('%B %d, %Y 23:59:59')}"%>")
+		function serverTime() { return  new Date("<%= "#{Time.now.strftime('%B %d, %Y %H:%M:%S')}"%>"); }
+		$(document).ready(function(){
+			$('#lapTime').countdown({until: liftoffTime,format:'DHMS',serverSync:serverTime}); 
+			$('#pgLabel div').hide();
+		});
+		<% end %>
+}else{
+		$(document).ready(function(){
+		$('#ieAlt').hide();
+		});
+		<% unless deal.ongoing? %>
+			start_countdown("<%= "#{deal.end.strftime('%B %d, %Y 23:59:59')}"%>");
+		<% end %>
+}
+</script>
+<div class="grid_12 absolute pgTimeBx">
+		<div class="grid_12 no_margin"><% unless deal.ongoing? %>Time left for this offer<% end %>&nbsp;</div>
+    <div class="clearfix"></div>
+		<div class="pgTime radius10 relative" align="center">
+    <!-- for daily offer -->
+    <% unless deal.ongoing? %>
+    <div id="dashboardEvent">
+      <div id="counter"></div>
+      <div id="lapTime" ></div>
+      <div class="clearfix"></div>
+      <div id="pgLabel">
+      <div class="grid_3 black">days</div>
+      <div class="grid_3 black">hours</div>
+      <div class="grid_3 black no_margin">minutes</div>
+      <div class="grid_3 black ">seconds</div>
+      </div>
+    </div>
+    <% else %>
+    <div class="pgBlkBx radius10" align="center">
+      <div class="dOffer bold">DAILY OFFER</div>
+      <div class="line z10 absolute"></div>
+    </div>
+    <% end %>
+    </div>
+</div>&nbsp;
+<!--<div class="fright omega relative width30">
+	   
+	   <% unless deal.ongoing? %>
+     <div align="center"class="white dashLabel deals">Time left for this offer</div>
+     <% end %>
+     <div class="dateBox dateEventBox colorDeals relative deals">
+	   <div id="dashboardEvent">
+	     <div id="counter"></div>
+	     <% unless deal.ongoing? %>
+       <div class="dashLine" id="ieAlt">
+       <div id="lapTime" ></div>
+       </div>
+       <ul class="counterLabel">
+	       <li>days</li>
+	       <li>hours</li>
+	       <li>minutes</li>
+	       <li>seconds</li>
+	     </ul>
+       
+       <% else %>
+         <div class="enclose dOffer">
+              <div align="center" class="dash days_dash ">
+                <div class="line"></div>
+                <div class="digit p_side20"> DAILY OFFER </div>
+              </div>
+         </div> 
+       <% end %>
+	   </div>
+	 </div>
+       </div>
+-->

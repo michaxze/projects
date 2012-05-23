@@ -1,0 +1,6 @@
+<h2> Offers </h2>
+<ul>
+  <% @place.deals.each do |d| %>
+  <li><%= link_to d.name.titleize, form_url(d) %></li>
+  <% end %>
+</ul>

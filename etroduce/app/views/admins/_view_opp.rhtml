@@ -1,0 +1,36 @@
+<div id="listing-header" style="width: 480px;"> 
+  <div id="listing-header-container" style="width: 100%; padding: 0px; margin: 0px">
+
+    <div style="float: right;" >
+      <span class="accept-button" onclick="accept_opp('<%=opp.id%>');">Accept</span>
+      <span class="x-button" style="background-color:#FF3366" onclick="deny_opp('<%=opp.id%>');" >Deny</span>
+    </div>
+    
+    <div style="width: 98%; min-height: 40px; padding: 5px">
+      <span style="font-size: 16px; font-family: Arial; color: #006B50; line-height: 20px"><%= opp.subject.titleize%></span>
+    </div>
+
+    <div style="background-color: #FFF; padding: 10px;">
+      <span style="font-size: 10px; color: #999">Date posted: <%= opp.created_at.strftime("%B %d, %Y")%></span><br /> 
+      <% unless opp.zipcode.blank?%>
+      <span style="font-size: 10px; color: #999">City: <%= Helper.getcity(opp.zipcode) %> (<%= opp.zipcode%>)</span><br /> 
+      <% end %>
+      <span style="font-size: 10px; color: #999">Posted by: </span>
+      <span style="font-size: 10px; color: #999; line-height: 35px"><%= link_to opp.user.fullname.titleize, "/#{opp.user.username}" %></span>
+    </div>
+  </div>
+</div>
+
+<div id="listing-container">
+  <div id="opportunity_photos" style="margin-bottom: 20px">
+  <% opp.assets.each do |asset|%>
+    <%= link_to(image_tag(asset.image.url(:thumb)), asset.image.url, :rel => "opp_gallery") %>
+  <% end %>
+  </div>
+
+  <div style="font-size: 12px; font-family: Tahoma; overflow:auto; padding: 5px; width: 450px">
+    <%= auto_link(opp.description) %>
+  </div>
+  <div class="paragraph_break"><br /></div>
+</div>
+<div class="clear"></div>

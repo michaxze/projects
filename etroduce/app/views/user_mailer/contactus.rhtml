@@ -1,0 +1,12 @@
+Somebody just contacted Etroduce.
+<hr><br/>
+
+<ul style="list-style-type: none">
+  <li> <strong>Name</strong>: <%= @params[:contact_name].titleize%></li>
+  <li> <strong>Email</strong>: <%= @params[:contact_email]%></li>
+  <li> <strong>Contact Number</strong>: <%= @params[:contact_number]%></li>
+  <li> <strong>Message</strong>: </li>
+  <li>
+    <%= @params[:message]%>
+  </li>
+</ul>

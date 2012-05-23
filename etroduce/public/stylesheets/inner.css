@@ -1,0 +1,33 @@
+@charset "utf-8";
+/* CSS Document */
+
+#innerpage {
+	background:url(../images/bg-inner.jpg) repeat-x top;
+	}
+	
+#inner_logo {height:55px; padding:17px 0 9px 0;}
+#inner_menu {height:38px;}
+#inner_menu ul li {list-style-type:none; float:left;}
+#inner_menu ul li a {display:inline-block; color:#57595b; text-decoration:none; padding: 10px 15px;}
+#inner_menu ul li a#msgs {padding-left: 0;}
+#inner_menu ul li a:hover {color:#0085b6;}
+
+#my_account {line-height:34px;}
+#my_account a{text-decoration:none; color:#0085b6; }
+#my_account a:hover{text-decoration:underline;}
+
+#submenu {height:36px;}
+#submenu ul li {list-style-type:none; float:left;}
+#submenu ul li a{text-decoration:none; padding: 10px 15px; display:inline-block; color:#57595b;}
+#submenu ul li a:hover {color:#0085b6;}
+#submenu ul li a#inbox, #submenu ul li a#addnewcontact, #submenu ul li a#contact, #submenu ul li a#mypost {padding-left: 0;}
+#sub_msgs {}
+
+#content_wrap {padding:30px 77px;}
+#cbody {background:url(../images/bg-mid-content.jpg) repeat-y center; padding:20px;}
+
+.content_head {height:20px; border-top:1px solid#dadbdd; border-bottom:1px solid#dadbdd; background-color:#eaeef1; padding: 6px 10px; line-height:18px;}
+.form_block, .content_body {padding:15px 0;}
+.textfield {border: 1px solid #90a4ab; padding: 7px 8px; width:300px;}
+.textarea {border: 1px solid #90a4ab; padding: 7px 8px; width:300px;}
+.form_block td {border:none; padding-bottom:10px;}

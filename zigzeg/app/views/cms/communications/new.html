@@ -1,0 +1,13 @@
+<div id="admin-left-sidebar">
+  <%= render "/cms/sidebar" %>
+</div>
+
+<div id="admin-center">
+
+  <% if params[:tab] == "ann" %>
+    <%= render("new_announcement") %>
+  <% else %>
+    <%= render("new_message") %>
+  <% end %>
+  <div id="testme"></div>
+</div>

@@ -1,0 +1,43 @@
+<div class="simpleBox clearfix">
+  <h6 class="bold no_margin orange">CATEGORY</h6>
+
+
+    <%= form_for @category, :url => admin_category_path(@category), :html => { :id => "editCategoryFrm", :method => :put } do |f|-%>
+    <div class="margin_left_20">
+    <ul class="cform">
+     	 <li>
+         <input type="text" name="name" id="fnb" value="<%= @category.name.titleize %>" class="required text-input fancyinput" />
+         <div class="clearfix"><label for="username" generated="false" class="error clearfix"></label></div>
+       </li>
+      </ul>
+     </div>
+     <h6 class="bold no_margin orange">SUB-CATEGORY</h6>
+    <div class="margin_left_20">	
+      <ul class="cform category_list">
+
+
+ 	<li>
+         <input type="text" name="add_new" id="sub_cat0" value="" class="required text-input fancyinput" />
+           <a class="category_add" data-id=''></a>
+         <div class="clearfix">
+           <label id="category_error" generated="false" class="error clearfix dispNone">Category must not be empty</label>
+         </li> 
+
+         <% @category.subcategories.each do |scat| %>
+         <li class="liCat<%= scat.id %>">
+           <input type="text" class="required text-input fancyinput" id="subCat<%= scat.id %>" name="subcategories[]" value="<%= scat.name.titleize %>">
+           <a data-id="<%= scat.id %>" class="category_remove"></a>
+           <%= hidden_field_tag 'subcategories_ids[]', scat.id %>
+         </li>
+         <% end %>
+
+         <li><label class="clearfix">Category List</label></li>  
+
+     	</ul>
+      <ul class="cform">
+      <li><input type="submit" value="Save Category" class="radius5 userButton cursor fleft" name="submit"/>
+           <div class="grayLoader category">Saving data</div></li>
+      </ul>
+     </div>
+    <% end %>
+</div>

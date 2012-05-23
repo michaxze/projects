@@ -1,0 +1,17 @@
+<h3>Shows and Events</h3>
+
+<table>
+<% @events.each do |event|%>
+<tr>
+  <td width="400">
+    <p>
+    <strong><%= event.name.titleize %> </strong><br/>
+    <%= event.description.gsub("\n","<br/>") %>
+    </p>
+  </td>
+  <td align="right">
+    <%= image_tag(event.event_image.public_filename(:thumb)) rescue ''%>
+  </td>
+</tr>
+<% end %>
+</table>

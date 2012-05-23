@@ -1,0 +1,44 @@
+<div class="messageBox clearfix">
+  <h6 class="bold">YOUR MESSAGE TO <%= @message.sender.name_or_email %> <%= link_to "BACK TO MESSAGE BOX", admin_messages_path, :class => "blue fright cursor " %></h6>
+			<div class="container_12">
+      		<div class="header">
+              <div class="grid_10 subject">Subject: <%= @message.subject%></div>
+              <div class="grid_2">Date</div>
+          </div>
+          <div class="body" id="appendMsg">
+
+              <% @message_threads.limit(5).each do |msg| %>
+              <div class="<%= current_user == msg.sender ? "user":"reply" %> row">
+                  <div class="grid_10">
+                      <div class="grid_2"><%= msg.sender.name_or_email %></div>
+                      <div class="grid_10"><%= raw msg.html_contents %></div>
+                  </div>
+                  <div class="grid_2"><%= formatted_date(msg.created_at, 'ddmmyyyyhm') %></div>
+                  <div class="clear"></div>
+              </div>
+              <% end %>
+          </div><!-- end body -->
+         <div class="olderMessages"></div>
+
+         <% if @message_threads.length > 5 %>
+         <h6 class="no_margin">
+           <div class="msgLoader dispNone"></div>
+           <a class="cursor viewOlderMessage"><h6 class="bold">view older message</h6></a>
+         </h6>
+         <% end %>
+
+         <div class="compose">
+           <div class="grid_12"><span>Type here to reply:</span></div>
+           <div class="grid_12 blue">
+             <textarea name="replyMsg" id="replyMsg" class="required"></textarea>
+             <label class="error dispNone" id="replyMsgError">Reply message must not be empty</label>
+             <input type="hidden" name="userid" value="1" />
+             <%= hidden_field_tag :message_thread_id, @message.message_thread_id %>
+             <%= hidden_field_tag :receiver_id, @message.sender.id %>
+             <%= hidden_field_tag :message_id, @message.id %>
+           </div>
+           <div class="grid_12 "><a class="checkButton cursor fright" id="submitMsg">Send Reply</a></div>
+           <div class="body marginTop30">
+           </div><!-- end 2nd body-->
+         </div>
+</div>

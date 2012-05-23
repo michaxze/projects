@@ -1,0 +1,24 @@
+<div id="reply_message_<%= msg.id%>" style="padding: 10px 5px" onmouseover='$("#delete_icon_<%= msg.id%>").show();'  onmouseout='$("#delete_icon_<%= msg.id%>").hide();'>
+  <div id="delete_icon_<%= msg.id%>" onclick="remove_message('<%= msg.id%>');" style="cursor:pointer; display: none; position: relative; left: -10px; float: left">
+  <%= image_tag("button-white-remove.png", :size => "20x20", :title => "Delete message")%>
+  </div>
+  <div style="padding-left: 20px">
+    <div style="float: left; padding-right: 10px"><%= image_tag(msg.sender.avatar.url(:super_thumb), :size => "30x30")%></div>
+    <div style="float:; padding-right: 10px"><%= msg.sender.fullname.titleize%>
+      <span style="margin-left: 10px;font-size: 10px;"><%= msg.created_at.strftime("%B %d, %Y at %I:%M%p") %></span><br>
+      <span style="margin-left: 10px;font-size: 10px;"><%= link_to "View Post", "/opportunities/#{msg.message_thread.opportunity_id}" unless msg.message_thread.opportunity_id.nil?  %></span>
+      <% unless msg.message_thread.referred_email.nil?%>
+      <span style="margin-left: 10px;font-size: 10px;">
+        Referred person: 
+        <% unless msg.message_thread.referred_user.nil?%>
+          <%= link_to msg.message_thread.referred_user.username, "/#{msg.message_thread.referred_user.username}" %>
+        <% else%>
+          <%= msg.message_thread.referred_email %>
+        <% end%>
+      </span>
+      <% end %>
+    </div>
+    <br/>
+    <p><%= msg.body.gsub("\n", "<br/>") %></p>
+  </div>
+</div>

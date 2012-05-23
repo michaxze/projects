@@ -1,0 +1,12 @@
+.wrapper{background:url(../images/biz/bgG.png) repeat-x; 
+		width:100%; height:100%;}
+.leftBg{ position:absolute; left:0; height:100%; width:272px; background:url(../images/biz/left.png) no-repeat top left;}
+.rightBg{ position:absolute; right:0; height:100%; width:262px; background:url(../images/biz/right.png) no-repeat top right;}
+.top{ padding:120px 0 15px 0;}.cursor{ cursor:pointer;}
+.fright{ float:right;}.fleft{ float:left;}
+.m_left{ margin-left:10px;}.m_right{ margin-right:10px;}
+.al_r{ text-align:right;}.al_l{ text-align:left;}
+.slogan{ background:url(../images/biz/slogan.png) no-repeat center; width:310px; height:59px;}
+.logo{ background:url(../images/logo_beta.png) no-repeat; width:159px; height:59px; margin-left:10px;}
+.window{ background:url(../images/biz/window.png) no-repeat center; min-height:585px; background-size:contain;}
+.window div.coming{ padding:10px 20px; background:url(../images/biz/comingsoon.png) no-repeat center; height:100%; width:100%; position:absolute;}

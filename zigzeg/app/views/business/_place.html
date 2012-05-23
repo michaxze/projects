@@ -1,0 +1,377 @@
+<div class="packageBox pad_top20 pad_bot20 full">
+<script>
+$(function() {
+		$('#clickNonIe').click(function(e) {
+      $('#galleryPop2 input').click();
+    });
+		$("#cname").blur(function() {
+      $.ajax({
+        url: "/registration/validate_cname?type=place&id=<%= current_user.place.id%>&name=" + $("#cname").val(),
+        type: "GET",
+        async: false,
+        success: function(data) {
+          if (data == "true") {
+            $("label[for=cname]").html("Company name already exist.");
+            $("label[for=cname]").show();
+          }
+        }
+      });    
+    })
+ 
+<% unless flash[:error].nil?
+     if flash[:error].include?('Company')
+%>
+      $("#cname").val("<%= params[:name] %>");
+      $("label[for=cname]").html("<%= flash[:error] %>");
+      $("label[for=cname]").show();
+<% 
+    end
+  end
+%>
+	var validator = $("#companyInfoFrm").validate({
+			invalidHandler: function() {
+					$('#errorHours').text('Fields in red are required.');
+  		},
+			submitHandler: function(form) {
+				 form.submit();
+				 $('.grayLoader').show();
+			} 
+	});
+	$('#normalHours,.oHours,.cbClose,.secondTime').click(function(e) { checkHours();});
+	function checkHours(){
+		if($("#normalHours").is(':checked')){
+			$('.time').addClass('required');
+				if($(".secondTime").is(':checked')){
+					$('.dayFromPm,.dayToPm ').addClass('required');
+					$('.timeApply').addClass('bBot');
+				}else{
+					$('.dayFromPm,.dayToPm ').removeClass('required');
+					$('.timeApply').removeClass('bBot');
+				}$('.cbClose').each(function(index, element) {
+						if($(this).is(':checked')){
+							$("."+$(this).val()+"Select").rules("remove", "required");
+							$("."+$(this).val()+"Select").removeClass('error');
+							var pClass = $(this).val();
+							$('.'+pClass+'Select').attr('disabled','true');
+						}
+				});
+		}else{
+			$('.time').removeClass('required');
+		}
+	}
+	checkHours();
+	$('#btnUploader').uploadify({
+			'uploader'  : '/javascripts/uploadify.swf',
+			'script'    : '/business/update_profile_image',	
+			'buttonText': 'SELECT FILE',
+			'fileExt'   : '*.jpg;*.gif;*.png',
+			'fileDesc'  : 'Image Files',
+			'auto'      : true,
+			'onComplete'  : function(event, ID, fileObj, response, data) {
+					$('#galleryPop').css('background-image', 'url("' + '../uploads/'+fileObj['name']+ '")');
+					$('#hidden_image_name').val(fileObj['name']);
+			}
+		});
+		$('.time').timepicker();
+    createUploader();
+
+    <% if @place.operation_hours == "normal" %>
+			$('.scheduleList').show();
+			
+			<% unless @place.operation_times.nil? %>
+			  <% if @place.operation_times[:times]['second_date'] == 'yes' %>
+			    $('.bHours .extra').css('display','block');
+			  <% end %>
+			  
+			  <% if @place.operation_times[:times]['mon_close'] == "mon" %>
+  	      $('.monSelect').attr("disabled", 'true');
+  			  $('.monSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['tue_close'] == "tue" %>
+  	      $('.tueSelect').attr("disabled", 'true');
+  			  $('.tueSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['wed_close'] == "wed" %>
+  	      $('.wedSelect').attr("disabled", 'true');
+  			  $('.wedSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['thu_close'] == "thu" %>
+  	      $('.thuSelect').attr("disabled", 'true');
+  			  $('.thuSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['fri_close'] == "fri" %>
+		      $('.friSelect').attr("disabled", 'true');
+				  $('.friSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['sat_close'] == "sat" %>
+		      $('.satSelect').attr("disabled", 'true');
+				  $('.satSelect').val('');
+			  <% end %>
+			  <% if @place.operation_times[:times]['sun_close'] == "sun" %>
+			    $('.sunSelect').attr("disabled", 'true');
+					$('.sunSelect').val('');			    
+			  <% end %>	  
+			<% end %>
+		<% end %>
+    
+});
+  function createUploader(){  
+	          var uploader = new qq.FileUploader({
+                element: document.getElementById('galleryPop2'),
+								allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'], 
+								onSubmit: function(id, fileName){$('.qq-upload-list').show();},
+								//this is use for additional paramater like the userid
+								params: {
+                authenticity_token: $("meta[name=csrf-token]").attr("content"),
+                user_id: <%= current_user.id %>,
+										id: '<%= @place.id %>',
+								},
+								debug: true, 
+                onProgress: function(id, fileName, loaded, total){
+                		$("#progress_bar").val(loaded);
+                },
+								onComplete: function(id, fileName, responseJSON){
+if (responseJSON.error != undefined){
+  $('.qq-upload-list').fadeOut().empty();
+}else{
+									$('#thumb2').attr("src",responseJSON.filename);
+<<<<<<< HEAD
+									$('.qq-upload-list').append('<li>Image uploaded</li>').fadeOut(300).empty();									
+=======
+									$('.qq-upload-list').append('<li>Image uploaded</li>').fadeOut(300).empty();
+}
+>>>>>>> 552fb8504cfe6060065c49840d42a8cdf2182145
+								},
+                action: '/business/upload_company_profile',
+                sizeLimit: 4194304,
+                multiple: false,
+                messages: {
+                  sizeError: "{file} is too large, maximum file size is 4MB."
+                }
+            });           
+        }
+</script>
+  <%= form_for @place, :url => update_place_business_path(:id => @place.id), :html => { :id => "companyInfoFrm", :method => :post, :multipart => true } do |f| %>
+    <input type="hidden" name="hidden_image_name" id="hidden_image_name">
+    <%= render("breadcrumbs") %>
+    
+    <div class="full_width borderBot"></div>
+    <div class="container_12 inputs pad_top">
+      <div class="grid_3 align_right pad_top7"><label>Company Name</label></div>
+      <div class="grid_9">
+        <input type="text" class="radius5 fancyinput required" id="cname" name="place[name]" value="<%= @place.name %>"><br>
+        <label for="cname" generated="false" class="error" ></label>
+      </div>
+
+      <div class="grid_3 align_right pad_top lhl"><label>Buzzword</label><br/>(optional)</div>
+      <div class="grid_9 pad_top">
+        <input type="text" class="radius5 fancyinput" id="buzzword" maxlength="140" name="place[buzzword]" value="<%= @place.buzzword rescue '' %>"><br>
+        <label for="cname" generated="false" class="error" ></label>
+      </div>
+      <div class="clearfix pad_bot"></div>
+
+
+      <div class="grid_3 align_right pad_top18"><label>About your Company</label></div>
+      <div class="grid_9 pad_top">
+        <textarea  class="radius5 fancyinput required cmsTextarea" id="aboutCompany" name="place[description]"><%= @place.description %></textarea><br>
+        <label for="aboutCompany" generated="false" class="error" ></label>
+        <!--<div class="countCharWrap"><span id="countChar">600</span> characters left</div>-->
+      </div>
+	  <!--<div class="prefix_3 grid_9">Click <a class="cursor blue underline">here</a> to view example</span></div>-->
+    </div> 
+    <div class="full_width borderBot"></div>
+    <div class="container_12 pad_bot pad_top">
+      <div class="grid_3 align_right pad_top lh1"><label>Profile Image</label><br />(optional)</div>
+      <div class="grid_3 autowidth ">
+        
+        <% unless @place.profile_image.nil? %>
+          <%= image_tag(@place.profile_image.image.url(:profile), :id => "thumb2",:class=>"radius5 borderGray") %>
+        <% else%>
+          <img id="thumb2" src="/images/building.png" class="radius5 borderGray " />
+        <% end %>
+          <div id="galleryPop2" >
+            <div id="progress_bar"></div>
+            <div id="imageArea" class="imageArea2 radius5"></div>        
+        	</div>
+          <div id="clickNonIe">&nbsp;</div>     
+      </div>
+      <div class="grid_3 pad_top">
+       <!-- <input type="file" name="profile_image" id="btnUploaderx" > -->
+        <p>* Please note that images larger than 4MB are not allowed.<br /><br /> * Only images in JPEG, PNG & GIF formats are allowed.</p>
+      </div>
+    </div>
+        <div class="full_width borderBot pad_top20"></div>
+         <div class="container_12 inputs pad_top20 pad_bot bHours">
+									  <div class="grid_3 align_right"><label>Operating Hours</label></div>
+                    <div class="prefix_3 grid_9"><input type="radio" name="hours" value="24" class="oHours required" <%= @place.operation_hours == '24' ? " checked" : "" rescue "" %>><span class="absolute">My Business operates 24 hours a day</span></div>
+
+                    <div class="prefix_3 grid_9"><input id="normalHours" type="radio" name="hours" value="normal" class="oHours" <%= @place.operation_hours == 'normal' ? " checked" : "" rescue "" %>><span class="absolute">My Business operates during normal hours</span><br />
+                    </div>
+
+                     <div class="scheduleList dispNone">
+                       <div class="prefix_4 grid_8 bold" id="errorHours"></div>
+                       <div class="prefix_3 grid_1">Mon</div>
+                       <div class="grid_8">
+                     		<input type="text" class="time monSelect dayFrom" id="monFromAm" name="times[monFrom]" value="<%= @place.operation_times[:times]['monFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+
+                     		<input type="text" class="time monSelect dayTo" id="monToAm" name="times[monTo]" value="<%= @place.operation_times[:times]['monTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[mon_close]" class="cbClose" value="mon" <%= @place.operation_times[:times]['mon_close'] == 'mon' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                      </div>
+                     <div class="grid_8 prefix_4 extra noBorder noPbot">
+                     		<input type="text" class="time dayFromPm monSelect " id="monFromPm" name="times[monFromPm]" value="<%= @place.operation_times[:times]['monFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time dayToPm monSelect" id="monToPm" name="times[monToPm]" value="<%= @place.operation_times[:times]['monToPm'] rescue '' %>">
+                      </div>
+                     <div class="grid_8 prefix_4 timeApply noPtop"><a class="cursor applyTime">Apply time to all</a></div>
+                     <div class="prefix_3 grid_1">Tue</div>
+                     <div class="grid_8">
+                     		<input type="text" class="time tueSelect dayFrom" name="times[tueFrom]" value="<%= @place.operation_times[:times]['tueFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+
+                     		<input type="text" class="time tueSelect dayTo" name="times[tueTo]" value="<%= @place.operation_times[:times]['tueTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[tue_close]" class="cbClose" value="tue" <%= @place.operation_times[:times]['tue_close'] == 'tue' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                     </div>
+                     <div class="grid_8 prefix_4 extra">
+                     		<input type="text" class="time tueSelect dayFromPm" name="times[tueFromPm]" value="<%= @place.operation_times[:times]['tueFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time tueSelect dayToPm" name="times[tueToPm]" value="<%= @place.operation_times[:times]['tueToPm'] rescue '' %>">
+                     </div>
+                     <div class="prefix_3 grid_1">Wed</div>
+                     <div class="grid_8">
+                     		<input type="text" class="time wedSelect dayFrom" name="times[wedFrom]" value="<%= @place.operation_times[:times]['wedFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+
+                     		<input type="text" class="time wedSelect dayTo" name="times[wedTo]" value="<%= @place.operation_times[:times]['wedTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[wed_close]" class="cbClose" value="wed" <%= @place.operation_times[:times]['wed_close'] == 'wed' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+                     </div>
+                     <div class="grid_8 prefix_4 extra">
+                     		<input type="text" class="time wedSelect dayFromPm" name="times[wedFromPm]" value="<%= @place.operation_times[:times]['wedFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time wedSelect dayToPm" name="times[wedToPm]" value="<%= @place.operation_times[:times]['wedToPm'] rescue '' %>">
+                     </div>
+                     <div class="prefix_3 grid_1">Thu</div>
+                     <div class="grid_8">
+                     		<input type="text" class="time thuSelect dayFrom" name="times[thuFrom]" value="<%= @place.operation_times[:times]['thuFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+
+                     		<input type="text" class="time thuSelect dayTo" name="times[thuTo]" value="<%= @place.operation_times[:times]['thuTo'] rescue '' %>">
+                    		<input type="checkbox" name="times[thu_close]" class="cbClose" value="thu" <%= @place.operation_times[:times]['thu_close'] == 'thu' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+
+
+                     </div>
+                     <div class="grid_8 prefix_4 extra">
+                     		<input type="text" class="time thuSelect dayFromPm" name="times[thuFromPm]" value="<%= @place.operation_times[:times]['thuFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time thuSelect dayToPm" name="times[thuToPm]" value="<%= @place.operation_times[:times]['thuToPm'] rescue '' %>">
+                     </div>
+                     <div class="prefix_3 grid_1">Fri</div>
+                     <div class="grid_8">
+                     		<input type="text" class="time friSelect dayFrom" name="times[friFrom]" value="<%= @place.operation_times[:times]['friFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+
+                     		<input type="text" class="time friSelect dayTo" name="times[friTo]" value="<%= @place.operation_times[:times]['friTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[fri_close]" class="cbClose" value="fri" <%= @place.operation_times[:times]['fri_close'] == 'fri' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+
+
+                     </div>
+                     <div class="grid_8 prefix_4 extra">
+                     		<input type="text" class="time friSelect dayFromPm" name="times[friFromPm]" value="<%= @place.operation_times[:times]['friFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time friSelect dayToPm" name="times[friToPm]" value="<%= @place.operation_times[:times]['friToPm'] rescue '' %>">
+                     </div>
+                     <div class="prefix_3 grid_1">Sat</div>
+                     <div class="grid_8">
+                     		<input type="text" class="time satSelect dayFrom" name="times[satFrom]" value="<%= @place.operation_times[:times]['satFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+
+                     		<input type="text" class="time satSelect dayTo" name="times[satTo]" value="<%= @place.operation_times[:times]['satTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[sat_close]" class="cbClose" value="sat" <%= @place.operation_times[:times]['sat_close'] == 'sat' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+
+                     </div>
+                     <div class="grid_8 prefix_4 extra">
+                     		<input type="text" class="time satSelect dayFromPm" name="times[satFromPm]" value="<%= @place.operation_times[:times]['satFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time satSelect dayToPm" name="times[satToPm]" value="<%= @place.operation_times[:times]['satToPm'] rescue '' %>">
+                    </div>
+                     <div class="prefix_3 grid_1">Sun</div>
+                		 <div class="grid_8">
+                     		<input type="text" class="time sunSelect dayFrom" name="times[sunFrom]" value="<%= @place.operation_times[:times]['sunFrom'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+
+                     		<input type="text" class="time sunSelect dayTo" name="times[sunTo]" value="<%= @place.operation_times[:times]['sunTo'] rescue '' %>">
+                     		<input type="checkbox" name="times[sun_close]" class="cbClose" value="sun" <%= @place.operation_times[:times]['sun_close'] == 'sun' ? "checked" : '' rescue '' %>><span class="cl">closed</span>
+
+
+                     </div>
+                     <div class="grid_8 prefix_4 extra">
+                     		<input type="text" class="time sunSelect dayFromPm" name="times[sunFromPm]" value="<%= @place.operation_times[:times]['sunFromPm'] rescue '' %>">
+                     		<span class="pad_side15">to</span>
+                     		<input type="text" class="time sunSelect dayToPm" name="times[sunToPm]" value="<%= @place.operation_times[:times]['sunToPm'] rescue '' %>">
+                     </div>
+                    
+                    	<div class="prefix_3 grid_9 margin_left_20 pad_top"><input type="checkbox" name="times[second_date]" class="margin_left_20 secondTime" value="yes" <%= @place.operation_times[:times]['second_date'] == 'yes' ? "checked" : "" rescue "" %>>
+                      <span class="absolute margin_left_10">Allow me to enter 2 sets of time for a day<br>(Example: 8:30am - 11:30am & 2:00pm - 5:30pm)</span>
+                      <div class="clearfix pad_bot"></div>
+                      </div>
+                      <div class="clearfix pad_bot"></div>
+                      </div>
+
+                    <div class="prefix_3 grid_9"><input type="radio" name="hours" value="notspecified" class="oHours required" <%= @place.operation_hours == 'notspecified' ? " checked" : "" rescue "" %>><span class="absolute">Not specified</span>
+                     <br/><label for="hours" generated="false" class="error"></label>
+                    </div>
+
+                      <!-- end of container hours -->
+                </div> 
+                	        	
+    <div class="full_width borderBot pad_top20"></div>
+   
+    <div class="container_12 inputs pad_top20">
+       <div class="prefix_3 grid_9 ">
+        <input type="submit" name="submit_save" class="radius5 userButton white cursor width30" id="userSubmitBtnx" value="Save and Next">
+       	<input type="button" name="submit_preview" class="radius5 bgGray margin_left_10 white hoverBlack cursor width30" id="userSubmitBtn" value="View My Place" onclick="window.open('<%= form_url(@place) %>','_new')">
+        <input type="button" name="submit_preview" class="radius5 bgGray margin_left_10 white hoverBlack cursor width20" id="userSubmitBtn" value="Cancel" onclick="location.replace('/business')">
+       </div>
+
+    </div>
+  <% end %>
+</div>
+<script>
+    $("#place_category_id").change(function() {
+      var cat_id = $("#place_category_id").val();
+      $("#loader_category").show();
+      $.ajax({
+        type: "GET",
+        cache: false,
+        url: "/welcome/load_select_subcategories?cat_id=" + cat_id,
+        data: $(this).serializeArray(),
+        success: function(data) {
+          $("#subcategory_id").empty();
+          $("#subcategory_id").append(data).fadeIn();
+          $("#loader_category").hide();
+        }
+      });
+    });
+  $("#tagsVal").keyup(function(){
+    $("#loader_tags").show();  
+    tags = $("#tagsVal").val();
+    cat = $("#place_category_id").val();
+    subcat = $("#subcategory_id").val();
+
+    $.ajax({
+      type: "GET",
+      cache: false,
+      url: "/business/tag_suggestions?tag=" + tags + "&cat=" + cat + "&scat=" + subcat + "&type=place",
+      data: $(this).serializeArray(),
+      success: function(data) {
+				if(data!='')
+					$('#tagContainer').show();
+				else
+					$('#tagContainer').hide();
+		  	$("#tagClick").empty().append(data);
+        $("#loader_tags").hide();
+      }      
+    });
+  });
+  
+</script>

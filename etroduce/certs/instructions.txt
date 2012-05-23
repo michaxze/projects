@@ -1,0 +1,2 @@
+#createing a paypal certs/key
+openssl genrsa -out app_key.pem 1024

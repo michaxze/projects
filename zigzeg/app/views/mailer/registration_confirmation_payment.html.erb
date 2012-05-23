@@ -1,0 +1,22 @@
+<p><span class="bold">Hi </span><b style="color:#000000;"><%= @user.name_or_email %></b>,<br><br>
+
+Thank you for registering an account at Zigzeg.com<br><br>
+
+We hope you will find the services and features that Zigzeg’s ‘Total Urban Awareness System’ provides useful. <br><br>
+
+<br><br>
+
+<strong>You provided us the following registration information.</strong><br>
+<ul class="noList">
+<li><label>Company name:</label> <strong><%= @user.advert_company_name rescue ''%></strong></li>
+<li><label>Registered company name:</label> <strong><%= @user.advert_company_name_registered rescue ''%></strong></li>
+<li><label>Company registration number:</label> <strong><%= @user.advert_company_reg_number rescue ''%></strong></li>
+<li><label>Email:</label>	<strong><%= @to%></strong></li>
+</ul><br>
+Please click on the link below to verify your registration. Please do not reply to this email as this is an automated email message. To contact us, please use the <a  style="font-weight:bold; color:#00C6FF" hreef="<%= Yetting.domain%>/contacts">Contact Us form</a>.<br><br><br></p>
+<b>
+Click on the link below to verify your account.<br>
+<%= link_to @activation_link, @activation_link %>
+<br><br><br></b>
+<p><strong>A note on our emails</strong> - We use email to contact you about your account, site updates and newsletters. Please add <strong>no-reply@zigzeg.com</strong> to your safe message list so that emails from us will not be sent to your spam message folder, thank you!<br><br><br>
+</p>

@@ -1,0 +1,103 @@
+<div id="message_window">
+  <div style="width: 630px">
+    <h1 style="width: 100%; background-color: #069; line-height: 2em; color: #FFF; padding-left: 5px; font-size: 14px"> Contact us</h1>
+
+    <div style="padding: 20px; text-align: justify; font-size: 12px">
+      <p style="padding-bottom: 8px">If you have questions and inquiries, please fill out the form below and press send button. We will be happy to attend to your concern. </p>
+    
+      <% form_for :contact, :html => { :id => "contactus_form"} do |f|%>
+        <div class="field_line">
+          <div class="field_label">
+            Your name:
+            <span class="red">*</span>
+          </div>
+          <div class="field_box">
+            <%= text_field_tag "contact_name", nil, :style => "width: 350px"%>
+          </div>
+        </div>
+        <div class="clr"></div>
+
+        <div class="field_line">
+          <div class="field_label">
+            Your email address:
+            <span class="red">*</span>
+          </div>
+          <div class="field_box">
+            <%= text_field_tag "contact_email", nil, :style => "width: 350px"%>
+          </div>
+        </div>
+        <div class="clr"></div>
+
+        <div class="field_line">
+          <div class="field_label">
+            Your contact number: 
+          </div>
+          <div class="field_box">
+            <%= text_field_tag "contact_number", nil, :style => "width: 350px"%>
+          </div>
+        </div>
+        <div class="clr"></div>
+
+        <div class="field_line">
+          <div class="field_label">
+            Message: 
+            <span class="red">*</span>
+          </div>
+          <div class="field_box">
+            <%= text_area_tag "message", nil, :style => "width: 350px"%>
+          </div>
+        </div>
+        <div class="clr"></div>
+
+        <div class="field_line">
+          <div class="field_label">
+          </div>
+          <div class="field_box">
+            <%= submit_tag "Send" %>
+          </div>
+        </div>
+        <div class="clr"></div>
+
+      <% end%>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  $("#contactus_form").bind('submit', function() {
+
+    if ($("#contact_name").val().length < 1){
+      alert('Please enter your name.');
+      $("#contact_name").focus();
+      return false;
+    }else if($("#contact_email").val().length < 1){
+      alert('Please enter your email address');
+      $("#contact_email").focus();
+      return false;
+    }else if ($("#message").val().length < 1){
+      alert('Please enter a message');
+      $("#message").focus();
+      return false;
+    }
+
+    $.fancybox.showActivity();    
+    $.ajax({
+      type  : "POST",
+      cache : false,
+      url  : "/home/contactus",
+      data  : $(this).serializeArray(),
+      success: function(data) {
+        $.fancybox.hideActivity();
+        if (data == 'success') {
+          $.fancybox("Message sent successfully.");
+        }else{
+          alert(data);
+        }
+      }
+    });
+
+    return false;
+  }); 
+
+</script>

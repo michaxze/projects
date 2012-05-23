@@ -1,0 +1,53 @@
+<div id="mp2">
+  <div id="right_column" style="padding: 10px">
+    <h1>Your Requests</h1>
+      <div id="opps_listing">
+        <ul>
+          <% @invites.each do |invite| %>
+          <li id="invitation_li_id_<%=invite.id%>"><%= render( :partial => "contacts/row_invite", :locals => { :invite => invite } ) %></li>
+          <% end %>
+        </ul>
+      </div>
+  </div>
+
+</div>
+
+<script>
+
+  function cancel_invitation(id) {
+    var ans = confirm("Are you sure you want to cancel the invitation?");
+    if (!ans){
+      return false;
+    }
+    
+    $.fancybox.showActivity();
+    $.ajax({
+      type: 'GET',
+      url: "/contacts/cancel_invitation",
+      cache : false,
+      data: "id=" + id,
+      success: function(data) {
+        $.fancybox.hideActivity();
+        $("#invitation_li_id_" + id).fadeOut(function(){
+          $(this).remove();
+        })
+      }
+    });
+  }
+
+  function resend_invitation(id) {
+    $.fancybox.showActivity();
+    $.ajax({
+      type: 'GET',
+      url: "/contacts/resend_invitation",
+      cache : false,
+      data: "id=" + id,
+      success: function(data) {
+        $.fancybox(data);
+      }
+    });
+
+    
+  }
+
+</script>

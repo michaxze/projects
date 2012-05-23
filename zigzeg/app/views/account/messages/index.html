@@ -1,0 +1,94 @@
+<div class="messageBox clearfix">
+  <h6 class="bold">MESSAGE BOX &nbsp;<span class="normal">
+  <% if @unread_messages.length > 0 %>
+	(<%= @unread_messages.length %> new message<% if @unread_messages.length > 1 %>s<% end %>)
+	<% end %></span></h6>
+  <div class="container_12">
+    <div class="header">
+    <div class="grid_7">Subject</div>
+    <div class="grid_3 pad_side">From</div>
+    <div class="grid_2 width12">&nbsp;&nbsp;Date</div>
+    <div class=""><img src="/images/del.png" title="delete"/></div>
+  </div>
+  <div class="body" style="min-height:30px">
+  <% @msg_sorted.each do |m| %>
+    <% msg = m.threads.first %>
+    <% msg_first = m.threads.last %>
+  <% span = "" %>
+    <div class="row <%= msg.is_viewed? ? "" : "new" %> message_row_<%= msg.id%>">
+      <div class="grid_7">
+        <% unless msg.is_viewed? %>
+          <% span = content_tag(:span, "NEW!", :class => "new", :style => "padding-right: 5px") %>
+        <% end %>
+        <%= link_to raw("#{span}#{truncate(msg.subject, :length => 255, :omission => '...')}"), account_message_path(msg), :class => ((msg.is_viewed?) ? "getMessage" : "getMessage bold" ), :id => msg.id %>
+      </div>
+      <div class="grid_3 pad_side">
+<% if msg_first.msgtype == "inbox" %>
+<a href="<%= msg_first.sender.place.profile_image.image.url(:super_thumb) rescue get_missing_image(msg_first.sender.place) %>" data-id="<b>Email</b><%= msg_first.sender.email %><b>Contact</b><%= msg_first.sender.place.telephone_numbers rescue '' %>" rel="<%= msg_first.sender.advert_company_name rescue ''%>" name="profInfo" class="cursor">
+<%= truncate(msg_first.sender.name_or_email, :length => 15, :omission => '...') %>
+</a>
+<% else %>
+<a href="<%= msg_first.receiver.place.profile_image.image.url(:super_thumb) rescue get_missing_image(msg_first.receiver.place) %>" data-id="<b>Email</b><%= msg_first.receiver.email %><b>Contact</b><%= msg_first.receiver.place.telephone_numbers rescue '' %>" rel="<%= msg_first.receiver.advert_company_name rescue ''%>" name="profInfo" class="cursor" onclick="window.open('<%= form_url(msg_first.receiver.place) %>')">
+<%= truncate(msg_first.receiver.name_or_email, :length => 15, :omission => '...') %>
+</a>
+<% end %>
+      </div>
+      <div class="grid_2 width12">&nbsp;&nbsp;<%= formatted_date(msg.created_at, 'ddmmyyyy') %></div>
+      <div class=""><input type="checkbox" name="checkZig" value="<%= msg.id %>" /></div>
+      </div>
+  <% end %>
+  
+   <% if @messages.empty? %>
+     <div class="row center">
+       Your message box is currently empty.
+      </div>
+   <% end %>
+ </div><!-- end body -->
+  
+  <% unless @messages.empty? %>
+  <div class="footer">
+    <div class="grid_7 no_margin">
+      <% if @messages.length > 15 %>
+      <div class="my_pagination pad_top pad_left">
+      
+        <div class="pagination usr">
+        	<% 
+           curr_page = params[:page] || 1
+           next_page = curr_page.to_i+1
+           prev_page = curr_page.to_i-1
+           i = 1
+           total_pages =  @messages.length/15
+           total_pages += 1 if ((@messages.length % 15) > 0)
+          %>
+          <% if curr_page.to_i == 1 %>
+          <a class="previous_page disabled"></a>
+          <% else %>
+          <a href="/account/messages?page=<%= prev_page %>" rel="next" class="previous_page"></a>
+          <% end %>
+          <% while i <= total_pages %>
+             <% if i == curr_page.to_i %>
+             <em class="current"><%= i%></em>
+            <% else %>
+              <a class="" href="/account/messages?page=<%= i%>"><%= i %></a>
+            <% end %>
+          <% 
+          i += 1 
+          end %>
+          <% if curr_page.to_i == total_pages %>
+          <a class="next_page disabled"></a>
+          <% else %>
+          <a href="/account/messages?page=<%= next_page %>" rel="next" class="next_page"></a>
+          <% end %>
+           
+        </div>
+        </div>
+      <% end %>
+
+    </div>
+    <div class="grid_4 align_right fright">
+      <a class="checkButton cursor removeSelected" href="/account/messages/remove_messages">Delete</a></div>
+    </div>
+  </div>
+  <% end %> 
+
+</div>

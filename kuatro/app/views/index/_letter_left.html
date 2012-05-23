@@ -1,0 +1,16 @@
+<div class="row" style="margin-bottom: 50px; margin-left: 0px;">
+  <div class="container">
+    
+    <div style="width:380px;  float:left">
+      <img src="<%= letter.limage.url(:medium) %>" style="width:360px; height: auto">
+    </div>
+
+    <div style="width: 395px;  float:left">
+      <p><%= raw letter.contents.gsub("\n", "<br/>") %>
+      </p>
+      <h4 class="pull-right avenir" style="font-size: 1.4em;color: #367588; text-align: right; font-style: italic; " ><%= letter.author %></h4>
+    </div>
+
+    
+  </div>
+</div>

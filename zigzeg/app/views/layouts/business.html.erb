@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>ZIGZEG <%= "- #{@page_title}" unless @page_title.nil? %></title>
+<meta name="robots" content="noindex">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+<!-- favicon -->
+<link rel="shortcut icon" href="/images/favicon.ico" />
+<%= stylesheet_link_tag "style" %>
+<%= stylesheet_link_tag "user" %>
+<%= stylesheet_link_tag "paging" %>
+<%= stylesheet_link_tag "jquery-ui" %>
+<%= stylesheet_link_tag "/javascripts/themes/base/jquery.ui.tabs.css" %>
+<%= stylesheet_link_tag "/javascripts/fancybox/jquery.fancybox-1.3.4.css" %>  
+<%= stylesheet_link_tag "/javascripts/themes/ui-lightness/jquery.ui.theme.css" %>
+<%= stylesheet_link_tag "/javascripts/themes/ui-lightness/jquery.ui.base.css" %>
+<%= javascript_include_tag "jquery-1.6.2" %>
+<%= javascript_include_tag "jquery.autocomplete.pack" %>
+<%= javascript_include_tag "ui/jquery.ui.core.js" %>
+<%= javascript_include_tag "ui/jquery.ui.widget.js" %>
+<%= javascript_include_tag "ui/jquery.ui.mouse.js" %>
+<%= javascript_include_tag "ui/jquery.ui.tabs.js" %>
+<%= javascript_include_tag "jquery.validate" %>
+<%= javascript_include_tag "ui/jquery.ui.datepicker.js" %>
+<%= javascript_include_tag "ui/jquery.ui.time.js" %>
+<%= javascript_include_tag "advert" %>
+<%= javascript_include_tag "fileuploader" %>
+<%= javascript_include_tag "jquery.uploadify.v2.1.4.min" %>
+<%= javascript_include_tag "swfobject" %>
+<% if @controller.controller_name=='business'  %>
+<%#= javascript_include_tag "chart/js/highcharts" %>
+<%#= javascript_include_tag "chart/modules/exporting" %>
+<% end %>            	
+<%= javascript_include_tag "fancybox/jquery.fancybox-1.3.4.js" %>
+<%= javascript_include_tag 'rails' %>
+<%= csrf_meta_tag %>
+
+<script type="text/javascript"
+src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDJT0nwhhhJuvHJC8yN0DqLcc5GNAlXRYs&sensor=true"></script>
+
+  <!--[if IE]>
+   <%= javascript_include_tag "selectivizr-min.js" %>
+  <![endif]-->    
+</head>
+<body >
+<noscript><div class="ns">Your browser does not support JavaScript!</div></noscript> 
+<div id="slChk" class="absolute dispNone">&nbsp;</div>
+<div id="full_container" class="<%= set_business_class(current_user) %>">
+<div class="loginBar BigblkBg pgTop">
+ 		<div class="fcontainer_12" id="topArea">
+    		<%= render "/globals/top_biz" %>
+		</div>
+</div>	
+<div class="userheader no_pad" style=""></div>
+ 
+   </script>
+
+<div class="stepsWrapper advertcms">
+  <div class="fcontainer_12">
+    <div class="topMessage full container_12">
+      <div class="grid_7 no_margin pad_bot20">
+        <h2 class="gray bold">WELCOME, <a href="<%= form_url(current_user.place) %>" target="_blank" class="cursor noDecor"
+title="<%= current_user.name_or_email %>"><%= truncate(current_user.name_or_email, :length => 40, :omission => "...") %></a></h2>
+        <span><b>Not <%= truncate(current_user.name_or_email, :length => 50, :omission => "...") %>?</b> Click <a class="cursor
+blue underline" href="/signout?ret_url=<%= login_url(:ref_url => "/account") %>">here</a> to sign in as a different user</span>
+      </div>
+			<div class="grid_5 packageHeader">
+			<div class="fright relative index2">
+			  <% unless current_user.latest_subscription.nil? %>
+          <% if current_user.latest_subscription.package_code.include?("basic")%>
+ 			     <div class="radius15 upgradeP dispNone">
+        		<div class="clearfix pad_top20"></div>
+            <div class="bgPackage renew"><a class="cursor"  href="../renew.html"><span class="bold">RENEW</span><br><small>YOUR
+BASIC ACCOUNT</small></a></div>
+            <h3 class="bold center white">or UPGRADE to a</h3>
+            <div class="bgPackage upgrade"><a class="cursor" href="../renew.html"><span
+class="bold">PREMIUM</span><br><small>ACCOUNT</small></a></div>
+            <p class="bold white pad_bot" align="center">BEFORE your account <br>expires & get 15% <br>off normal price<br><br>
+Your basic account <br>expires in <br>7 DAYS!</p>
+						<div class="borderLine pad_bot"></div>
+            <div align="center">
+            	<a href="/signup?signup=advert" class="bold white compareTxt">compare accounts</a>
+            </div>
+        </div>
+             	<a class="userButton cursor fright upgradePack"><div><span class="bold">UPGRADE</span><br><small>TO
+PREMIUM</small></div></a>
+              <a href="/business/account" class="userButton white cursor fright currentPack" ><div><span
+class="bold">BASIC</span><br><small>PACKAGE</small></div></a>
+					<% elsif current_user.latest_subscription.package_code.include?("premium")%>
+       			 <div class="radius15 upgradeP dispNone">
+        		<p class="pad">Our customer care officer will give a call to
+<b>Melissa Lim</b> as per saved settings. <br><br>
+Please edit the information below if you would 
+like us to contact another person, thank you. </p>
+            
+            <div class="container_12">
+            <form class="callFrm">
+            		<div class="grid_12 bold"><p>Name of person to contact : </p></div>
+            		<div class="grid_12 pad_bot pad_top5"><input type="text" class="radius5 full"></div>
+                <div class="grid_12 bold "><p>Department : </p></div>
+            		<div class="grid_12 pad_bot pad_top5"><input type="text" class="radius5 full"></div>
+                <div class="grid_8 bold"><p>Contact Number : </p></div><div class="grid_4 bold"><p>Extension</p></div>
+            		<div class="grid_8 pad_top5"><input type="text" class="radius5 partial"></div>
+                <div class="grid_4 pad_top5"><input type="text" class="radius5 partial"></div>
+                <div class="grid_12 pad_top20"><input type="submit" name="send" value="Send request" class="callSend"></div>
+             </form>   
+            </div>
+            </div>
+        			<a class="userButton cursor fright upgradePack"><div><span class="bold">GET US TO CALL
+YOU</span><br><small>YOUR CCO: JENNIFER SIMMONS</small></div></a>
+              <a href="/business/account" class="userButton white cursor fright currentPack"><div><span
+class="bold">PREMIUM</span><br><small>ACCOUNT</small></div></a>
+        <% else%>
+          <!--<div class="radius15 upgradeP dispNone">
+        		<h3 class="bold center white">UPGRADE to a</h3>
+            <div class="bgPackage renew basic"><a class="cursor" href="../renew.html"><span
+class="bold">BASIC</span><br><small>ACCOUNT</small></a></div>
+            <div class="clearfix pad_top"></div>
+            <div class="bgPackage upgrade"><a class="cursor"  href="../renew.html"><span
+class="bold">PREMIUM</span><br><small>ACCOUNT</small></a></div>
+           	<div class="clearfix pad_top20"></div>
+            <div class="borderLine pad_bot"></div>
+            <div align="center">
+            	<a href="/signup?signup=advert" class="bold white compareTxt">compare accounts</a>
+            </div>
+        </div>
+             <a class="userButton cursor fright upgradePack"><div><span class="bold">UPGRADE</span><br><small>TO
+BASIC COMIN</small></div></a>
+             <a href="/business/account" class="userButton white cursor fright currentPack"><div><span
+class="bold">FREE</span><br><small>ACCOUNT</small></div></a>-->
+
+          <div class="radius15 upgradeP dispNone">
+        		<h3 class="bold center white pad_top">Currently not available</h3>
+        </div>
+             <a class="userButton cursor fright upgradePack"><div><span class="bold">UPGRADE</span><br><small>COMING SOON</small></div></a>
+             <a href="/business/account" class="userButton white cursor fright currentPack"><div><span
+class="bold">FREE</span><br><small>ACCOUNT</small></div></a>
+
+
+        <% end %>
+        <% end%>
+				</div>
+      </div>
+      <div class="full_width clearfix"><div class="pad_top30 borderBot fleft"></div></div>
+      
+      <div id="notice_or_error">
+        <%= render :partial => "globals/notice_or_error" %>
+      </div>
+
+      
+    </div>
+  </div>  
+</div>
+
+
+<!--start page_wrap-->
+<div id="page_wrap" class="fcontainer_12 clearfix top advertcms">
+    
+    <!--start content-->
+    <div id="page_wrap" class="fcontainer_12 clearfix">
+ 
+           <div class="leftSidebar">
+            <ul class="menu">
+            <li><a href="<%= business_path %>" class="<%= (action_name == 'show' && controller_name == 'business') ? "selected" :
+'' %>">Overview</a></li>
+            <li><a href="<%= business_messages_path%>" class="<%= (controller_name == 'messages') ? "selected" : '' %>">Message
+Box</a></li>
+            <li><a href="<%= myplace_business_path %>" class="<%= (action_name == 'myplace') ? "selected" : '' %>">My
+Place</a></li>
+            <li><a href="<%= myoffers_business_path %>" class="<%= (action_name == 'myoffers' ||
+['offers'].include?(controller_name)) ? "selected" : '' %>">My Offers</a></li>
+            <% if !current_user.is_freeaccount?%>
+            <li><a href="<%= myevents_business_path %>" class="<%= (action_name == 'myevents' ||
+['events'].include?(controller_name)) ? "selected" : '' %>">My Events</a></li>
+            <% end %>
+            <li><a href="<%= ziglist_business_path %>" class="<%= (action_name == 'ziglist') ? "selected" : '' %>">My
+Ziglist</a></li>
+            <li><a href="<%= account_business_path %>" class="<%= (action_name == 'account') ? "selected" : '' %>">My
+Account</a></li>
+            <li><a href="<%= settings_business_path %>" class="<%= (action_name == 'settings') ? "selected" : '' %>">Profile &
+Settings</a></li>
+            </ul>
+            </div>
+
+            <!--  start main container -->
+            <div class="mainContainer advertcmsBox">
+               <div class="simpleBox clearfix">
+               <%= yield %>
+               </div>
+            </div><!-- end main container -->
+
+    </div><!--end content-->
+   <div class="clear pad_bot"></div>
+</div>
+<!--end page_wrap-->
+<div class="clearfix pad_top30"></div>
+  <%= render "/globals/footer" %>
+</div>
+
+
+</div>
+<!--end FULL CONTAINER ID -->
+
+  <div id="boxes">
+  <%= render "/globals/modal_settings" %>
+  <%= render "/globals/modal_updates" %>	
+	<div id="zigHelpPop" class="window comparison">
+	<div class="arrowUpcms"></div>
+	<div class="lgray">
+              <h6 class="white">My Ziglist</h6>
+              <p>‘My Ziglist’ allows you to keep track of your favourite Places, Offers & Events. It allows you to get automatic
+updates and notifications from your favourite places, offers and events.<br><br>
+To add a place, offer or event to your ‘Ziglist’, just click on the ‘Zig this’ button present in all Place, Offer or
+Event pages, the page will then be added into your ziglist.</p>
+              </div>
+   
+
+  </div>
+	<div id="cmpDialog" class="window comparison" >
+       				<div class="lgray"><p class="helpContent"></p></div>
+             <div class="arrowDown"></div>     
+        </div>
+	<div id="imgRec" class="window comparison" >
+       				<div class="lgray imgRec"><p class="helpContent"></p></div>
+             <div class="arrowDown"></div>     
+  </div>
+	<div id="cmpSocInteg" class="window comparison" >
+       				<div class="lgray">
+              <h6 class="white">Twitter &amp; Facebook Integration</h6>
+             	<p align="justify">Your Zigzeg for Business account can be synchronized with your company’s Twitter and
+Facebook accounts.</p>
+              <p align="justify">All your Zigzeg Offers, Zigzeg Events and Zigzeg Shout postings will be appear on your
+Facebook &amp; Twitter accounts.</p>
+							<p align="justify">Save time, energy and maximise your exposure by having your postings
+appear on Twitter, Facebook &amp; Zigzeg with just one
+click of your mouse!</p>
+              </div>
+             <div class="arrowLeft"></div>     
+        </div>
+	<div class="window comparison" id="cmpBizInfo">
+       				<div class="lgray">
+              <h6 class="white">Offers & Events posting limit</h6>
+              <p>
+							<% if current_user.is_freeaccount?%>
+							A Zigzeg for Business Free account allows the posting 3 offers every year (based on your account creation date).<br /><br />The number in white on the left shows your account’s remaining post count.<br /><br />A Basic account allows more Offers & Events listings while a Premium account allows unlimited Offers & Events postings.
+							<% else %>
+							A Zigzeg for Business Basic account allows a combined posting limit of 60 events & offers postings for the
+duration of the account’s contract.<br><br>
+A combined posting limit of 60 posts means you can post 20 events & 40 offers or 10 events & 50 offers, so on and so forth. The
+total combined posting adds up to a limit of 60 postings.<br><br>
+The number in white on the left shows your account’s remaining post count.<br><br> 
+A Premium account allows unlimited Offers and Events postings.
+							<% end %>
+</p>
+              </div>
+             <div class="arrowLeft"></div>     
+        </div>
+			<div class="window comparison" id="galleryInfo">
+       				<div class="lgray">
+              <h6 class="white">Gallery upload limit</h6>
+              <p>ZIGZEG for Business 
+							<% if current_user.is_freeaccount?%>
+							 Free
+							<% else %>
+							Basic
+							<% end %> account allows you to upload a maximum of <%= current_user.recent_package_subscribed.allowed_images rescue "5" %> images to your Image Gallery.<br><br>
+				A <% if current_user.is_freeaccount?%> Basic or Premium <% else %> Premium <% end %> account allows the upload of more images.</p>
+              </div>
+             <div class="arrowLeft"></div>     
+      </div>
+				<div id="howGetOffer" class="window comparison">
+       				<div class="lgray">
+              <h6 class="white">How to get this offer </h6>
+              <p>Tell people how to get your offer. It can be something as simple as ‘all how comes to the store before the offer ends will be able to get the offer” or you can be creative and fun, like “To get this incredible offer, you need to do…” or “Speak this phrase to any of our Sales people to get the offer” for example. Whether you want it to be simple or fun, it’s up to you!</p>
+              </div>
+             <div class="arrowTop"></div>    
+        </div>
+				<div id="eventPricingH" class="window comparison">
+       				<div class="lgray">
+              <h6 class="white">Price </h6>
+              <p>This is where you inform people about the price of your event. Let’s say you have 4 ticket types: $25, $50, $75 & $100. You input ‘25’ & ‘100’ into the left and right text fields respectively. If your event has only 1 ticket type costing $50, then input ‘50’ into both text fields.</p>
+              </div>
+             <div class="arrowDown"></div>    
+        </div>		
+			<div id="galDialog" class="window comparison">
+       				<div class="contents"><h5 class="lgray">&nbsp;</h5>
+                  <p>&nbsp;</p></div>
+             <div class="arrowDown"></div>     
+        </div>
+				<div id="profInfo" class="window comparison" style="width:250px;">
+       				<div class="contents container_12 full">
+									<div class="imgBg fleft">&nbsp;</div>
+									<div class="grid_8 fleft">
+											<div class="name">&nbsp;</div>
+											<div class="detail">&nbsp;</div>
+											
+									</div>
+									
+							</div>
+             <div class="arrowLeft"></div>     
+        </div>		
+ 
+</div> 
+ <div id="mask"></div>
+<!--Load Scripts-->
+<img src="/images/grayloader.gif" width="1" height="1" class="opacity0">
+<%= javascript_include_tag "#{Yetting.main_domain}:9292/faye.js" %>
+<%= javascript_include_tag 'application' %>
+
+<%= render "/globals/analytics" %>
+</body>
+</html>

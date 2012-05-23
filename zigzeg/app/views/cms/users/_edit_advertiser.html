@@ -1,0 +1,58 @@
+<%= form_for @user, :url => cms_user_path(@user) do |f| %>
+<table style="width: 750px">
+  <tr bgcolor="#FF5A00">
+    <td> Username </td>
+    <td style="color:white"> <%= @user.username %></td>
+  </tr>
+  <tr>
+    <td> Firstname </td>
+    <td> <%= f.text_field :firstname %> </td>
+  </tr>
+  <tr>
+    <td> Lastname </td>
+    <td> <%= f.text_field :lastname %> </td>
+  </tr>
+  <tr>
+    <td> Middle name </td>
+    <td> <%= f.text_field :middlename %> </td>
+  </tr>
+  <tr>
+    <td> Gender </td>
+    <td> <%= f.text_field :gender %> </td>
+  </tr>
+  <tr>
+    <td> DOB </td>
+    <td> <%= f.text_field :dob %> </td>
+  </tr>
+  <tr>
+    <td> Religion </td>
+    <td> <%= f.text_field :religion %> </td>
+  </tr>
+  <tr>
+    <td> Race </td>
+    <td> <%= f.text_field :race %> </td>
+  </tr>
+  <tr>
+    <td> Nationality </td>
+    <td> <%= f.text_field :nationality %> </td>
+  </tr>
+  <tr>
+    <td> Company name </td>
+    <td> <%= f.text_field :advert_company_name %> </td>
+  </tr>
+  <tr>
+    <td> Company name registered: </td>
+    <td> <%= f.text_field :advert_company_name_registered %> </td>
+  </tr>
+  <tr>
+    <td> Company registration number </td>
+    <td> <%= f.text_field :advert_company_reg_number %> </td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td> <%= submit_tag "Submit" %> or <%= link_to "Cancel", cms_users_path(:tab => params[:tab]) %></td>
+  </tr>
+</table>
+<% end %>
+
+<div class="clear"></div>

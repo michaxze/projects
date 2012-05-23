@@ -1,0 +1,16 @@
+<div class="<%= current_user == msg.sender ? "user":"reply" %> row">
+  <div class="grid_10">
+    <div class="grid_2 bold">
+<% if current_user == msg.sender %>
+ Me
+<% else %>
+<a href="<%= msg.sender.avatar.url(:thumb) %>" data-id="<b>Email</b><%= msg.sender.email %>" rel="<%= msg.sender.username %>" name="profInfo" class="cursor" >
+<%= msg.sender.name_or_email %></a>
+<% end %>
+
+</div>
+    <div class="grid_10"><%= raw msg.html_contents %></div>
+  </div>
+  <div class="grid_2"><%= formatted_date(msg.created_at, 'ddmmyyyy') %><br /><%= formatted_date(msg.created_at, 'hm') %></div>
+  <div class="clear"></div> 
+</div>

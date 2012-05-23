@@ -1,0 +1,182 @@
+
+<div class="packageBox pad_top20 pad_bot20 full">
+ <script>
+					$(function() {					  
+					  
+						$("#offerFrm").validate({
+								submitHandler: function(form) {
+                  form.submit();
+								} 
+						});
+
+						 $("#sampleEvent").fancybox({
+							'transitionIn'	: 'elastic',
+							'transitionOut'	: 'elastic',
+							'titlePosition'	: 'inside',
+							'padding'				: 20
+						});
+
+          	var dates = $("#start_date,#end_date").datepicker({
+          				dateFormat:'dd/mm/yy',
+          				minDate: 0,
+          				ampm: true,
+          				onSelect: function( selectedDate ) {
+          					var option = this.id == "start_date" ? "minDate" : "maxDate",
+          						instance = $( this ).data( "datepicker" ),
+          						date = $.datepicker.parseDate(
+          							instance.settings.dateFormat ||
+          							$.datepicker._defaults.dateFormat,
+          							selectedDate, instance.settings );
+          					dates.not( this ).datepicker( "option", option, date );
+          				}
+          			}
+          		);
+          		$('#start_icon').live('click',function(){$("#start_date").datepicker( "show" );});
+          		$('#end_icon').live('click',function(){$("#end_date").datepicker( "show" )});
+						
+						
+						$('#offerEnd').change(function(e) {
+							if($('#offerEnd').is(':checked')){
+								$('.endConDate').hide();
+								$('.endConDate input').removeClass('required');
+							}else{
+								$('.endConDate').show();
+								$('.endConDate input').addClass('required');
+							}
+            });
+						
+					});
+					
+          $(window).load(function () {
+								if($('#offerEnd').is(':checked')){
+										$('.endConDate').hide();
+										$('.endConDate input').removeClass('required');
+								}else{
+										$('.endConDate').show();
+										$('.endConDate input').addClass('required');
+								}
+					});
+          
+          </script>
+
+<%= form_tag business_offers_path,  :id => "offerFrm", :method => :post do -%>
+                	<div class="container_12 pad_bot">
+										<div class="grid_9 numberMsg">
+                    <ul class="advertBc">
+                    		<li><h6 class="bold">CREATE OFFER</h6></li>
+                        <li><h6 class="bold">STEP <div class="bubble"> 01 </div></h6></li>
+                    </ul>
+                    </div>
+                    
+                </div>
+                <div class="full stepBar relative" style="">
+                  <ul class="stepBarUL">
+              		<li class="selected"><div class="absolute border_bar" id="border_bar"></div><a  class="menuBar noCursor" href="#">OFFER DETAILS</a><div class="right_arrow"></div></li>
+                    <li class=""><a class="menuBar noCursor noDecor" >OFFER LOCATION</a><div class="right_arrow"></div></li>
+                   <li class=""><a  class="menuBar noCursor  noDecor">GALLERY</a><div class="right_arrow"></div></li>
+                  </ul>
+                </div>
+               
+                	<div class="container_12 inputs pad_top">
+                  
+                  <!-- FOR NEXT STEP GOING TO THE LOCATION PAGE... -->
+                  <a class="getDetails" data-id="1" href="appends/createOffers_location.html" id="locationForm"></a>
+										<div class="grid_3 align_right marginTop5"><label>Offer name</label></div><div class="grid_9"><input type="text" class="radius5 fancyinput required" id="event_title" name="deal[name]" value=""><br>
+                    <label for="event_title" generated="false" class="error" ></label>
+                    </div>
+                    <div class="grid_3 align_right pad_top marginTop5"><label>What's on offer</label></div><div class="grid_9 pad_top"><textarea  class="radius5 fancyinput required cmsTextarea" id="aboutOffer" cols="42" name="deal[description]"></textarea><br>
+                    <label for="aboutOffer" generated="false" class="error" ></label>
+                    </div>
+                    <div class="grid_3 align_right pad_top marginTop5"><label>How to get this offer</label></div><div class="grid_9 pad_top"><textarea  class="radius5 fancyinput required cmsTextarea" id="getOffer" cols="42" name="deal[extra_info]"></textarea>
+                    <span class="absolute pad_top margin_left_10 pad_bot30"><a href="#howGetOffer" name="help" class="blue example cursor desc no_margin">&nbsp;</a></span><br>
+                    <label for="getOffer" generated="false" class="error" ></label>
+                    </div>
+                  </div>
+                  
+
+                	<div class="full_width borderBot"></div>
+                	<div class="container_12 inputs pad_top">
+										<div class="grid_3 align_right marginTop5"><label>Start Date</label></div>
+                    <div class="grid_9 "><input type="text" readonly="readonly" class="required text-input fancyinput narrower" id="start_date" name="offer[start]" value=""><span class="margin_left_10"><img src="/images/cal.gif" id="start_icon"/> </span><br />
+                    <label for="start_date" generated="false" class="error" ></label>
+                    </div>
+                    <div class="grid_3">&nbsp;</div>
+                    <div class="grid_9 marginTop5">
+                      <input type="checkbox" class="text-input fancyinput"  id="offerEnd" name="offer[ongoing]"><span class="absolute">&nbsp;This offer never ends...</span>
+                      <br />
+                      <label for="start_time" generated="false" class="error" ></label>
+                    </div>
+                    <div class="endConDate">
+                  	  <div class="grid_3 align_right marginTop5 pad_top"><label>End Date</label></div>
+                      <div class="grid_9 pad_top"><input type="text" readonly="readonly" class="required text-input fancyinput narrower" id="end_date" name="offer[end]" value=""><span class="margin_left_10"><img src="/images/cal.gif" id="end_icon"/> </span><br />
+                        <label for="end_date" generated="false" class="error" ></label>
+                      </div>
+                  	</div>
+                 </div>                   
+                
+                <div class="full_width borderBot pad_top"></div>
+               		<div class="container_12 inputs pad_top">
+										<div class="grid_3 align_right marginTop5 lh1"><label>Tags</label><br />(optional)<br /><a class="blue example cursor"  name="helpInfo" href="#cmpDialog" title="click to view more information..." data-id="<h6>Tags</h6>A tag is a keyword or term assigned to a piece of information (such as an Internet bookmark, digital image, or computer file). This kind of data helps describe an item and allows it to be found again by browsing or searching. <br /><br />In Zigzeg, Tags allow you to associate your account with relevant keywords related to your business. Tags have a higher search priority ranking than normal words in our search engine and as such, allow your business better search ranking when used correctly.<br /><br />
+<span class='white underline'>Example</span><br />
+Let’s say you are in the coffee shop business. Keywords associated with your business may be words like <span class='ital'>coffee, coffee bean, cafe, shop, drink, beverage, latte, mocha, espresso, cappuccino</span> and so on. You can input these keywords into the Tags field.">view example</a></div><div class="grid_9"><input type="text" class="radius5 fancyinput" id="tagsVal" name="deal[tags]" value="" autocomplete="off">
+										  <%= show_loader('tags')%>
+                    </div>
+                    <div id="tagContainer" class="dispNone">
+										<div class="prefix_3 grid_1 pad_top"><label>Suggestions:</label></div>
+                    <div class="grid_5 suffix_2 margin_left_20">
+                    		<ul id="tagClick" class="tagList">
+                        </ul>
+                    </div>
+                    </div>
+                    <div class="grid_9 prefix_3">Separate each tag using commas. Example: city, web, zigzeg</div>
+                </div> 
+                	<div class="full_width borderBot pad_top"></div>
+                  <div class="container_12 inputs pad_top">
+                  </div>
+               	  <div class="container_12 inputs pad_top20">
+										<div class="prefix_3 grid_6 suffix_3 "><input type="submit" name="submit_next" class="radius5 userButton white cursor fleft half" id="userSubmitBtn" value="Save and Next">
+                    <input type="button" name="submit_cancel" onClick="location.replace('<%= myoffers_business_path %>')" class="radius5 bgGray margin_left_10 gray cursor fleft half" id="userSubmitBtn" value="Cancel"><div class="grayLoader">Saving data</div></div>
+                </div>
+<% end %>
+</div>
+
+<script>
+
+$("#deal_category_id").change(function() {
+  var cat_id = $("#deal_category_id").val();
+  $("#loader_category").show();
+  $.ajax({
+    type: "GET",
+    cache: false,
+    url: "/welcome/load_select_subcategories?cat_id=" + cat_id,
+    data: $(this).serializeArray(),
+    success: function(data) {
+      $("#subcategory_id").empty();
+      $("#subcategory_id").append(data).fadeIn();
+      $("#loader_category").hide();
+    }
+  });
+});
+
+$("#tagsVal").keyup(function(){
+  $("#loader_tags").show();  
+  tags = $("#tagsVal").val();
+  cat = "<%= current_user.place.category.parent_id rescue 0%>"
+  subcat = "<%= current_user.place.category_id rescue 0%>"
+
+  $.ajax({
+    type: "GET",
+    cache: false,
+    url: "/business/tag_suggestions?tag=" + tags + "&cat=" + cat + "&scat=" + subcat + "&type=deal",
+    data: $(this).serializeArray(),
+    success: function(data) {
+			if(data!='')
+				$('#tagContainer').show();
+			else
+				$('#tagContainer').hide();
+		  $("#tagClick").empty().append(data);
+      $("#loader_tags").hide();
+    }      
+  });
+});
+</script>

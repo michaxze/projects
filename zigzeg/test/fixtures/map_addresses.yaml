@@ -1,0 +1,28 @@
+1:
+  country_id: 1
+  state_id: 1
+  city_id: 1
+  section_id: 1
+  street: Jalan Rambutan
+  building_name: 
+2:
+  country_id: 1
+  state_id: 1
+  city_id: 1
+  section_id: 1
+  street: Jalan Tambis
+  building_name: 
+3:
+  country_id: 1
+  state_id: 1
+  city_id: 1
+  section_id: 1
+  street: Jalan Nangka
+  building_name: 
+4:
+  country_id: 1
+  state_id: 2
+  city_id: 11
+  section_id: 11
+  building_name: suria klcc
+  street: jalan ampang

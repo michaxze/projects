@@ -1,0 +1,82 @@
+<%= render :partial => "opportunities/search_post" %>
+
+<div class="rounded mostpopular left" style="width: 880px; padding-top: 4px">
+  <div id="mp2" >
+    <% grouped_opps = @opportunities.group_by(&:created_at)
+    %>
+    <table cellpadding="0" cellspacing="0" width="100%" style="align: left; margin-left: 7px" >
+      <% if @opportunities.empty? %>
+      <thead>
+        <tr>
+          <td colspan=2><p style="padding-bottom: 15px; font-weight: bold; padding-left: 14px">No opportunities found.</p>
+          </td>
+        </tr>
+      </thead>
+      <% end %>
+
+      <% grouped_opps.keys.each do |key|%>
+        <tbody>
+          <tr height="35"  >
+            <td colspan=3><span style="font-size: 13px; font-weight: bold; color: #2E82FF"><%= key.strftime("%a %B %e, %Y")%></span></td>
+          </tr>
+        </tbody>
+        <tbody>
+          <% 
+          sorted_array = grouped_opps[key].sort{|a,b|  b.id<=>a.id}
+          sorted_array.each do |opp|
+            %>
+          <tr height="27"  onclick="open_opp_details(<%= opp.id%>)" style="cursor: pointer" onmouseover="$(this).css('background-color', '#EFEBE3')" onmouseout="$(this).css('background-color','')" >
+            <td width="100%">
+              <img src="images/bullet1.jpg" />
+              <span style="font-size: 12px;"><%= opp.subject.titleize%> <%= show_price(opp)%>
+              <%= show_category_name(opp)%>
+              </span>
+              <span style="float: right; font-size: 10px; padding-left: 10px; color: #808080"><%= opp.created_at.strftime("%B %d, %Y") %></span>
+              </td>
+          </tr>
+          <% end %>
+        </tbody>
+      <% end %>
+    </table>
+    
+    <br/>
+    <div class="digg_pagination">
+      <%= will_paginate @opportunities, :page_links => true %>      
+    </div>    
+
+    <div style="margin-bottom: 40px"></div>
+    
+  </div>
+</div>
+
+
+<div id="opp_details" class="rounded" style="display: none;padding-top: 30px;display:nonle;width: 500px; min-height: 424px;  background-color: #FFF; float: right; text-align: justify ">
+</div>
+
+
+<script>
+  function open_opp_details(opp_id) {
+    window.location.href = "/opportunities/" + opp_id;
+  };
+
+  function new_open_opp_details(opp_id) {
+    $.fancybox.showActivity();
+
+    $.ajax({
+      url   : "/opportunities/view/",
+      type	: "POST",
+      data	: 'id=' + opp_id,
+      success: function(data) {
+        $("#opp_details").empty();
+        $.fancybox.hideActivity();
+        $("#opp_details").append(data).show();
+        $(".mostpopular").css('width', 360);
+      }
+    });
+  };
+  
+  function close_opp_details(opp_id) {
+    $("#opp_details").hide();
+    $(".mostpopular").css('width', 880);
+  }
+</script>

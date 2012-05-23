@@ -1,0 +1,33 @@
+
+<script>
+$(function() {
+	$("#gSettingsFrm").validate({
+			submitHandler: function(form) {
+			   $('.grayLoader').show();
+			   form.submit();
+			}
+	});
+});
+</script><div class="simpleBox clearfix">
+		<h6 class="bold no_margin orange">GLOBAL SETTINGS<h1></h1></h6>
+		
+		<%= form_tag :url => global_settings_admin_system_path do %>
+    <form id="gSettingsFrm" class="packageFrm">
+    <div class="margin_left_20">
+        <ul class="cform">
+           <li>
+             <label class="clearfix">Government Sales Tax Rate</label>
+             <input type="text" name="settings[GOVTAX]" id="gov_tax" placeholder="tax" value="<%= @settings['GOVTAX'].first.option_value %>" class="required number text-input fancyinput small" />
+             <span>%</span>
+             <div class="clearfix"><label for="gov_tax" generated="false" class="error clearfix"></label></div>
+           </li>
+           
+           <li>
+              <input type="submit" value="Save settings" id="userSubmitBtn" class="radius5 userButton cursor fleft" name="submit_save"/>
+               <div class="grayLoader">Saving settings</div>
+           </li>
+          </ul>
+     </div>
+     <% end %>
+    </div>
+</div>

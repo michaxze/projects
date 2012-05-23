@@ -1,0 +1,246 @@
+          <script type="text/javascript">
+          $(document).ready(function() {
+						$("#userSubmitBtn").click(function() { 
+							var offset = $("#userSubmitBtn").offset(); 
+							$("#publishErr").css({'top':offset.top-($("#publishErr").height()*2.1)});
+							$("#publishErr").show();}
+						);
+						$(".close-publish").click(function() {$("#publishErr").hide();});
+						str = "";	
+            function createUploader(){  
+          	          var uploader = new qq.FileUploader({
+                          element: document.getElementById('imageUploader'),
+          								allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'], 
+          								onSubmit: function(id, fileName){	$('#uploadBtn .grayLoader').css('display','block');},
+          								//this is use for additional paramater like the userid
+          								params: {
+authenticity_token: $("meta[name=csrf-token]").attr("content"),
+          										id: <%= @event.id %>,
+          								},
+          								debug: true,
+                          onProgress: function(id, fileName, loaded, total){
+													str+=id+",";
+													if(loaded==total)
+														str = str.split(id+',').join("")
+													else
+														$('#uploadBtn .grayLoader').css('display','block');
+                          },
+				onComplete: function(id, fileName, responseJSON){
+					
+														  
+			  if ( responseJSON.html != "") {
+						html = responseJSON.html.replace("&lt;", "<");
+						html = html.replace(/&lt;/g, '<');
+						html = html.replace(/&gt;/g, '>');
+   			    $(".galleryImages").append(html).fadeIn();
+            $("#images_counter").text(responseJSON.remaining);
+						if($.browser.msie)
+							$('#uploadBtn .grayLoader').css('display','none');
+        }
+				if(str=="")
+						$('#uploadBtn .grayLoader').css('display','none');
+				else
+						$('#uploadBtn .grayLoader').css('display','block');			
+			<% if !current_user.premium_subscriber? %>
+					if(parseInt(responseJSON.remaining) < 1) {
+						$('#imageUploader,#overlay').remove();
+						$('#boxClick').show();
+					}
+					if($('#galErr.msgErr').css('display')=='none'){
+						if ( responseJSON.success == "full"){
+							 $('#galErr.msgErr').fadeIn(300);
+							 $('#imageUploader').remove();
+							 $('#boxClick').show();
+						}
+					}
+			<% end %>
+				$('.qq-upload-list').append('<li class="bold center">Image uploaded</li>').fadeOut(300);	
+                          
+			},
+                          action: '/business/events/<%= @event.id%>/upload_images',
+                          sizeLimit: 4194304,
+                          multiple: true,
+                messages: {
+                  sizeError: "{file} is too large, maximum file size is 4MB."
+                }
+                      });           
+                  }
+
+           <% if current_user.remaining_images(@event) > 0 || current_user.premium_subscriber? %>
+            createUploader();
+           <% end %>
+						
+						$(".galDesc").live('mouseover',function(){							
+									$(this).fancybox({
+									'titlePosition'		: 'outside',
+									'transitionIn'		: 'none',
+									'transitionOut'		: 'none',
+									'titleShow'				: false
+									});
+						});
+						$("#galform").validate({
+						 submitHandler: function(form) {
+							 alert('submit data')
+						 }
+						});
+						$('#galErr a').click(function(e) {$('#galErr').hide();});
+						$('#boxClick').click(function(e) {
+              	if($('#imageUploader').length){
+									$('#imageUploader input').click();
+								}else{
+									if($('#galErr.msgErr').css('display')=='none')
+										$('#galErr.msgErr').fadeIn(300);
+								}
+            });
+						if ( !$.browser.msie ) {
+							$('#overlay').show();
+							$('#overlay').click(function(e) {
+                $('#imageUploader input').click();
+              });
+						}									
+					});
+          </script>
+        	<form id="deleteForm">
+                <%= hidden_field_tag "event_id", @event.id %>
+         			<div class="packageBox pad_top20 full">
+
+                <div class="container_12 full_width">
+                <% if @event.is_complete? || @event.is_published? %>
+  								<div class="grid_9 numberMsg no_margin">
+                    <ul class="advertBc">
+                      <li><h6 class="bold">EDIT THIS EVENT </h6></li>
+                  		<li><h6 class="bold"><%= truncate(@event.name, :length => 50, :omission => "...") %></h6></li>
+                    </ul>
+                  </div>
+                
+                 
+                <% else %>								
+									<div class="grid_12 numberMsg no_margin">
+                    <ul class="advertBc no_margin">
+                  		<li><h6 class="bold"><%= @event.is_complete? ? "EDIT" : "CREATE" %>  EVENT</h6></li>
+                      <li><h6 class="bold">STEP <div class="bubble"> 03 </div></h6></li>
+                    </ul>
+                  </div>
+                <% end %>
+                </div>
+                
+                <div class="full stepBar relative" style="">
+                   <ul class="stepBarUL">
+                <% if @event.is_complete? || @event.is_published? %>
+                 		<li class=""><div class="absolute border_bar" id="border_bar"></div><a  class="menuBar" href="<%= edit_business_event_path(@event)%>">EVENT DETAILS</a><div class="right_arrow"></div></li>
+                       <li class=""><a class="menuBar" href="<%= locations_business_event_path(@event)%>">EVENT LOCATION</a><div class="right_arrow"></div></li>
+                       <li class="selected"><a  class="menuBar noCursor" href="#">GALLERY</a><div class="right_arrow"></div></li>
+                     <% else%>
+                  		<li class=""><div class="absolute border_bar" id="border_bar"></div><a  class="menuBar noCursor noDecor">EVENT DETAILS</a><div class="right_arrow"></div></li>
+                       <li class=""><a class="menuBar noCursor noDecor">EVENT LOCATION</a><div class="right_arrow"></div></li>
+                       <li class="selected"><a  class="menuBar noCursor noDecor">GALLERY</a><div class="right_arrow"></div></li>
+                     <% end %>		
+                   </ul>
+                 </div>
+
+                  <div class="container_12 galleryImages">
+                  <div class="grid_8 bold">
+                    <% if current_user.remaining_images(@event) > 0 || current_user.premium_subscriber? %>
+                      <% if current_user.premium_subscriber?%>
+                      &nbsp;
+                      <% else%>
+                        You have  <span id="images_counter"><%= current_user.remaining_images(@event) %></span>  images remaining
+                        <a class="blue example cursor desc" name="help" href="#galleryInfo">&nbsp;</a>
+                      <% end%>
+                    <% else %>
+                        You have  <span id="images_counter"><%= current_user.remaining_images(@event) %></span>  images remaining
+                        <a class="blue example cursor desc" name="help" href="#galleryInfo">&nbsp;</a>
+                    <% end %>
+                    
+                 </div>
+
+
+                  <div class="grid_4 pad_bot" align="right">
+                    <a href="" class="selectAllCB">Select all</a>
+                    <a href="" class="margin_left_20 delImgLnk dispNone" data-id="event">Delete images</a>
+                  </div>
+                  <div class="full borderBot"></div>
+									 <div class="msgErr radius15 shadow dispNone" id="galErr">
+                  	<div class="container_12">
+                  		<div class="grid_12 bold">IMAGE LIMIT EXCEEDED</div>
+                      <div class="grid_12 pad_top" align="justify">You have exceeded the image gallery limit allowed for your account type. To upload more images, you can upgrade to a basic or premium account which provides more features.<br /><br />
+                      <a class="button bgGray close">Continue</a>
+                   </div>
+                  </div>
+                  </div>
+                    <div class="grid_12 clearfix pad_top20">
+                      <!-- <input id="xxfile_upload" name="file_upload"  type="file"/>
+                      -->
+                      </div> 
+                    <div class="grid_3 empty">
+                    <% if current_user.remaining_images(@event) > 0 || current_user.premium_subscriber? %>
+                         <div id="overlay" class="imageContain absolute cursor dispNone">&nbsp;</div>
+                         <div id="imageUploader" class="imageContain"></div>
+                         <div id="boxClick" class="imageContain dispNone">&nbsp;</div>
+                       <% else %>
+                       		<div id="boxClick" class="imageContain">&nbsp;</div>
+                       <% end %>
+                      <div class="imageText" id="uploadBtn"> <div class="grayLoader full no_margin">Uploading image...</div></div>
+                    </div>
+                    
+                   <% @event.pictures.each do |pic|%>
+                     <%= render :partial => "picture", :locals => { :picture => pic }%>
+                   <% end %>
+                   
+                </div>
+                <div class="container_12 pad_top">
+                	<div class="full borderBot"></div>
+                   <div class="grid_8 pad_top autowidth no_margin"><p>* Please note that images larger than 4MB are not allowed.<br /> * Only images in JPEG, PNG & GIF formats are allowed.<br />* Upload an image of 650px by 650px for optimum view. <a class="blue example cursor"  name="helpInfo" href="#imgRec" title="click to view more information..." data-id="<h6>Image size explanation</h6>Minimum image dimension required for an optimized view is 650px either in width or height of an image.<br /><br />
+To check an image dimension, right-click on an image, select ‘Properties’, then select ‘Details’. For Mac, control + click on an image, select ‘Get info’, then select ‘More info’ to get image dimension information.">View an example</a></p></div>
+                   <div class="grid_4 pad_top" align="right"><a href="" class="selectAllCB">Select all</a>
+                  <a href="" class="margin_left_20 delImgLnk dispNone" data-id="event">Delete images</a></div>
+                </div>
+                <div class="container_12 pad_top">
+                  <div class="full borderBot"></div>
+                  <div class="clearfix pad_bot"></div>
+                  <div class="grid_12">
+                  	<div class="grid_2 bold">Share On : </div>
+                    <div class="grid_5 no_margin socShout">
+                  	<div class="grid_4 fb" title="Share on Facebook"><input type="checkbox" /></div>
+                    <div class="grid_4 twit" title="Share on Twitter"><input type="checkbox" /></div>
+                    <div class="grid_4 google" title="Share on Google+"><input type="checkbox" /></div>                 
+                  	</div>
+                  </div>
+               </div>
+<div class="container_12 inputs pad_top20 pad_bot30">
+<div class="msgErr radius15 shadow dispNone" id="publishErr">
+  <div class="container_12">
+   <div class="grid_12 bold">PUBLISH THIS EVENT?</div>
+   <div class="grid_12 pad_top" align="justify">
+     <p>Do note that once this event is published, you will be allowed a 24-hour window to modify the information listed in this event. Once the 24-hour time limit is reached, you will no longer be allowed to modify this event.</p>
+
+      <p>Do double check the information posted before clicking on the publish button.</p>
+
+      <p>You can upgrade to a premium account to allow worry-free unlimited edits to your listings.</p>
+      <br/>
+      <input type="button" onclick="location.replace('<%= publish_business_event_url(@event, :pub => "y") %>');" value="Continue to publish" class="radius5 bgGray gray cursor" name="submit_publish">
+      <input type="button" value="Back to create page" class="radius5 bgGray margin_left_10 gray cursor  close-publish" name="submit_publish">
+    </div>
+  </div>
+</div>
+
+  		<div class="grid_10">
+  		  <% if @event.is_published? || @event.is_complete?%> 
+  		  <input type="button" name="submit_next" class="radius5 userButton white cursor autowidth"  value="Save changes to this event" onClick="location.replace('<%= publish_business_event_url(@event) %>')">
+  		  <% else%>
+  		  
+        <% if current_user.premium_subscriber?%>
+                <input type="button" name="submit_next" class="radius5 userButton white cursor fleft half autowidth" value="Publish this offer" onclick="location.replace('<%= publish_business_event_url(@event, :pub => "y") %>');">
+                <% else %>
+                	 <input type="button" name="submit_publish" class="radius5 userButton white cursor autowidth" id="userSubmitBtn" value="Publish this event">
+                <% end %>
+        
+  		  <% end %>
+        <input type="button" name="preview" class="radius5 userButton white margin_left_10 cursor width20" value="Preview" onclick="window.open('/events/preview?id=<%= @event.id%>&type=event','_new')">
+        <input type="button" name="submit_back" class="radius5 bgGray margin_left_10 gray cursor width20"  value="Back" onClick="location.replace('<%= locations_business_event_path(@event) %>')">
+		</div><div class="grid_1"><div class="grayLoader fright">Saving data</div>&nbsp;</div>
+  </div>
+							</div>
+          </form>
+         
+</div>

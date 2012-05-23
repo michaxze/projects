@@ -1,0 +1,33 @@
+<% unless upd.nil? %>
+      <%
+          unless upd.updateable.nil?
+            class_name = case upd.updateable_type
+            when "Place"
+              "places"
+            when "Deal"
+              "offers"
+            when "Event"
+              "events"
+            when "Shout"
+              if upd.updateable.shoutable.class.name == "Event"
+                "events"
+              elsif upd.updateable.shoutable.class.name == "Deal"
+                "offers"
+              else
+                "places"
+              end
+            else
+              "places"
+            end
+          %>
+          <% if upd.updateable.class.name == "Shout" %>
+          <% unless upd.updateable.shoutable.nil? %>
+          <a title="<%= upd.updateable.shoutable.name%>" href="<%= form_url(upd.updateable.shoutable, { :lupt => upd.id }) %>" class="<%= class_name %>">
+            <div onclick="location.href='<%= form_url(upd.updateable.shoutable, { :lupt => upd.id }) %>'"><%= custom_description(upd) %> <span></span></div></a>
+          <% end %>
+          <% else %>
+          <a title="<%= upd.updateable.name %>" href="<%= form_url(upd.updateable, { :lupt => upd.id }) %>" class="<%= class_name %>">
+            <div onclick="location.href='<%= form_url(upd.updateable, { :lupt => upd.id }) %>'"><%= custom_description(upd) %> <span></span></div></a>
+          <% end %>
+   <% end %>
+<% end %>

@@ -1,0 +1,104 @@
+<script>$(document).ready(function(e) {
+					$('#shoutFrm').validate({
+						submitHandler: function(form) {
+							form.submit();
+						} 
+					});
+				});</script>
+
+<!--start page post-->
+<article class="clearfix">
+  <%= render :partial => "/globals/header_photos", :locals => { :listing => listing } %>          
+  <div class="alpha relative leftContent marginSide">
+
+    <!--blog header--> 
+    <% unless listing.listable.shouts.empty?%>
+    <div class="relative">
+      <div class="imageLoader aboutLoader posRight dispNone"></div> 
+      <% if listing.listable.shouts.length > 3%>
+      	<h6 class="fright"  ><a id="shoutLink" class="gray showAll cursor fright">SHOW ALL</a></h6>
+      <% end %>
+      <h3 class="segoe no_margin">SHOUTS</h3>  
+    </div>
+    <div class=" hr"></div>
+    <% end %>
+    <!--page description-->
+    <div>
+      <div id="divShoutCon" class="pad_bot20">
+        <ul id="shoutContent" class="contentList">
+          <!-- IF ONLY ONE LISTING ADD 'noBorder' class -->
+        	<% listing.listable.shouts.order('created_at desc').take(3).each do |shout|%>
+          <%= render :partial => "/places/shout", :locals => { :shout => shout, :listing => listing }%>
+          <% end %>
+          <% if listing.listable.shouts.length > 3%>
+          <div class="extraShout dispNone">
+            <% listing.listable.shouts.order('created_at desc')[3..-1].each do |shout|%>
+                <%= render :partial => "/places/shout", :locals => { :shout => shout, :listing => listing }%>
+            <% end %>
+         	</div>
+          <% end %>
+      </ul>
+      </div>
+      <% unless current_user.nil?%>
+        <% if current_user.is_advertiser? && current_user.id == listing.listable.user_id && !listing.listable.expired? && !listing.listable.is_deleted?%>
+          <div class="container_12 bgGray inlineB full pad_bot radius5">
+            <%= form_tag "/listings/create_shout",  :id => "shoutFrm" do%>
+              <%= hidden_field_tag :ref_url, request.url%>
+              <%= hidden_field_tag :id, listing.id%>
+              <div class="prefix_1 grid_11 pad_top"><h3 class="segoe no_margin shoutAction">Post a Shout!</h3></div>
+            <div class="push_1 grid_10"><textarea name="content" rows="5" id="shoutTxt" class="full fancyinput radius5 required"></textarea>
+            <div id="shoutChar">remaining characters: <span id="countChar">250</span></div>
+            </div>
+              <div class="push_1 grid_11">
+                <input type="submit" value="Post a shout" class="radius5 shout white bold hoverBlack cursor fleft width20" name="submit21">
+               	<div class="grayLoader">Saving data</div>
+                <div class="grid_6 pad_top5">
+                	<div class="grid_4 bold autowidth">Share on :</div>
+                  <div class="grid_8 no_margin socShout">
+                  	<div class="grid_4 fb" title="Share on Facebook"><input type="checkbox" /></div>
+                    <div class="grid_4 twit" title="Share on Twitter"><input type="checkbox" /></div>
+                    <div class="grid_4 google" title="Share on Google+"><input type="checkbox" /></div>                 
+                  </div>
+                  
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="clearfix"></div>
+
+        <% end %>
+      <% end %>
+    </div>       
+ <div class="clearfix"></div>
+    
+    <div class="clearfix pad_top30"></div>
+    <div class="relative">
+      <div class="imageLoader aboutLoader posRight dispNone"></div> 
+      <h3 class="segoe no_margin">WHAT'S HAPPENING</h3> 
+    </div>
+    <div class=" hr"></div>
+    <!--page description-->
+    <p id="eventDesc" class="AboutP" align="justify"><%= listing.listable.description %> </p>
+    <br/>
+    <div class="pad_top30">
+      <div class="imageLoader aboutLoader posRight dispNone"></div> 
+      <h3 class="segoe">ORGANIZED BY</h3>  
+    </div>
+    <div class=" hr"></div>
+    <div class="container_12 full no_margin pad_top">
+      <% unless listing.listable.place.profile_image.nil?%>
+     <div class="img fleft">
+        <img src="<%= listing.listable.place.profile_image.image.url(:super_thumb) rescue get_missing_image(listing.listable.place)%>" align="left"> 
+    	</div>
+      <% end %>
+    <div class=" no_margin"><p class="AboutPd limitOff">
+    <strong><a href="<%= form_url(listing.listable.place) %>" class="black hoverBlue"><%= truncate(listing.listable.user.advert_company_name.titleize, :length => 70, :omission => "...") %></a></strong> <br />
+      <%= listing.listable.place.description rescue ''%></p></div>
+      
+    </div>
+    <p id="aboutAppend" class="AboutP no_margin" align="justify"></p>
+    <%= render :partial =>  "/globals/tags", :locals => { :listing => listing } %>
+  </div>
+ 
+</article>
+<!--end blog post 1-->

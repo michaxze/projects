@@ -1,0 +1,22 @@
+<!--start page_wrap-->
+<div id="page_wrap" class="fcontainer_12 clearfix top">
+  <!--start content-->
+  <section id="" class="fgrid_12 clearfix">
+    <div id="main" class="full_width alpha signUp">
+      <% if params[:signup].blank?%>
+        <%= render "userform" %>
+      <% else%>
+        <% if params[:page] == 'reg'%>
+          <%= render "business"%>
+        <% else%>
+          <%= render "comparison" %>
+        <% end %>
+      <% end %>
+    </div>
+    <!--end main-->
+    <div class="margin_left_20 signUpLoader absolute width20 dispNone"></div>
+  </section>
+  <!--end content-->
+   <div class="clear pad_bot"></div>
+</div>
+<!--end page_wrap-->

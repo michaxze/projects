@@ -1,0 +1,93 @@
+<%
+link_name = @msg.opportunity.user.username rescue 'none'
+link_url = "/#{@msg.opportunity.user.username}" rescue '/'
+
+poster_name = @msg.sender.username rescue 'Unknown'
+poster_link = user_path(@msg.sender) rescue '#'
+receiver_name = @msg.receiver.username rescue 'Unknown'
+receiver_link = user_path(@msg.receiver) rescue '#'
+
+%>
+<div id="mp2">
+  <div id="right_column" style="padding: 10px">    
+    <h3><%= @msg.message_thread.subject.titleize%></h3>
+    <div id="message_threads">
+      <% @msg.get_threads.each do |m|%>
+        <%= render :partial => "messages/msg", :locals => { :msg => m}%>
+      <% end %>
+    </div>
+
+   <% if ['inbox', 'refer'].include?(@msg.msgtype.to_s) %>
+    <div id="reply-message" style="width: 600px">
+      <form id="reply-message-form" method="post">
+        <%= hidden_field_tag "msg[message_thread_id]", @msg.message_thread.id rescue ''%>
+        <%= hidden_field_tag "msg[viewable_to]", @msg.from_id %>
+        <%= hidden_field_tag "msg[to_id]", @msg.from_id %>
+        <%= hidden_field_tag "msg[from_id]", @msg.to_id %>
+        <%= hidden_field_tag "msg[msgtype]", "inbox" %>
+
+        <h1> Reply </h1>
+        <div class="field_line">
+          <div class="field_label">
+            Message :
+          </div>
+          <div class="field_box">
+            <%= text_area_tag "msg[body]", nil, :style => "width: 400px; height: 100px"%>
+          </div>
+        </div>
+        <div class="clr"></div>
+
+        <div class="field_line">
+          <div class="field_label">
+          </div>
+          <div class="field_box">
+            <%= submit_tag "Send" %>
+          </div>
+        </div>
+        <div class="clr"></div>
+      </form>
+    </div>
+  <% end %>
+    
+  </div>
+</div>
+
+<script>
+$("#reply-message-form").bind('submit', function() {
+  $.fancybox.showActivity();
+
+  $.ajax({
+    type  : "POST",
+    cache : false,
+    url  : "/messages/reply",
+    data  : $(this).serializeArray(),
+    success: function(data) {
+      $.fancybox.hideActivity();
+      $("#message_threads").append(data);
+      $("#msg_body").val('');
+    }
+  });
+
+  return false;
+});
+
+    function remove_message(msg_id) {
+      var ans = confirm("Are you sure you want to delete this message?");
+      if (!ans)
+        return false
+
+      $.fancybox.showActivity();
+      $.ajax({
+        type  : "POST",
+        cache : false,
+        url  : "/messages/delete",
+        data  : 'id=' + msg_id,
+        success: function(data) {
+          $.fancybox.hideActivity();
+          $("#reply_message_"+msg_id).fadeOut('slow', function() {
+            $(this).remove();
+          });
+        }
+      });
+    }
+</script>

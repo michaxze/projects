@@ -1,0 +1,27 @@
+%div{ :style => "display: none"}
+  #signup_form
+    #h-links
+      %ul
+        %li
+          = link_to "Sign up for Etroduce", "#", :class => "active h-roundedtop"
+      %div.clr
+
+    - form_for :sessions, :url => signup_path, :method => :post, :html => { :id => "signup-form", :class => "signup-form" } do |f|
+      %p
+        %label
+          Username
+      %p
+        = text_field_tag "username", nil, :class => "h-rounded", :placeholder => "username ( 8 characters )", :autofocus => "true", :maxlength => "8"
+      %p
+        %label
+          Email Address
+      %p
+        = text_field_tag "email", nil, :class => "h-rounded", :placeholder => "email address"
+      %p
+        %label
+          Password
+      %p
+        = text_field_tag "password", nil, :type => "password", :class => "h-rounded", :placeholder => "password"
+      %p
+        = submit_tag "Create my account", :class => "green-btn h-rounded"
+      %div.clr

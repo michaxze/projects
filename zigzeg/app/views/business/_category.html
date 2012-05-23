@@ -1,0 +1,215 @@
+<script>
+$(function() {
+  function validateFunc(){
+	$("#categoriesFrm").validate({
+    messages:{
+       categoryType:{
+           required: 'Please select main category for your business.'
+       },
+			 subCategoryType:{
+					 required: 'Please select sub-category for your business.'	
+			 }
+    },
+    submitHandler: function(form) {
+      $('.grayLoader').show();
+      form.submit();
+    } 
+  });
+	}
+	validateFunc();
+	$('.catListStyle a').click(function(e) {validateFunc();});	
+});
+</script>
+
+<%= form_for @place, :url => update_category_business_path(:id => @place.id), :html => { :id => "categoriesFrm", :method => :post } do |f| %>
+  <%= hidden_field_tag :selected_category_id, @place.category_id  unless @place.category_id.nil?%>
+  <div class="packageBox pad_top20 pad_bot20 full">
+    <%= render("breadcrumbs") %>
+    <div class="full_width borderBot"></div>
+    <div class="container_12 inputs pad_top20 pad_bot catListStyle">
+      <div class="grid_3 align_right">
+        <label>Category</label>
+        <div class="catDetails">Select a category<br /> related to your business</div>
+          <input type="hidden" name="categoryType" id="category_input" value="<%= @place.category_id rescue '' %>" class="required"/>
+          	<br />
+          <label for="category_input" name="category_input_label" id="category_input_label" generated="false" class="error" ></label>
+        </div>
+        <div class="grid_9" id="category_listing">
+        <% @categories.each do |cat|%>
+          <a data-id="<%= cat.id %>" class="cursor cat" id="category_<%= cat.id %>" title="<%= cat.name %>"><div class="grid_6">
+          <%= truncate(cat.name, :length => 30, :omission => "...") %></div></a>
+        <% end %>
+        <div class="grid_6 selectCategory">change category</div>
+      </div>
+      <div class="clearfix pad_bot"></div>
+      <div class="grid_3">&nbsp;</div>
+      <div id="catHelpInfo" class="grid_9 no_margin fright bgGray radius5">
+      	<div class="pad15 catHelpInfo">
+        <ul class="listNone">
+        <li class="bold">Can’t find a suitable Category & Subcategory combination for your business? Please follow these steps:</li>
+        
+        <li class="pad_top"><b>1.</b> Select a <b>Category</b> that best relates to your business type.</li>
+        
+        <li class="pad_top"><b>2.</b> In the <b>Subcategory</b> list, select ‘Others’.</li>
+        
+        <li class="pad_top"><b>3.</b> Proceed to <b>‘Tags’</b>. You then input keywords that are related to your business. Click on the ‘example’ link below ‘Tags’ to get a better understanding of what tags are.</li>
+        
+        <li class="pad_top"><b>NOTE</b>: Not to worry, doing this will not in any way impact the search-ability & search ranking of your business within ZIGZEG.</li>
+				</ul>
+        </div>
+      </div>
+      
+    </div>    
+    <!-- div for subcategory -->
+    <div id="sub_category_div" >
+    </div>
+    <div class="full_width borderBot pad_top20"></div>
+      
+    <div class="container_12 inputs pad_top20 pad_bot fleft cleafix">
+      <div class="grid_3 align_right pad_top lh1"><label>Tags</label><br />(optional)<br /><a class="blue example cursor"  name="helpInfo" href="#cmpDialog" title="click to view more information..." data-id="<h6>Tags</h6>A tag is a keyword or term assigned to a piece of information (such as an Internet bookmark, digital image, or computer file). This kind of data helps describe an item and allows it to be found again by browsing or searching. <br /><br />In Zigzeg, Tags allow you to associate your account with relevant keywords related to your business. Tags have a higher search priority ranking than normal words in our search engine and as such, allow your business better search ranking when used correctly.<br /><br />
+<span class='white underline'>Example</span><br />
+Let’s say you are in the coffee shop business. Keywords associated with your business may be words like <span class='ital'>coffee, coffee bean, cafe, shop, drink, beverage, latte, mocha, espresso, cappuccino</span> and so on. You can input these keywords into the Tags field.">view example</a>
+</div>
+      <div class="grid_9 no_margin fright">
+        <input type="text" class="radius5 fancyinput" id="tagsVal" name="place[tags]" autocomplete="off" value="<%= @place.tags %>">
+        <%=  show_loader("tags") %>
+        </div>
+      					<div id="tagContainer" class="dispNone">
+										<div class="prefix_3 grid_1 pad_top"><label>Suggestions:</label></div>
+                    <div class="grid_5 suffix_2 margin_left_20">
+                    		<ul id="tagClick" class="tagList">
+                        </ul>
+                    </div>
+                    </div>
+                    <div class="grid_9 no_margin fright prefix_3">Separate each tag using commas. Example: city, web, zigzeg</div>
+    </div>
+    
+    <div id="all_sub" class="dispNone clearfix">
+        <div class="full_width borderBot"></div>
+        <div class="container_12 inputs pad_top20 catListStyle">
+          <div class="grid_3 align_right">
+    				<label>Features <span class="normal">(optional)</span></label><br />
+    				Select features related<br />
+  				  to your business<br />
+            (multiple selections<br />
+            allowed)
+          </div>
+          <div class="grid_9 no_margin fright">
+            <div class="grid_12 no_margin pad_bot20">Click a feature to select it, click again to deselect</div>
+            
+            <div class="grid_12 no_margin fullS bgGray radius5"><div class="pad10">1. Payment Options accepted by your business</div></div>
+            <div class="grid_12 fullS no_margin pad_top">
+              <div class="grid_12 fullS no_margin  radius5 features">
+                <% HighlightCategory.where("group_name='payment'").each do |cf|%>
+              		<div align="center" class="grid_2">
+                      <a class="features <%= @place.highlight_codes.include?(cf.code) ? "selected" : '' %>"><div></div>
+                        <img src="/images/features/general/<%= cf.image%>">
+                      <input type="checkbox" value="<%= cf.code %>" class="" name="features[]" <%= @place.highlight_codes.include?(cf.code) ? "checked" : '' %>>
+                      <span class="clearfix">
+                     <%= cf.name %></span></a>
+                  </div>
+                <% end %>
+                                    
+              </div>
+            </div> 
+            <div class="grid_12 borderBot"></div>
+            <div class="clearfix pad_bot"></div>
+            <div class="grid_12 no_margin fullS bgGray radius5"><div class="pad10">2. Parking Information at your business premise</div></div>
+            <div class="grid_12 fullS no_margin pad_top">
+              <div class="grid_12 fullS no_margin  radius5 features">
+                <% HighlightCategory.where("group_name='parking'").each do |cf|%>
+              		<div align="center" class="grid_2">
+                      <a class="features <%= @place.highlight_codes.include?(cf.code) ? "selected" : '' %>"><div></div>
+                        <img src="/images/features/general/<%= cf.image%>">
+                      <input type="checkbox" value="<%= cf.code %>" class="" name="features[]" <%= @place.highlight_codes.include?(cf.code) ? "checked" : '' %>>
+                      <span class="clearfix">
+                     <%= cf.name %></span></a>
+                  </div>
+                <% end %>
+                                    
+              </div>
+            </div> 
+            
+            <div class="grid_12 borderBot"></div>
+            <div class="clearfix pad_bot"></div>
+            <div class="grid_12 no_margin fullS bgGray radius5"><div class="pad10">3. General Features offered by your business</div></div>
+            <div class="grid_12 fullS no_margin pad_top">
+              <div class="grid_12 fullS no_margin  radius5 features">
+                <% HighlightCategory.where("group_name='provides'").each do |cf|%>
+              		<div align="center" class="grid_2">
+                      <a class="features <%= @place.highlight_codes.include?(cf.code) ? "selected" : '' %>"><div></div>
+                        <img src="/images/features/general/<%= cf.image%>">
+                      <input type="checkbox" value="<%= cf.code %>" class="" name="features[]" <%= @place.highlight_codes.include?(cf.code) ? "checked" : '' %>>
+                      <span class="clearfix">
+                     <%= cf.name %></span></a>
+                  </div>
+                <% end %>                                   
+              </div>
+            </div> 
+            <div class="clearfix"></div>
+						<div id="category_features_div">
+              <%  unless @place.category.nil?%>
+                <% unless @place.category_features.nil?%>
+                  <%= render :partial => "/business/show_category_features", :locals => { :category => @place.category, :place => @place }%>
+                <% end %>
+              <% end %>
+             
+            </div>
+           </div>
+        </div>
+      </div>
+      
+      
+      
+      <div class="clearfix"></div>
+      <div class="full_width borderBot"></div> 
+      <div class="container_12 inputs pad_top30">
+        <div class="prefix_3 grid_9">
+          <input type="submit" name="submit_next" class="radius5 userButton white cursor fleft width30" id="userSubmitBtn" value="Save and Next">
+          <input type="button" name="submit_preview" class="radius5 bgGray margin_left_10 white hoverBlack cursor width30" id="userSubmitBtn" value="View My Place" onclick="window.open('<%= form_url(@place) %>','_new')">
+          <input type="button" name="submit_preview" class="radius5 bgGray margin_left_10 white hoverBlack cursor width20" id="userSubmitBtn" value="Back" onclick="location.replace('/business/myplace')">
+        </div>
+                </div>
+                
+    
+    
+      <div class="clearfix pad_top30 pad_bot30"></div>
+  </div>
+<% end %>
+         
+<script>
+$(function() {
+  <% unless @place.category.nil? %>
+    $("#selected_category_id").val(<%= @place.category_id %>);
+    <% unless @place.category.parent.nil? %>
+      $('#category_<%= @place.category.parent.id %>').click();
+      $('#sub_category_49').click();
+    <% else %>
+      $('#category_<%= @place.category_id %>').click();
+    <% end %>
+  <% end %>
+	
+  $("#tagsVal").keyup(function(){
+    $("#loader_tags").show();  
+    tags = $("#tagsVal").val();
+    cat = $("#category_listing a.selected").attr("data-id");
+    subcat = $(".subcatContainer a.selected").attr("data-id")
+
+    $.ajax({
+      type: "GET",
+      cache: false,
+      url: "/business/tag_suggestions?tag=" + tags + "&cat=" + cat + "&scat=" + subcat + "&type=place",
+      data: $(this).serializeArray(),
+      success: function(data) {
+				if(data!='')
+					$('#tagContainer').show();
+				else
+					$('#tagContainer').hide();
+		  	$("#tagClick").empty().append(data);
+        $("#loader_tags").hide();
+      }      
+    });
+  });
+	
+});
+</script>

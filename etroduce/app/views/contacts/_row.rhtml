@@ -1,0 +1,20 @@
+<% unless params[:list].nil?%>
+<div class="contact_box" id="contact_box_id_<%=user.id%>" onmouseover="$('#contact_actions_id_<%=user.id%>').show();" onmouseout="$('#contact_actions_id_<%=user.id%>').hide();">
+<% else %>
+<div class="contact_box" id="contact_box_id_<%=user.id%>">
+<% end%>
+
+<a id="<%=user.id%>" href="/<%= user.username%>" >
+  <div style="float: left;">
+    <%= image_tag user.avatar.url(:super_thumb), :size => "25x25", :style => "float: left;" %>
+    <span class="name"><%= user.fullname.titleize %></span><div class="clr"></div>
+    <span class="expertise" style="margin-left: 5px" ><%= user.expertise %></span>
+  </div>
+</a>
+ 
+  <% unless params[:list].nil?%>
+    <div id="contact_actions_id_<%=user.id%>" style="display: none; position: absolute; margin-top: -33px; margin-left: 130px">
+      <%= link_to "Remove", "javascript:;", :onclick => "remove_fromlist('#{params[:list]}', '#{user.id}');"%>
+    </div>
+  <% end %>
+</div>

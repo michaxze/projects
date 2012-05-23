@@ -1,0 +1,15 @@
+defaults: &defaults
+  domain: "http://www.zigzeg.com:53165"
+  main_domain: "http://www.zigzeg.com"
+  faye_token: "a66aaf508baf67c49a344418479675b2762d1ddcfeb640817975cc7b5b9f3fca"
+  faye_url: "http://localhost:9292/faye"
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
+

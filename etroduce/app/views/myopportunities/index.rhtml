@@ -1,0 +1,96 @@
+<%= render :partial => "myopportunities/search_post" %>
+  <div id="mp2" >
+    <% grouped_opps = @opportunities.group_by(&:created_at)  %>
+    <table cellpadding="0" cellspacing="0" width="100%" style="align: left; margin-left: 7px" >
+      <% if @opportunities.empty? %>
+      <thead>
+        <tr>
+          <td colspan=2><p style="padding-bottom: 15px; font-weight: bold; padding-left: 14px">No opportunities found.</p>
+          </td>
+        </tr>
+      </thead>
+      <% end %>
+
+      <% 
+      current_user_id = current_user.id
+      grouped_opps.keys.each do |key|%>
+        <tbody>
+          <tr height="35"  >
+            <td colspan=3><span style="font-size: 13px; font-weight: bold; color: #2E82FF"><%= key.strftime("%a %B %e, %Y")%></span></td>
+          </tr>
+        </tbody>
+        <tbody>
+          <%
+
+          sorted_array = grouped_opps[key].sort{|a,b|  b.id<=>a.id }
+          sorted_array.each do |opp|
+            current_user_owner = (current_user_id == opp.user_id)
+          %>
+          <% if current_user_owner %>
+          <tr height="27" >
+          <% else%>
+          <tr height="27"  onclick="open_opp_details(<%= opp.id%>)" style="cursor: pointer" onmouseover="$(this).css('background-color', '#EFEBE3')" onmouseout="$(this).css('background-color','')" >
+          <% end%>
+            <td width="100%">
+
+              <div onclick="open_opp_details(<%= opp.id%>)" style="width:780px;float: left;cursor: pointer">
+                <img src="images/bullet1.jpg"/>
+                <span style="font-size: 12px;"><%= h sanitize(strip_tags(opp.subject.titleize))%> <%= show_price(opp)%>
+                  <%= show_category_name(opp)%>
+                  <%= show_opportunity_status(opp) if current_user_owner%>
+                </span>                
+                <span style="float: right; font-size: 10px; padding-right: 10px; color: #808080"><%= opp.created_at.strftime("%B %d, %Y") %></span>
+              </div>
+              <% if current_user_owner%>
+                <div class="edit_delete">
+                  <%= link_to(image_tag("edit.gif", :size => "12x12"), edit_myopportunity_path(opp)) %>
+                  &nbsp;
+                  <%= link_to(image_tag("trash.gif", :size => "12x12"), myopportunity_path(opp), :method => :delete, :confirm => "Are you sure you want to delete this post?") %>
+                </div>
+              <% end %>
+
+              
+              </td>
+          </tr>
+          <% end %>
+        </tbody>
+      <% end %>
+    </table>
+    
+  </div>
+
+  <div class="digg_pagination">
+    <%= will_paginate @opportunities, :page_links => true %>
+  </div>    
+
+
+<div id="opp_details" class="rounded" style="display: none;padding-top: 30px;display:nonle;width: 500px; min-height: 424px;  background-color: #FFF; float: right; text-align: justify ">
+</div>
+
+
+<script>
+  function open_opp_details(opp_id) {
+    window.location.href = "/myopportunities/" + opp_id;
+  };
+
+  function new_open_opp_details(opp_id) {
+    $.fancybox.showActivity();
+
+    $.ajax({
+      url   : "/opportunities/view/",
+      type	: "POST",
+      data	: 'id=' + opp_id,
+      success: function(data) {
+        $("#opp_details").empty();
+        $.fancybox.hideActivity();
+        $("#opp_details").append(data).show();
+        $(".mostpopular").css('width', 360);
+      }
+    });
+  };
+  
+  function close_opp_details(opp_id) {
+    $("#opp_details").hide();
+    $(".mostpopular").css('width', 880);
+  }
+</script>

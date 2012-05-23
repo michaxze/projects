@@ -1,0 +1,11 @@
+>> Writing PID to tmp/pids/faye.pid
+>> Exiting!
+/Users/admin/.rvm/gems/ruby-1.9.2-p290/gems/thin-1.3.1/lib/rack/adapter/loader.rb:35:in `read': No such file or directory - faye.ru (Errno::ENOENT)
+	from /Users/admin/.rvm/gems/ruby-1.9.2-p290/gems/thin-1.3.1/lib/rack/adapter/loader.rb:35:in `load'
+	from /Users/admin/.rvm/gems/ruby-1.9.2-p290/gems/thin-1.3.1/lib/thin/controllers/controller.rb:181:in `load_rackup_config'
+	from /Users/admin/.rvm/gems/ruby-1.9.2-p290/gems/thin-1.3.1/lib/thin/controllers/controller.rb:71:in `start'
+	from /Users/admin/.rvm/gems/ruby-1.9.2-p290/gems/thin-1.3.1/lib/thin/runner.rb:185:in `run_command'
+	from /Users/admin/.rvm/gems/ruby-1.9.2-p290/gems/thin-1.3.1/lib/thin/runner.rb:151:in `run!'
+	from /Users/admin/.rvm/gems/ruby-1.9.2-p290/gems/thin-1.3.1/bin/thin:6:in `<top (required)>'
+	from /Users/admin/.rvm/gems/ruby-1.9.2-p290/bin/thin:19:in `load'
+	from /Users/admin/.rvm/gems/ruby-1.9.2-p290/bin/thin:19:in `<main>'

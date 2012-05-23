@@ -1,0 +1,28 @@
+<div id="admin-left-sidebar">
+  <%= render "/cms/sidebar" %>
+</div>
+
+<div id="admin-center">
+  <h3> Events </h3>
+  <table>
+    <tr bgcolor="#cccccc">
+      <td> Advertiser company name </td>
+      <td> No. of Deals </td>
+      <td> No. of Places </td>
+      <td> No. of Events </td>
+      <td> Announcements </td>
+      <td> </td>
+    </tr>
+    <% @deals.each do |row| %>
+    <tr>
+      <td> <%= link_to row.name.titleize, edit_cms_listing_path(row) %> </td>
+      <td> No. of Deals </td>
+      <td> No. of Places </td>
+      <td> No. of Events </td>
+      <td> Announcements </td>
+      <td> </td>
+    </tr>
+    <% end %>
+  </table>
+</div>
+<div class="clear"></div>

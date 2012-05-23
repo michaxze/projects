@@ -1,0 +1,53 @@
+<div id="main" class="width70 alpha pgGal pg<%= @post.class.name.downcase rescue '' %>">
+<%= render :partial => "/globals/header_photos", :locals => { :post => @post, :listing => nil} %>
+<% if @post.shouts.length > 0%>
+<div class="clearfix pdT16"></div>
+<div class="container_12 fullS bgGray inlineB">
+    	<div class="grid_12">        
+        <div class="grid_12 pad_top18"><div class="grid_12"><h5 class="bld7 no_margin">SHOUT!</h5></div></div>
+          <div class="grid_12">
+            <div id="divShoutCon">
+                  <ul id="shoutContent" class="contentList grid_12">
+                    <!-- IF ONLY ONE LISTING ADD 'noBorder' class -->
+                    <% @post.shouts.order('created_at desc').take(3).each do |shout|%>
+                    <%= render :partial => "/places/shout", :locals => { :shout => shout, :listing => @post }%>
+                  <% end %>
+                </ul>
+            </div>
+          </div>
+			</div>     
+</div>
+<% end %> 
+<div class="container_12 fullS inlineB">
+      <h5 class="bld7 pdT14">This deal is offered by</h5>      
+      <div class="grid_12 pgList">
+        <div class="grid_1 pgImg">
+        <% unless @post.place.profile_image.nil?%>
+    	  <%= image_tag(@post.place.profile_image.image.url(:profile), :class => "", :size => "64x64") rescue get_missing_image(@post.place) %>
+    		<% end %>
+        </div>
+        <div class="grid_9">
+          <div class="grid_12 bld7 black pad_top5">
+          <a href="<%= form_url(@place) %>" title="<%= @place.name.titleize rescue ''%>"><%= @place.name.titleize %></a></div>
+          <div class="grid_12 lh13"><%= truncate(@place.description, :length => 115, :omission => "...") rescue '' %></div>
+        </div>
+      </div>
+      <%= render :partial => "/globals/tags_place",  :locals => { :post => @post, :listing => nil} %>
+      <% if @place.listing.related_listings.length > 0  %>
+  <h5 class="bld7 pdT16 ">You may also like</h5>
+  <% end %>      
+  <% @place.listing.related_listings.each do |l| %>
+            	 <div class="grid_12 pgList <%= l.listing_type%>s">
+                <div class="grid_1 pgImg"><a href="<%= form_url(l) %>" title="<%= l.name.titleize rescue ''%>"><%= image_tag(l.listable.pictures.first.image.url(:thumb), :class => "", :size => "64x64") rescue image_tag(get_missing_image_pg(l.listable.class.name,'t'), :class => "", :size => "64x64") %></a></div>
+                <div class="grid_9">
+                  <div class="grid_12 bld7 black pad_top5">
+                    <a href="<%= form_url(l) %>" title="<%= l.name.titleize rescue ''%>">
+                    <%= l.name.titleize %></a>
+                  </div>
+                  <div class="grid_12 lh13"> <%= truncate(l.description, :length => 115, :omission => "...") rescue '' %></div>
+                </div>
+              </div>                         
+  <% end %> 
+  </div>
+
+</div><!-- pgGal -->

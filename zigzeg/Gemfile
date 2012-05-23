@@ -1,0 +1,60 @@
+source 'http://rubygems.org'
+
+gem 'rails', '3.0.9'
+gem 'active_reload'
+
+# Bundle edge Rails instead:
+# gem 'rails', :git => 'git://github.com/rails/rails.git'
+
+gem 'mysql2', '~> 0.2.6'
+gem 'god'
+gem "yettings"
+gem "faye"
+
+# Use unicorn as the web server
+# gem 'unicorn'
+
+# Deploy with Capistrano
+# gem 'capistrano'
+
+gem "geokit"
+gem "paperclip"
+gem "will_paginate"
+gem "mail", "2.2.19"
+gem "thin"
+gem "tiny_mce"
+gem 'resque', :require => "resque/server"
+gem "redis"
+gem "jquery-rails"
+gem "rack", "1.2.1"
+#gem "rack", "1.2.4"
+#gem 'daemons'
+#gem 'mongrel', '1.2.0.pre2'
+#gem 'devise'
+gem 'omniauth-github'
+#, :git => 'git://github.com/intridea/omniauth-github.git'
+gem 'omniauth-openid'
+#, :git => 'git://github.com/intridea/omniauth-openid.git'
+gem 'omniauth-facebook'
+gem 'omniauth-twitter'
+#gem 'fb_graph'
+gem 'jammit'
+
+
+# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
+# gem 'ruby-debug'
+# gem 'ruby-debug19', :require => 'ruby-debug'
+
+# Bundle the extra gems:
+# gem 'bj'
+ gem 'nokogiri'
+# gem 'sqlite3-ruby', :require => 'sqlite3'
+# gem 'aws-s3', :require => 'aws/s3'
+
+# Bundle gems for the local environment. Make sure to
+# put test-only gems in this group so their generators
+# and rake tasks are available in development mode:
+# group :development, :test do
+#   gem 'webrat'
+# end
+gem "eventmachine"

@@ -1,0 +1,90 @@
+<div class="packageBox pad_top20 pad_bot20 full">
+<div class="messageBox clearfix">
+<h6 class="bold">MESSAGE FROM <%= truncate(@message.get_sendto(current_user).name_or_email.upcase, :length => 55, :omission => "...") %> <a href="<%= request.referer  %>" class="blue fright cursor">BACK</a></h6>
+			<div class="container_12">
+      		<div class="header">
+              <div class="grid_10 subject" title="<%= @message.subject %>">Subject : <%= @message.subject %></div>
+              <div class="grid_1 pad_side autowidth">Sent on</div>
+          </div>
+          <div class="body" id="appendMsg">
+
+              <% @message_threads.limit(5).each do |msg| %>
+              <div class="<%= current_user == msg.sender ? "user":"reply" %> row" <%= !msg.is_viewed ? "style='background-color:#fff799 !important'" : "" %>>
+                  <div class="grid_2 pad_right5">
+<% if msg.sender.is_advertiser? %>
+<span class="bold">
+  <% if current_user == msg.sender %>
+   Me
+  <% else %>
+  <a href="<%= msg.sender.place.profile_image.image.url(:super_thumb) rescue '/images/building.png' %>" data-id="<b>Email</b><%= msg.sender.email %><b>Contact</b><%= msg.sender.place.telephone_numbers rescue ''%>" rel="<%= msg.sender.place.name rescue ''%>" name="profInfo" class="cursor" >
+  <%= truncate(msg.sender.name_or_email, :length => 10, :omission => "...") %></a>
+  <% end %>
+</span>
+<% else %>
+<span class="bold">
+  <% if current_user == msg.sender %>
+   Me
+  <% else %>
+  <a href="<%=
+if msg.sender.avatar.exists?
+ msg.sender.avatar.url(:thumb)
+else
+	get_missing_uimage(msg.sender.gender)
+end
+ %>" data-id="<b>Email</b><%= msg.sender.email %>" rel="<%= msg.sender.username rescue '' %>" name="profInfo" class="cursor" >
+  <%=  truncate(msg.sender.name_or_email, :length => 10, :omission => "...") %></a>
+  <% end %>
+</span>
+
+<% end %>
+
+                  </div>
+                  <div class="grid_8 "><%= raw msg.html_contents %></div>
+                  <div class="autowith pad_side15"><%= formatted_date(msg.created_at, 'ddmmyyyy') %><br /><%= formatted_date(msg.created_at, 'hm') %></div>
+                  <div class="clear"></div>
+              </div>
+              <% msg.update_attribute(:is_viewed, true) %>
+              <% end %>
+
+          </div><!-- end body -->
+         <div class="olderMessages"></div>
+ 	 <div class="clearfix"></div>
+         <% if @message_threads.length > 5 %>
+         <h6 class="no_margin">
+           <div class="msgLoader dispNone"></div>
+           <a class="cursor viewOlderMessage "><h6 class="bold">view older message</h6></a>
+         </h6>
+         <% end %>
+
+          <div class="compose">
+            <div class="grid_12 pad_top20"><span>Reply to message here:</span></div>
+            <div class="grid_12 blue">
+             <textarea name="replyMsg" id="replyMsg" class="required full"></textarea>
+             <input type="hidden" name="userid" id="userid" value="<%= current_user.id %>" />
+             <input type="hidden" name="subject" id="subject" value="<%= @message.subject %>" />
+             <%= hidden_field_tag :message_thread_id, @message.message_thread_id %>
+             <% if @message.sender.id == current_user.id %>
+               <%= hidden_field_tag :receiver_id, @message.receiver.id %>
+             <% else %>
+               <%= hidden_field_tag :receiver_id, @message.sender.id %>
+             <% end %>
+             <%= hidden_field_tag :message_id, @message.id %>
+            </div>            
+            <div class="grid_8">
+                <div class="dispNone margin_left_20" id="msgsent_notice">Message sent.</div>
+                <label class="error dispNone margin_left_20" id="replyMsgError">Unable to send a reply as text field is empty.</label>
+              </div>
+              <div class="grid_4 right pad_top">
+                <a class="checkButton cursor fright no_margin" id="submitMsg">Send Reply</a>
+              </div>
+              <div class="body marginTop30">
+          </div><!-- end 2nd body-->
+      </div>
+</div>
+</div>
+<script>
+  var n_messages = $("#total_messages span").text();
+  if (n_messages > 0)
+    var total_messages = n_messages - 1;
+  $("#total_messages span").text(total_messages)
+</script>

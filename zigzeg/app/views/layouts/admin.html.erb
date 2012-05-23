@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>Zigzeg - ADMIN CMS</title>
+<meta name="robots" content="noindex">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<!-- favicon -->
+  <link rel="shortcut icon" href="/images/favicon.ico" />
+  <%= stylesheet_link_tag "style" %>
+  <%= stylesheet_link_tag "user" %>
+  <%= stylesheet_link_tag "/javascripts/themes/base/jquery.ui.tabs.css" %>
+  <%= stylesheet_link_tag "/javascripts/themes/ui-lightness/jquery.ui.theme.css" %>
+  <%= stylesheet_link_tag "/javascripts/themes/ui-lightness/jquery.ui.base.css" %>
+  <%= stylesheet_link_tag "/javascripts/themes/ui-lightness/jquery.ui.datepicker.css" %>
+ <!--Load Scripts-->
+ <%= javascript_include_tag "jquery-1.6.2" %>
+ <%= javascript_include_tag "ui/jquery.ui.core.js" %>
+ <%= javascript_include_tag "ui/jquery.ui.widget.js" %>
+ <%= javascript_include_tag "ui/jquery.ui.mouse.js" %>
+ <%= javascript_include_tag "ui/jquery.ui.tabs.js" %>
+ <%= javascript_include_tag "jquery.validate" %>
+ <%= javascript_include_tag "admin" %>
+ <%= javascript_include_tag "fileuploader" %>
+ <%= javascript_include_tag "ui/jquery.ui.datepicker.js" %> 
+  <%= javascript_include_tag 'rails' %>
+  <%= csrf_meta_tag %>
+	<!--[if IE]>
+    <%= javascript_include_tag "ie-fix" %>
+  <![endif]-->  
+
+</head>
+<body>
+<noscript><div class="ns">Your browser does not support JavaScript!</div></noscript> 
+<%= render "/admin/header" %>
+
+<!--start page_wrap-->
+<div id="page_wrap" class="admincms fcontainer_12 clearfix top">
+  <%= render "/admin/welcome" %>
+
+
+  <div id="notice_or_error">
+    <%= render :partial => "/globals/notice_or_error" %>
+  </div>
+
+  <!--start content-->
+  <div id="page_wrap" class="fcontainer_12 clearfix">
+    <%= render "/admin/sidebar" %>
+    <!--  start main container -->
+    <div class="mainContainer">
+      <%= yield %>
+    </div>
+    <!-- end main container -->
+  </div>
+  <!--end content-->
+
+  <div class="clear pad_bot"></div>
+</div>
+<!--end page_wrap-->
+
+<%= render "/admin/footer" %>
+<%= render "/admin/boxes" %>
+<<<<<<< HEAD
+=======
+
+ <%= javascript_include_tag "#{Yetting.main_domain}:9292/faye.js" %>
+ <%= javascript_include_tag 'application' %>
+
+>>>>>>> 552fb8504cfe6060065c49840d42a8cdf2182145
+<%= render "/globals/analytics" %>
+</body>
+</html>

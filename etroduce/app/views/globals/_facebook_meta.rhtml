@@ -1,0 +1,9 @@
+<% if controller_name == "opportunities" && action_name == "show"%>
+<meta property="og:title" content="<%= h(strip_tags(@opp.subject)) %>"/>
+<meta property="og:type" content="article"/>
+<% unless @opp.assets.last.nil?%>
+<meta property="og:image" content="<%= root_url%><%= @opp.assets.first.image.url(:thumb)%>"/>
+<% end %>
+<meta property="og:url" content="<%= opportunity_url(@opp) %>"/>
+<meta property="og:site_name" content="Etroduce - online referral platform."/>
+<% end %>

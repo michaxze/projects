@@ -1,0 +1,27 @@
+#wrapper {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: 980px;
+  margin-top: 26px;
+  background-color: #525252;
+  min-height: 500px;
+}
+#maincontent {
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  width: 900px;
+  padding: 15px;
+}
+#sociallinks { float: right; padding-top: 60px }
+#sociallinks img { padding-right: 15px;}
+
+#menu { height: 41px; float: right; }
+#menu ul {list-style-type: none; display: list-item; float:right; position: relative; height: 36px}
+#menu ul li { display: inline-block; background-image: url(/images/lightblue-verfical.jpg); background-repeat: no-repeat; padding: 0px 20px 0px 20px; }
+#menu ul li.first { display: inline-block; background-image: none !important }
+#menu ul li a { line-height: 36px; color: gray; font-size: 12px; }
+#menu ul li a:hover { color: #3f7987; text-decoration: none; font-size: 12px;}
+#menu ul li a.selected { color: #3f7987; text-decoration: none; font-size: 12px; }
+#content { padding: 20px 0px 20px 0px }

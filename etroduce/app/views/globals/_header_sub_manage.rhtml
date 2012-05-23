@@ -1,0 +1,79 @@
+<div id="submenu">
+  <% if logged_in? %>
+    <div class="menu-inner">
+      <ul>
+        <li> <%= link_to "Messages" + (@new_messages > 0 ? "(#{@new_messages})" : '').to_s, messages_path, :class => (controller_name.to_s == "messages" ? "selected_menu" : "")%></li>
+        <li> <%= link_to "Opportunities", myopportunities_path(:p => 'f'), :class => (controller_name.to_s == "myopportunities" ? "selected_menu" : "")%></li>
+        <li> <%= link_to "Contacts", contacts_path, :class => (controller_name.to_s == "contacts" ? "selected_menu" : "")%></li>
+        <li> <%= link_to "Add opportunity", new_myopportunity_path %></li>
+        <li> <%= link_to "Add contact", new_contact_path%></li>
+        <li> </li>
+      </ul>
+      <div class="welcome_user">
+          <%= link_to current_user.fullname.titleize, "/#{CGI.escape(current_user.username)}" %>
+          |
+          <%= link_to "Settings", settings_path%>
+          |
+          <% if admin?(current_user)%>
+            <%= link_to "Manage posts", admins_path %>
+            |
+          <% end %>
+          <%= link_to "Log-out", logout_path%>
+      </div>
+      <div class='clr'></div>
+      
+    </div>
+  <% end%>
+</div>
+
+
+<% if controller_name.to_s == "myopportunities" %>
+<div id="submenu_loggedin">
+  <ul>
+    <li> <%= link_to "My post", myopportunities_path, :class => (params[:p].to_s == "" ? "selected_menu" : "")%> </li>
+    <li>  |</li>
+    <li>  <%= link_to "Friends", myopportunities_path(:p => 'f'), :class => (params[:p].to_s == "f" ? "selected_menu" : "")%></li>
+    <li>  |</li>
+    <li>  <%= link_to "Friends of friends", myopportunities_path(:p => 'ff'), :class => (params[:p].to_s == "ff" ? "selected_menu" : "")%></li>
+    <li>  </li>
+    <li>  </li>
+    <li>  </li>
+    <li>  </li>
+  </ul>
+</div>
+<% end %>
+
+<% if controller_name.to_s == "messages" %>
+<div id="submenu_loggedin">
+  <ul>
+    <li> <%= link_to "Inbox", messages_path, :class => (params[:f].to_s == "" ? "selected_menu" : "")%> </li>
+    <li> |</li>
+    <li> <%= link_to "Referral", messages_path(:f => 'refer'), :class => (params[:f].to_s == "refer" ? "selected_menu" : "")%></li>
+    <li> |</li>
+    <li> <%= link_to "Sent Items", messages_path(:f => 'sent'), :class => (params[:f].to_s == "sent" ? "selected_menu" : "")%></li>
+  </ul>
+  
+</div>
+<% end %>
+
+<% if controller_name.to_s == "contacts" %>
+<div id="submenu_loggedin">
+  <ul>
+    <li> <%= link_to "Friends", contacts_path, :class => (action_name.to_s == "index" ? "selected_menu" : "")%> </li>
+    <li> |</li>
+    <li> <%= link_to "Friends of Friends", friends_contacts_path, :class => (action_name.to_s == "friends" ? "selected_menu" : "")%></li>
+    <li> |</li>
+    <li> <%= link_to "Your Requests", your_requests_contacts_path, :class => (action_name.to_s == "your_requests" ? "selected_menu" : "")%></li>
+    <li> |</li>
+    <li> <%= link_to "Friend Requests" + (@new_friend_requests > 0 ? "(#{@new_friend_requests})" : '').to_s, friend_requests_contacts_path, :class => (action_name.to_s == "friend_requests" ? "selected_menu" : "")%></li>
+  </ul>
+  
+</div>
+<% end %>
+<div class="clr"></div>
+
+<script>
+  $("#dropdownbutton").click(function () {
+    $("#menu").slideToggle("slow");
+  });
+</script>

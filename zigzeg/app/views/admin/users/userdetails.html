@@ -1,0 +1,109 @@
+<%= hidden_field_tag :user_id, @user.id%>
+    <div id="page_wrap" class="fcontainer_12 clearfix adminUser">
+    <div class="fright ">
+          <div class="qlContainer margin_left_10">
+                <div class="quicklinks container_12">
+                    <a class="" href="<%= admin_users_path %>"><div class="grid_12">Back to Listing</div></a>
+                    <a  href="<%= new_admin_message_path(:receiver_id => @user.id) %>"><div class="grid_12">Send message</div></a>
+                    <a class="getDetails" href="appends/manageAccount.html"><div class="grid_12">Manage account</div></a>
+                    <% if @user.suspended?%>
+                    <a  href="/admin/users/activate?user_id=<%= @user.id%>" class="cursor"><div class="grid_12">Activate account</div></a>
+                    <% else%>
+                    <a id="suspendAccount" class="cursor"><div class="grid_12">Suspend account</div></a>
+                    <% end %>
+                    <a  class="cursor" href="<%= confirm_admin_user_path(@user) %>" target="_blank"><div class="grid_12">Confirm</div></a>
+                    <div class="align_left dispNone"  id="suspendWrapper">
+											<div class="suspendContain simpleBox">                     
+                        <h6 class="no_margin">Account to suspend</h6><span class="close cursor"><h6 class="orange">close</h6></span>
+                        <h6 class="orange bold">Starbuck Malaysia</h6>
+                        <h6 class="pad_top no_margin">Reason of suspension</h6>
+                       <select class="radius5 required" name="suspend_type" id="suspend_type">
+                          <option value="nopayment">Non-payment of invoices</option>
+                        </select>
+                        <div class="clearfix pad_top"></div>
+                        <a class="checkButton cursor" id="suspendBtn">Suspend Account</a>
+                    	</div>
+                    </div>
+                </div>
+    			</div>
+    </div>
+      <div class="container_12 full ">
+      		<div class="grid_6 no_margin">
+      				<h2 class="bold pad_top"><a class="cursor orange"><%= @user.username rescue ''%></a>
+      				<% if @user.status == 2%>  
+      				 <span class="red"> Suspended </span>
+      				<% end %>
+      				</h2>
+          </div>
+          <div class="grid_6 no_margin align_right fright full">
+          	<h6>Joined on <span class="bold"><%= formatted_date(@user.created_at)%></span></h6>
+          	<% unless @user.last_login.nil?%>
+            <h6>Last logged in on <span class="bold"><%= formatted_date(@user.last_login) %></span></h6>
+            <% else%>
+            <h6>Never been login</h6>
+            <% end %>
+          </div>
+      </div>
+    <div class="full messageBox clearfix">
+    <h6 class="bold grid_7 pad_bot">ACCOUNT OVERVIEW</h6>
+    <div class="container_12 full bgGray accountOverview no_margin">
+    	<div class="imageContainer absolute">
+    	  <%= image_tag(@user.avatar.url(:thumb), :size => "80x65")%>
+    	  </div>
+    		<div class="grid_1 first">Username</div>
+        <div class="grid_4 bold"><%= @user.username rescue ''%></div>
+        <div class="grid_1">Email</div>
+        <div class="grid_3 bold"><%= @user.email%></div>
+        <div class="grid_3">&nbsp;</div>
+        <div class="grid_1 first">Email</div>
+        <div class="grid_4 bold">&nbsp;</div>
+        <div class="grid_1">Gender</div>
+        <div class="grid_3 bold"><%= @user.gender rescue ''%></div>
+        <div class="grid_3">&nbsp;</div>
+        
+        <div class="grid_1 first">Location</div>
+        <div class="grid_6 bold"><%= @user.partial_address %> &nbsp;</div>
+        <div class="grid_3">&nbsp;</div>
+    </div>
+    
+    
+  <h6 class="bold grid_7 pad_bot">ZIGLIST</h6><div class="fright filter">
+<select id="filterZig">
+		<option value="">Show All Ziglist types</option>
+    <option value="deal">Deal</option>
+    <option value="event">Event</option>
+    <option value="place">Place</option>
+</select>
+</div>
+			<div class="container_12 no_margin">
+      		<div class="header">
+              <div class="grid_4">Ziglist Entry</div>
+              <div class="grid_3">Type</div>
+              <div class="grid_4">By</div>
+              <div class="grid_1">Date Zigged</div>
+              <div></div>
+          </div>
+          <div class="body" id="ziglistWrap">
+            
+          <% @user.favorites.each do |fav|%>
+          <div class="row new " listing-type="<%= fav.likeable.listing_type.downcase %>" data-id="<%= fav.id %>" >
+              <div class="grid_4"><%= link_to fav.likeable.name.titleize, form_url(fav.likeable) %></div>
+              <div class="grid_3"><%= fav.likeable.listing_type.titleize %></div>
+              <div class="grid_4"><%= fav.likeable.listable.place.name.titleize %></div>
+              <div class="grid_1"><%= formatted_date(fav.created_at)%></div>
+              <div></div>
+          </div>
+          <% end %>
+                
+          </div><!-- end body -->
+          <div class="footer">
+              <div class="grid_12"><span>Page</span>
+              				<ul class="pagination"><li><a>1</a></li>
+                      <li><a href=""  class="selected">2</a></li>
+                      <li><a href="">3</a></li>
+                      </ul></div>
+              
+          </div>
+      </div>
+</div>
+    </div>

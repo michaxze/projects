@@ -1,0 +1,640 @@
+<%
+lat = 3.13
+lng = 101.62
+
+unless @place.address.nil?
+  lat = @place.address.lat unless @place.address.lat.nil?
+  lng = @place.address.lng unless @place.address.lng.nil?
+
+  unless @place.address.map_address.nil?
+    lat = @place.address.map_address.lat unless @place.address.map_address.lat.nil?
+    lng = @place.address.map_address.lng unless @place.address.map_address.lng.nil?
+  end
+end
+
+details_class = "dispNone"
+checked = ""
+unless @place.address.nil?
+  unless @place.address.map_address.nil?
+    details_class = "dispNone"
+    checked = ""
+  else
+    details_class = ""
+    checked = "checked"
+  end
+end
+
+%>
+
+<script type="text/javascript">
+
+  function lockmarker(draggable){
+    if (draggable){
+      $("#lock_marker").text("Unlock Marker");
+    }else{
+      $("#lock_marker").text("Lock Marker");
+    }
+
+    lat = "'" + $("#address_lat").val() + "'";
+    lng = "'" + $("#address_lng").val() + "'";
+    update_map(lat, lng, draggable);
+  }
+
+  function update_map(lat, lng, draggable) {
+    if (draggable){
+      $("#lock_marker").text("Lock Marker");
+    }else{
+      $("#lock_marker").text("Unlock Marker");
+    }
+    markersArray[0].draggable = draggable;
+    markersArray[0].setMap(map);
+  }
+
+  var geocoder;
+  var map;
+  var markersArray = [];
+  geocoder = new google.maps.Geocoder();
+
+  function clearOverlays() {
+    if (markersArray) {
+      for (i in markersArray) {
+        markersArray[i].setMap(null);
+      }
+    }
+    markersArray = [];
+  }
+
+  function initialize() {
+    locateAddress(true);
+    clearOverlays();
+    var pinkParksStyles = [{featureType: "poi", stylers: [{ saturation: -80 }, { visibility: "off"}]}, {featureType: "all", stylers: [{ saturation: -80 }]} ];
+    var pinkMapType = new google.maps.StyledMapType(pinkParksStyles, {name: "Map"});
+    var myLatlng = new google.maps.LatLng(<%= lat %>, <%= lng %>);
+    var myOptions = {
+      zoom: 14,
+      center: myLatlng,
+      panControl: false,
+      zoomControl: true,
+			zoomControlOptions: { 
+        style: google.maps.ZoomControlStyle.SMALL,
+        position: google.maps.ControlPosition.TOP_RIGHT
+    	},
+      mapTypeControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        overviewMapControl: false,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById('mapcanvas'), myOptions);
+    map.mapTypes.set('pink_parks', pinkMapType);
+    map.setMapTypeId('pink_parks');
+    var image = '/images/places_32.png';
+    var marker = new google.maps.Marker({
+      map: map, 
+      position: myLatlng,
+      draggable: true,
+      icon: image,
+      animation: google.maps.Animation.DROP
+    });
+
+    clearOverlays();
+    markersArray.push(marker);
+    google.maps.event.addListener(marker, 'dragend', function() {
+      var position = marker.getPosition();
+      $("#address_lat").val(marker.getPosition().lat());
+      $("#address_lng").val(marker.getPosition().lng());
+     });
+  }
+
+  google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+<script>
+
+
+$(function() {
+
+  $("#lock_marker").live("click", function() {
+    text = $(this).text();
+    if (text == "Lock Marker"){
+      $(this).text("Unlock Marker");
+      draggable = false;
+    }else{
+      $(this).text("Lock Marker");
+      draggable = true;
+    }
+
+    lockmarker(draggable);
+  });
+	
+  $("#building_name").autocomplete("/business/search_building", {
+    width: 150,
+    selectFirst: false,
+  });
+
+  $("#building_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#notfound").attr('checked', false);
+      $("#address_details").fadeOut();
+
+      lot_number    = $("#lot_number").val();
+      building_name = $("#building_name").val();
+      temp_address = lot_number + " " + building_name + " " + data[2];
+      showMapAddress(temp_address);
+      $("#your_address").text(temp_address).hide().fadeIn();
+      $("#street").val(data[2]);
+      $("#map_address_id").val(data[1]);
+
+      $("#street").val(data[2]);
+      $("#section_name").val(data[3]);
+      $("#postcode").val(data[4]);
+      $("#city_name").val(data[5]);
+      $("#state_name").val(data[6]);
+      $("#country_name").val(data[7]);
+      update_address();
+    }
+  });
+
+//  locateAddress();
+  
+  $("#findLocationFrm").validate({
+    submitHandler: function(form) {
+      $('.grayLoader').show();
+      form.submit();
+    },
+    messages:{
+      "map_error": {
+        required: "There seems to be some errors in your address. Please check.",
+      },
+      "valid_state": {
+        required: "Please verify your state.",
+      },
+      "address_lat": {
+        required: ""
+      },
+      "address_lng": {
+        required: ""
+      }      
+    }
+    
+  });
+
+  $("#lot_number, #street, #building_name, #section_name, #postcode, #city_name, #state_name, #country_name").live("change",function(){
+    locateAddress();
+  });
+/*
+  $("#lot_number, #street, #building_name, #section_name, #postcode, #city_name, #state_name, #country_name").blur(function(){
+    locateAddress();
+  });
+*/
+
+  $("#section_name").autocomplete("/business/search_section", {
+    width: 150,
+    selectFirst: false,
+  });
+
+  $("#section_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#section_name").val(data[1]);
+      $("#postcode").val(data[2]);
+      $("#city_name").val(data[3]);
+      $("#state_name").val(data[4]);
+      $("#country_name").val(data[5]);
+      update_address();
+//      locateAddress();
+    }
+  });
+
+
+  $("#city_name").autocomplete("/business/search_city", {
+    width: 150,
+    selectFirst: false,
+  });
+
+  $("#city_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#city_name").val(data[1]);
+      $("#state_name").val(data[2]);
+      $("#country_name").val(data[3]);
+      update_address();
+      locateAddress();
+    }
+  });
+
+
+  $("#postcode").autocomplete("/business/search_postcode", {
+    width: 150,
+    selectFirst: false,
+  });
+
+  $("#postcode").result(function(event, data, formatted) {
+    if (data) {
+      $("#postcode").val(data[1]);
+      $("#city_name").val(data[2]);
+      $("#state_name").val(data[3]);
+      $("#country_name").val(data[4]);
+      update_address();
+      locateAddress();
+    }
+  });
+
+  $("#state_name").autocomplete("/business/search_state_autocomplete", {
+    width: 150,
+    selectFirst: false
+  });  
+  $("#state_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#state_name").val(data[1]);
+      $("#country_name").val(data[2]);
+      update_address();
+      locateAddress();
+    }
+  });
+
+  $("#country_name").autocomplete("/business/search_country_autocomplete", {
+    width: 150,
+    selectFirst: false,
+  });
+  $("#country_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#country_name").val(data[0]);
+      update_address();
+      locateAddress();
+    }
+  });
+  
+
+
+  $("#street").autocomplete("/business/searchaddress", {
+    width: 150,
+    selectFirst: false,
+  });
+  
+  $("#street").result(function(event, data, formatted) {
+    if (data) {
+      $("#notfound").attr('checked', false);
+      $("#street").val(data[2]);
+
+      $("#street").val(data[2]);
+      $("#section_name").val(data[3]);
+      $("#postcode").val(data[4]);
+      $("#city_name").val(data[5]);
+      $("#state_name").val(data[6]);
+      $("#country_name").val(data[7]);
+      update_address();
+
+      if (data[8] != "" && data[9] != "") {
+        $("#map_address_id").val(data[1]);
+        showMapLatLng(data[8], data[9]);
+      }else{
+//        locateAddress();
+        $("#map_address_id").val(data[1]);
+      }
+    }
+  });
+  
+  $("#street").change(function(){
+    if ($("#street").val() != "") {
+      locateAddress();  
+    }    
+  });  
+
+});
+
+function toggleAddressDetails()
+{
+  if ( $("#notfound").is(':checked') ) {
+    $("#address_details").fadeIn();
+  }else{
+    $("#address_details").fadeOut();
+  }
+}
+
+function update_address()
+{
+  var fulladdress = "";
+  
+  if ($("#lot_number").val() != "") 
+    fulladdress += $("#lot_number").val() + ", ";
+  if ($("#building_name").val() != "")
+    fulladdress += $("#building_name").val() + ", ";
+  if ($("#street").val() != "")
+    fulladdress += $("#street").val() + ", ";
+  if ($("#section_name").val() != "")
+    fulladdress += $("#section_name").val() + ", ";
+  if ($("#postcode").val() != "")
+    fulladdress += $("#postcode").val() + " ";
+  if ($("#city_name").val() != "")
+    fulladdress += $("#city_name").val() + ", ";
+  if ($("#state_name").val() != "")
+    fulladdress += $("#state_name").val() + ", ";
+  if ($("#country_name").val() != "")
+    fulladdress += $("#country_name").val();
+
+  $("#your_address").text(fulladdress);
+}
+
+
+function locateAddress(map)
+{
+  var fulladdress = "";
+  $("#lot_number").val($("#lot_number").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#building_name").val($("#building_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#street").val($("#street").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#section_name").val($("#section_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#postcode").val($("#postcode").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#city_name").val($("#city_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#state_name").val($("#state_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	$("#country_name").val($("#country_name").val().replace(/^[,\s]+|[,\s]+$/g,""));
+	
+   if ($("#lot_number").val() != "") 
+    fulladdress += $("#lot_number").val() + ", ";
+  if ($("#building_name").val() != "")
+    fulladdress += $("#building_name").val() + ", ";
+  if ($("#street").val() != "")
+    fulladdress += $("#street").val() + ", ";
+  if ($("#section_name").val() != "")
+    fulladdress += $("#section_name").val() + ", ";
+  if ($("#postcode").val() != "")
+    fulladdress += $("#postcode").val() + " ";
+  if ($("#city_name").val() != "")
+    fulladdress += $("#city_name").val() + ", ";
+  if ($("#state_name").val() != "")
+    fulladdress += $("#state_name").val() + ", ";
+  if ($("#country_name").val() != "")
+    fulladdress += $("#country_name").val();
+
+  $("#your_address").text(fulladdress);
+  if(map == undefined) {
+    showMapAddress(fulladdress);
+  }
+}
+
+
+  function showMapAddress(address) {
+    $("#map_error").val('none');
+    clearOverlays();
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        map.setCenter(results[0].geometry.location);
+        
+        var image = '/images/places_32.png';
+        var marker = new google.maps.Marker({
+          map: map, 
+          icon: image,
+          position: results[0].geometry.location,
+          draggable: true,
+          animation: google.maps.Animation.DROP
+        });
+
+        $("#address_lat").val(marker.getPosition().lat());
+        $("#address_lng").val(marker.getPosition().lng());
+
+        markersArray.push(marker);
+        google.maps.event.addListener(marker, 'dragend', function() {
+          var position = marker.getPosition();
+          $("#address_lat").val(marker.getPosition().lat());
+          $("#address_lng").val(marker.getPosition().lng());
+        });
+
+        if ($("#state_name").val() != "") {
+  				$.ajax({
+  				  type: "GET",
+  				  url: "/business/search_state?s=" + $("#state_name").val(),
+  				  success:function(data){
+  				    if (data == "true"){
+  				      $("label[for=valid_state]").hide();
+  				      $("#valid_state").val("valid");
+  				    }else{
+  				      $("#valid_state").val("valid");
+				      }
+  				  }
+  				});
+        }
+
+      } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS ) {
+        $("#address_lat").val('');
+        $("#address_lng").val('');
+        $("#map_error").val('');
+
+        if ($("#state_name").val() != "") {
+      				$.ajax({
+      				  type: "GET",
+      				  url: "/business/search_state?s=" + $("#state_name").val(),
+      				  success:function(data){
+      				    if (data == 'true'){
+      				      $("#valid_state").val("valid");
+      				      $("label[for=valid_state]").hide();
+      				    }else{
+      				      $("#valid_state").val("valid");
+    				      }
+      				  }
+      				});
+        }
+      } else {
+        $("#map_error").val('');
+//        alert("Geocode was not successful for the following reason: " + status);
+      }
+    });
+  }
+
+
+
+  function showMapLatLng(lat, lng) {
+    $("#map_error").val('none');
+    clearOverlays();
+    var myLatlng = new google.maps.LatLng(lat, lng);
+    var myOptions = {
+      zoom: 16,
+      center: myLatlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    map = new google.maps.Map(document.getElementById('mapcanvas'), myOptions);
+
+    var image = '/images/places_32.png';    
+    var marker = new google.maps.Marker({
+        position: myLatlng, 
+        map: map,
+        draggable:true,
+        icon: image,
+        animation: google.maps.Animation.DROP
+    }); 
+
+
+    markersArray.push(marker);
+    google.maps.event.addListener(marker, 'dragend', function() {
+      var position = marker.getPosition();
+      $("#address_lat").val(marker.getPosition().lat());
+      $("#address_lng").val(marker.getPosition().lng());
+     });
+  }
+	
+	
+</script>
+
+
+
+<div class="packageBox pad_top20 pad_bot20 full">
+<%= form_for @place, :url => update_location_business_path(:id => @place.id), :html => { :id => "findLocationFrm", :method =>
+:post } do |f| %>
+                 <%= render("breadcrumbs") %>
+                 <div class="full_width borderBot"></div>
+
+                 <div class="container_12 inputs pad_top20 pad_bot">
+
+                   <div class="grid_3 align_right marginTop5 lineHeight10 pad_top5"></div>
+                   <div class="grid_9 pad_bot">
+                  </div>
+                   
+                   <div class="grid_3 align_right marginTop5 lineHeight10 pad_top5"><label>Unit number </label><br />(optional)</div>
+                   <div class="grid_9 pad_bot">
+                     <input type="text" class="radius5 fancyinput" id="lot_number" name="address[address_lot_number]" value="<%=
+@place.address.address_lot_number rescue '' %>" ><br>
+                     <label for="lot_number" generated="false" class="error" ></label>
+                   </div>
+                   
+                   <div class="grid_3 align_right marginTop5 lineHeight10 pad_top5"><label>Building name</label><br />(optional)</div>
+                   <div class="grid_9 pad_bot">
+                     <input type="text" class="radius5 fancyinput" value="<%= @place.address.building_name rescue '' %>"
+id="building_name" name="address[building_name]" ><br>
+                     <label for="building_name" generated="false" class="error" ></label>
+                   </div>
+
+                   <div class="grid_3 align_right marginTop5 lineHeight10 pad_top"><label>Street</label></div>
+                   <div class="grid_9">
+                     <input type="text" class="radius5 required fancyinput" value="<%= @place.address.street rescue '' %>"
+id="street" name="address[street]" ><br />
+                     <label for="street" generated="false" class="error"></label>
+                   </div>
+                   
+
+                  <div class="clearfix"></div>
+                   <div class="grid_3 align_right marginTop5 lineHeight10 pad_top20"><label>Section </label><br />(optional)</div>
+                   <div class="grid_9 pad_bot pad_top">
+                     <input type="text" class="radius5 fancyinput" id="section_name" name="address[section_name]" value="<%=
+@place.address.section_name rescue '' %>"><br>
+                     <label for="section_name" generated="false" class="error" ></label>
+                   </div>
+                   <div class="grid_3 align_right marginTop5 lineHeight10 pad_top"><label>Postcode</label></div>
+                   <div class="grid_9 pad_bot">
+                     <input type="text" class="radius5 required fancyinput" id="postcode" name="address[postcode]" value="<%=
+@place.address.postcode rescue '' %>"><br>
+                     <label for="postcode" generated="false" class="error" ></label>
+                   </div>
+
+                   <div class="grid_3 align_right marginTop5 lineHeight10 pad_top5"><label>City/Town</label></div>
+                   <div class="grid_9 pad_bot">
+                     <%= text_field_tag "address[city_name]", (@address.city_name rescue '') , :id => "city_name", :class =>
+"radius5 required fancyinput" %><br>
+                     <label for="city_name" generated="false" class="error" ></label>
+                   </div>
+
+                   <div class="grid_3 align_right marginTop5 lineHeight10 pad_top5"><label>State/Region</label></div>
+                   <div class="grid_9 pad_bot">
+                     <input type="text" value="<%= @place.address.state_name rescue '' %>" name="address[state_name]"
+id="state_name" class="radius5 required fancyinput" autocomplete="off">
+                    <br>
+                     <%= hidden_field_tag "valid_state", 'valid', :class => "required validState"  %>
+                     <label for="state_name" generated="false" class="error"></label>
+                      <%= hidden_field_tag "address_lat", (@place.address.lat rescue ''), :class => "required"  %>
+                     <%= hidden_field_tag "address_lng", (@place.address.lng rescue ''), :class => "required"  %>                 
+ 
+
+                   </div>
+                   
+                   <div class="grid_3 align_right marginTop5 lineHeight10 pad_top5 pad_bot"><label>Country</label></div>
+                   <div class="grid_9 pad_bot">
+                     <input type="text" value="<%= @place.address.country_name rescue '' %>" name="address[country_name]"
+id="country_name" class="radius5 required fancyinput" autocomplete="off">
+<br>
+                     <label for="country_name" generated="false" class="error" ></label>
+                   </div>                   
+
+                 <div class="grid_3 align_right marginTop5 lineHeight10 pad_top"><label>Your full address</label></div>
+                 <div class="grid_7 suffix_2 inlineB ">
+                   <span id="your_address" class="bgGray inlineB radius5 pad10 width90 bold">
+                     <% unless @place.address.nil? %>
+                       <%= @place.address.partial_address %>
+                     <% else %>
+                      &nbsp;
+                     <% end %>
+                   </span><br/>
+                 </div>
+
+
+                 </div>
+                     
+               		<div class="container_12 inputs">
+
+			              <div class="grid_3 align_right marginTop5"><label>Location</label></div>
+			              <div class="grid_9">
+                      <div id="mapcanvas" class="radius5" style="width:330px; height:245px"></div>
+                      <div id="message"></div>
+                    </div>
+                    <div class="grid_7 suffix_2 prefix_3 inlineB ">
+                   <span class="inlineB radius5 width90 lh13">You may position the marker in the map above to the precise location you
+desire. Do check that the marker is positioned at a location which corresponds to the address displayed above.</span></div>
+                </div> 
+                	<div class="full_width borderBot pad_top20"></div>
+               		<div class="container_12 inputs pad_top pad_bot">
+										<div class="grid_3 align_right marginTop5 pad_top"><label>Telephone No</label></div>
+                    <div class="grid_9 pad_top"><input type="text" class="radius5 fancyinput required validTelno" id="tel_no"
+name="place[telephone_numbers]" value="<%= @place.telephone_numbers rescue '' %>"><br /><label for="tel_no" generated="false"
+class="error" ></label>
+e.g.: +06-03-12345678
+                    
+                    </div>
+                    <div class="grid_3 align_right marginTop5 pad_top lh1"><label>Fax No</label><br />(optional)</div>
+                    <div class="grid_9 pad_top"><input type="text" class="radius5 fancyinput validTelno" id="fax_no"
+name="place[fax_numbers]" value="<%= @place.fax_numbers rescue '' %>"><br /><label for="fax_no" generated="false" class="error"
+></label>
+e.g.: +06-03-12345678
+                    
+                    </div>
+                    <div class="grid_3 align_right marginTop5 pad_top"><label>Email Address</label></div>
+                    <div class="grid_9 pad_top"><input type="text" class="radius5 fancyinput required email" id="email_add"
+name="place[email]" value="<%= @place.email rescue '' %>"><br />
+                    <label for="email_add" generated="false" class="error" ></label>
+                    </div>
+                    <div class="grid_3 pad_top align_right marginTop5 lh1"><label>Web URL:</label><br />(optional)</div>
+                    <div class="grid_9 pad_top"><input type="text" class="radius5 fancyinput complete_url" id="url"
+name="place[website_url]" value="<%= @place.website_url rescue '' %>"><br />
+                    <label for="url" generated="false" class="error" ></label>
+                    </div>
+                </div> 
+               	<div class="full_width borderBot pad_top20"></div>
+               		<div class="container_12 inputs pad_top pad_bot">
+										<div class="grid_3 align_right marginTop5 pad_top lh1"><label>Facebook page</label><br />(optional)</div>
+                    <div class="grid_9 pad_top"><input type="text" class="radius5 fancyinput complete_url" id="fb_url"
+name="place[facebook]" value="<%= @place.facebook rescue '' %>"><img src="/images/fb.jpg" class="margin_left_10"><br />
+                    <label for="fb_url" generated="false" class="error" ></label>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="grid_3 align_right marginTop5 pad_top lh1"><label>Twitter page</label><br /> (optional)</div>
+                    <div class="grid_9 pad_top"><input type="text" class="radius5 fancyinput complete_url" id="twitter_url"
+name="place[twitter]" value="<%= @place.twitter rescue '' %>"><img src="/images/twitter.jpg" class="margin_left_10"><br />
+                    <label for="twitter_url" generated="false" class="error" ></label>
+                    </div>
+
+                    <div class="grid_3 align_right marginTop5 pad_top"></div>
+                    <div class="grid_9 pad_top">
+                     <%= hidden_field_tag "map_error", 'none', :class => "required" %>
+                     <label for="map_error" generated="false" class="error"></label>
+                    </div>
+
+                </div> 
+              	<div class="container_12 inputs pad_top20">
+		<div class="prefix_3 grid_9">
+                   <input type="submit" name="submit_save" class="radius5 userButton white cursor fleft width30"
+id="userSubmitBtn" value="Save and Next">
+                   <input type="button" name="submit_preview" class="radius5 bgGray margin_left_10 white hoverBlack cursor
+width30" id="userSubmitBtn" value="View My Place" onclick="window.open('<%= form_url(@place) %>','_new')">
+                   <input type="button" name="submit_preview" class="radius5 bgGray margin_left_10 white hoverBlack cursor
+width20" id="userSubmitBtn" value="Back" onclick="location.replace('/business/myplace?t=category')">
+                </div>
+                </div>
+
+          <% end %>
+</div>         
+

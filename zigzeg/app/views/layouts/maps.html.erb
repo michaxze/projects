@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>ZIGZEG <%= unless params[:search].blank?
+									"Search: \""+params[:search]+"\"" 
+							 else 
+							 	unless @page_title.nil?
+							 		"- "+@page_title 
+								end
+							 end %>
+</title>
+<meta name="robots" content="noindex">
+<meta name="keywords" content="ZIGZEG, City Information System, Social, Directory, Places & Landmarks,  Offers & Deals, Events & Happenings, Discounts & Shopping, Map & Locations, Businesses, What to do, Where to go, What to buy">
+<meta name="description" content="ZIGZEG is a city information system that combines an interactive map & a growing-by-day city information network to give people insight into the changes & happenings occurring to the cities they live in">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<!-- favicon -->
+<link rel="shortcut icon" href="/images/favicon.ico" />
+<%= stylesheet_link_tag "style" %>
+<%= stylesheet_link_tag "/javascripts/themes/base/jquery.ui.all.css" %>
+  <!--[if IE]>
+    <%= javascript_include_tag "ie-fix" %>
+  <![endif]-->  
+
+ <script type="text/javascript"
+   src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDJT0nwhhhJuvHJC8yN0DqLcc5GNAlXRYs&sensor=true">
+ </script>
+
+ <!--Load Scripts-->
+ <%= javascript_include_tag "jquery-1.6.2" %>
+ <%= javascript_include_tag "ui/jquery.ui.core.js" %>
+ <%= javascript_include_tag "ui/jquery.ui.widget.js" %>
+ <%= javascript_include_tag "ui/jquery.ui.mouse.js" %>
+ <%= javascript_include_tag "ui/jquery.ui.slider.js" %>
+ <%= javascript_include_tag "ui/jquery.ui.tabs.js" %>
+ <%= javascript_include_tag "jquery.validate" %>
+ <%= javascript_include_tag "common" %>
+ <%= javascript_include_tag "jquery.home" %>
+ <%= javascript_include_tag "jquery.mousewheel" %>
+ <%= javascript_include_tag "scrollpane" %>
+ <%= javascript_include_tag 'rails' %>
+ <%= javascript_include_tag "infobox" %>
+ <%= javascript_include_tag "map" %>
+ <%= csrf_meta_tag %>
+</head>
+<body>
+<noscript><div class="ns">Your browser does not support JavaScript!</div></noscript> 
+<div class="loginBar BigblkBg pgTop">
+ 		<div class="fcontainer_12" id="topArea">
+    		<%= render "/globals/top_place" %>
+		</div>
+</div>
+<%= yield %>
+<div class="mapModal">
+  <%= render "/globals/modals" %>
+</div>
+
+<<<<<<< HEAD
+=======
+ <%= javascript_include_tag "#{Yetting.main_domain}:9292/faye.js" %>
+ <%= javascript_include_tag 'application' %>
+>>>>>>> 552fb8504cfe6060065c49840d42a8cdf2182145
+<%= render "/globals/analytics" %>
+</body>
+</html>

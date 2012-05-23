@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>ZIGZEG - <%= @page_title rescue '' %></title>
+<meta name="robots" content="noindex">
+<meta name="keywords" content="ZIGZEG, City Information System, Social, Directory, Account Registration, Sign up">
+<meta name="description" content="ZIGZEG is a city information system that combines an interactive map & a growing-by-day city information network to give people insight into the changes & happenings occurring to the cities they live in">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+<!-- favicon -->
+<link rel="shortcut icon" href="/images/favicon.ico" />
+<%= stylesheet_link_tag "style" %>
+<%= javascript_include_tag "jquery-1.6.2" %>
+
+  <!--[if IE]>
+	  <%= javascript_include_tag "selectivizr-min.js" %>
+	<![endif]-->  
+</head>
+<body>
+<noscript><div class="ns">Your browser does not support JavaScript!</div></noscript> 
+<div class="loginBar BigblkBg pgTop">
+ 		<div class="fcontainer_12" id="topArea">
+    		<%= render "/globals/top_place" %>
+		</div>
+</div>
+  <%= render "registration/header" %>
+  <%= yield %>
+  <%= render "/globals/footer" %>
+<div id="boxes">
+  <%= render "/globals/modal_login" %>
+  <%= render "/globals/modal_forget" %>
+  <%= render "/globals/modal_signup" %>
+
+		<div id="cmpTooltip" class="window comparison" >
+       				<div class="lgray">
+              <h6 class="white title"></h6>
+              <p class="content"></p>
+              </div>
+             <div class="arrowLeft"></div>     
+        </div>
+ </div>
+<div id="mask"></div>   
+
+
+<!--Load Scripts-->
+ <%= javascript_include_tag "jquery.validate" %>
+ <%= javascript_include_tag "compare" %>
+ <%= javascript_include_tag "cufon" %>
+ <%= javascript_include_tag "Script_MT_Bold_700.font" %>
+ <%= javascript_include_tag "signup" %>
+ <%= javascript_include_tag "common" %>
+<%= render "/globals/analytics" %>
+</body>
+</html>

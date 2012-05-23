@@ -1,0 +1,17 @@
+<h6 class="bold orange grid_7 capital"><%= alert.description %>
+  <!--  &nbsp;<b class="gray">requests a call back! </b>-->
+</h6>
+<a data-id="<%= alert.id %>" class="setDone checkButton cursor fright">Set as done</a>
+
+<div class="alert_container">
+<div class="pad_bot">Reported on <%=  alert.created_at.strftime("%m-%d-%Y, %I:%M %p") %> <br /></div>
+  <div class="clearfix">&nbsp;</div>
+  <div class="bgGray pad10">
+    <span>Reported problem</span>
+    <p>
+     <%= Helper.to_html(alert.description) %>
+    </p>
+  </div>
+  <div class="clearfix">&nbsp;</div>
+</div>
+

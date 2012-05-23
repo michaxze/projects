@@ -1,0 +1,45 @@
+<form action="/" method="get" > 
+  <div class="fcontainer_12 pad_top pad_bot">
+    <!--start header-->
+      <header id="header" class="fgrid_12 clearfix ">
+          
+        <!--start logo-->
+        <div id="logow" class="grid_3 alpha push_3">
+            <a href="/"></a>      	
+        </div>
+          <!--end logo-->
+
+          <div class="container_12 fright">
+            <div class="grid_12 no_margin full fright">
+              <div class="grid_9 prefix_1 searchCon">
+
+                <div class="searchWrap radius5">
+                  <input type="text" name="search" class="full_width no_shadow no_rad"  id="search" placeholder="Search..." autocomplete="off" value="<%= params[:search] || params[:tag]%>">
+                  <div class="grid_12 fullS no_margin">
+                    <div id="acContainer"></div>
+                  </div> 
+
+                  <div id="aSearchContainer" class="white">
+                    <div id="advanceArea">
+                      <div class="advanceButtons">
+                        <% Category.where("parent_id IS NULL").order("name ASC").each do |cat| %>
+                          <div><%= cat.name.titleize %> <input type="checkbox" class="chkBx" name="category[]" value="<%= cat.id %>"></div>
+                          <% end %> 
+                      </div>
+                    </div>
+                    <div class="grid_12 gray" align="center">(Select one or more categories to filter your search.)</div>
+                  </div>
+                  <a class="gray aSearchLink cursor" id="advanceSearchBtn">Categories</a>
+                </div><!-- end  searchWrap -->
+
+              </div><!-- end  searchCon -->
+              <div class="grid_2 btnSerCon pad_top"><input type="submit" name="btnSearch" class="fancybutton btnSearch  orangeButton radius5" value="search">
+              </div>
+            </div>
+          </div>
+
+  
+      </header>
+  </div>
+  <div class="clearfix"></div>
+</form>

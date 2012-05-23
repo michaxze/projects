@@ -1,0 +1,76 @@
+<script type="text/javascript">
+		document.title = "ZIGZEG – <%= @message.subject %> from <%= @message.get_sendto(current_user).name_or_email.titleize rescue ''  %>";
+</script>
+<div class="messageBox clearfix">
+  <h6 class="bold">MESSAGE FROM
+  <% if @message.sender.is_advertiser? %>
+  <%= link_to(truncate(@message.get_sendto(current_user).name_or_email, :length => 60, :omission => "..."), form_url(@message.get_sendto(current_user).places.first))%> 
+  <% else %>
+  <%= truncate((@message.get_sendto(current_user).name_or_email), :length => 60, :omission => "...") %> 
+  <% end %>
+
+<%= link_to "BACK", request.referer, :class => "blue fright cursor " %></h6>
+			<div class="container_12">
+      		<div class="header">
+              <div class="grid_10 subject">Subject: <%= truncate(@message.subject, :length => 50, :omission => "...")%></div>
+              <div class="grid_1 pad_side15 autowidth">Sent on</div>
+          </div>
+          <div class="body" id="appendMsg">
+
+              <% @message_threads.limit(5).each do |msg| %>
+              <div class="<%= current_user == msg.sender ? "user":"reply" %> row" <%= !msg.is_viewed ? "style='background-color:#fff799 !important'" : "" %> >
+                  <div class="grid_10">
+                      <div class="grid_2 bold">
+<% if msg.sender.is_advertiser? %>
+  <% if current_user == msg.sender %>
+   Me
+  <% else %>
+<a href="<%= msg.sender.place.profile_image.image.url(:super_thumb) rescue get_missing_image(msg.sender.place) %>" data-id="<b>Email</b><%= msg.sender.email rescue '' %><b>Contact</b><%= msg.sender.place.telephone_numbers rescue '' %>" rel="<%= msg.sender.place.name rescue '' %>" name="profInfo" class="cursor" onclick="window.open('<%= form_url(msg.sender.place) %>')"><%= truncate(msg.sender.name_or_email, :length => 10, :omission => '...') %></a>
+  <% end %>
+
+<% else %>
+  <% if current_user == msg.sender %>
+    Me
+  <% else %>
+<a href="<%= msg.sender.avatar.url(:thumb) %>" data-id="<b>Email</b><%= msg.sender.email rescue '' %>" rel="<%= msg.sender.username rescue '' %>" name="profInfo" class="cursor"><%= trauncate(msg.sender.name_or_email, :length => 10, :omission => '...') %></a>
+  <% end %>
+<% end %>
+                      </div>
+                      <div class="grid_10"><%= raw msg.html_contents %></div>
+                  </div>
+                  <div class="autowith pad_side15"><%= formatted_date(msg.created_at, 'ddmmyyyy') %><br /><%= formatted_date(msg.created_at, 'hm') %></div>
+                  <div class="clear"></div>
+              </div>
+              <% msg.update_attribute(:is_viewed, true) %>
+              <% end %>
+          </div><!-- end body -->
+         <div class="olderMessages"></div>
+					<div class="clearfix"></div>
+         <% if @message_threads.length > 5 %>
+         <h6 class="no_margin">
+           <div class="msgLoader dispNone"></div>
+           <a class="cursor viewOlderMessage pad_top"><h6 class="bold">View older messages</h6></a>
+         </h6>
+         <% end %>
+
+         <div class="compose pad_top">
+           <div class="grid_12 pad_top"><span>Type here to reply:</span></div>
+           <div class="grid_12 blue">
+             <textarea name="replyMsg" id="replyMsg" class="required full"></textarea>
+             <input type="hidden" name="userid" id="userid" value="1" />
+             <input type="hidden" name="subject" id="subject"  value="<%= @message.subject %>" />
+             <%= hidden_field_tag :message_thread_id, @message.message_thread_id %>
+             <% if @message.sender.id == current_user.id %>
+               <%= hidden_field_tag :receiver_id, @message.receiver.id %>
+             <% else %>
+               <%= hidden_field_tag :receiver_id, @message.sender.id %>
+             <% end %>
+             <%= hidden_field_tag :message_id, @message.id %>
+           </div>
+           <div class="grid_9"><label class="error dispNone margin_left_20 bold" id="replyMsgError">Unable to send a reply as text field is empty</label>
+              &nbsp;</div>
+           <div class="grid_3 fright pad_top"><a class="checkButton cursor fright no_margin" id="submitMsg">Send Reply</a></div>
+           <div class="body marginTop30">
+           </div><!-- end 2nd body-->
+         </div>
+</div>

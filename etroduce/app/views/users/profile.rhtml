@@ -1,0 +1,154 @@
+<div style="float: left; width: 500px;">
+  <div id="send_button">
+    <% 
+    link = "#"
+    onclick = nil
+    unless current_user.nil?
+      onclick = "msgWindow('#{@user.id}');"
+    else
+      link = login_path
+    end
+    %>
+    
+    <% if current_user != @user%>
+      <%= link_to "Send Message", link , :onclick => onclick %>
+    <% end %>
+
+  </div>
+
+  <p>
+    <%= image_tag(@user.avatar.url(:thumb), :align => "left", :style => "padding: 5px 10px 5px 0px")%>
+    <h1><%= @user.fullname.titleize %> </h1>
+    <br/>
+    <ul style="list-style-type: none">
+      <li><h3>Expertise:</h3></li>
+      <li><%= @user.expertise %></li>
+      <li> </li>
+    </ul>
+    
+    <div id="opportunity_posted" style="margin-top: 50px">
+      <%= render :partial => "opportunities/opps_profile", :locals => { :opportunities => @user.opportunities.find(:all, :limit => 10) }%>
+    </div>
+    
+    <br>
+    <% if @user.opportunities.length > 5 %>
+    <hr width="90%">
+    <div id="view_all" style="cursor:pointer" onclick="showAllOpportunities(<%= @user.id%>);">View all</div>
+    <% end %>
+
+
+  </p>
+  <br/>
+
+</div>
+
+<div id="right-pane" >
+  <ul style="list-style-type: none">
+    <li style="border-bottom: 1px solid #cbd1d5">
+      <span style="font-size: 14px; background-color: #bfdae1; padding: 4px 35px 4px 15px; line-height: 25px; color: #055065">Friends</span>
+      </li>
+    <li>
+      <% @user.friends.each do |u|%>
+      <div style="float: left; padding: 10px 10px">
+        <%= link_to image_tag(u.avatar.url(:super_thumb), :size => "40x40", :title => u.firstname), "/#{u.username}"%>
+      </div>
+      <% end %>
+      <div class="clr"></div>
+    </li>
+
+    <% unless @user.contact_lists.empty? %>
+    <li  style="border-bottom: 1px solid #cbd1d5; margin-top: 20px">
+      <span style="font-size: 14px; background-color: #bfdae1; padding: 4px 35px 4px 15px; line-height: 25px; color: #055065">Lists</span>
+      <% if @user == current_user%>
+        <div style="float: right; font-size: 11px;">
+          <%= link_to "Add new list", "#", :id => "create_list", :style => "font-weight:bold; text-decoration: none"%>
+        </div>
+      <% end %>      
+    </li>
+    <li>
+      <% @user.contact_lists.each do |cl|%>
+        <li style="background-color: #dee2e3; padding: 2px; padding-left: 15px;"><%= link_to cl.name.titleize, contact_list_path(cl), :style => "text-decoration: none; color:#15586b" %></li>
+
+        <% cl.users_contact_lists.each do |ucl|%>
+          <div style="float: left; padding: 10px 10px">
+            <%= link_to image_tag(ucl.contact_user.avatar.url(:super_thumb), :size => "40x40", :title => ucl.contact_user.firstname), "/#{ucl.contact_user.username}"%>
+          </div>
+        <% end%>
+        <div class="clr"></div>
+        
+      <% end %>
+    </li>
+    <% end %>
+
+
+  </ul>
+</div>
+
+
+<div class="clr"></div>
+<br/><br/>
+<script>
+function msgWindow(user_id) {
+  $.fancybox.showActivity();
+
+    $.ajax({
+      url   : "/messages/show_send_message",
+      type	: "POST",
+      data  : "id=" + user_id,
+      success: function(data) {
+        $.fancybox.hideActivity();
+        $.fancybox(data,
+        {
+          'autoDimensions'  :false,
+          'width'           : 650,
+          'height'          : 350,
+          'padding'         : 0,
+          'transition'      : 'none',
+          'transitionOut'   : 'none',
+          'scrolling'       : 'no'
+        });
+      }
+    });
+
+}
+
+function showAllOpportunities(user_id) {
+  $.fancybox.showActivity();
+  $.ajax({
+    url   : "/opportunities/show_all_opportunities",
+    type	: "POST",
+    data  : "user_id=" + user_id,
+    success: function(data) {
+      $.fancybox.hideActivity();
+      $("#opportunity_posted").empty();
+      $("#opportunity_posted").append(data);
+      $("#view_all").hide();
+    }
+  });
+}
+
+$("#create_list").click(function() {
+  $.fancybox.showActivity();
+
+  $.ajax({
+    type: 'GET',
+    url: "/contacts/show_add_list",
+    cache : false,
+    success: function(data) {
+      $.fancybox(data, 
+      {
+        'autoDimensions'	: false,
+  			'width'         	: 450,
+  			'height'          : 370,
+  			'padding'         : 0,
+  			'transitionIn'		: 'none',
+  			'transitionOut'		: 'none',
+  			'scrolling' : 'auto'
+      });        
+    }
+  });    
+});
+
+
+
+</script>

@@ -1,0 +1,20 @@
+<%
+  if flash[:error]
+   cclass = "error"
+   flash_message = flash[:error]
+  end
+
+  if flash[:notice]
+    cclass = "notice"
+    flash_message = flash[:notice]
+  end
+%>
+
+<% unless flash_message.nil? %>
+  <div class="<%=cclass%>">
+    <%= flash_message %>
+  </div>
+<% end %>
+<script type="text/javascript">
+  $('#notice_or_error').delay(2800).fadeOut();
+</script>

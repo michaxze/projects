@@ -1,0 +1,28 @@
+<div class="leftSidebar">
+  <ul class="menu">
+  <% if ["admin", "messages", "alerts"].include?(controller_name) %>
+    <li><a class="<%= (action_name == "show" ? 'selected': 'menuLinkx')%>" href="<%= admin_path %>">OVERVIEW</a></li>
+    <li><a class="<%= (controller_name == "messages" ? 'selected': 'menuLinkx')%> menuMsg" href="<%= admin_messages_path%>">MESSAGE BOX<span <%= @unread_messages.length > 0 ? "class='alert'" : ''%>></span></a></li>
+    <li><a class="<%= (action_name == "alerts" ? 'selected': 'menuLinkx')%> menuAlert" href="<%= alerts_admin_path %>">ALERTS <span <%= @pending_alerts.length > 0 ?  "class='alert'" : '' %>></span></a></li>
+  <% end %>
+
+  <% if ["administrators", "logs", "announcements", "categories", "packages", "system","email_templates", "statistics"].include?(controller_name) %>
+    <li><a class="<%= (controller_name == "administrators" ? 'selected': 'menuLinkx')%> " href="<%= admin_administrators_path %>">ADMINISTRATORS <span ></span></a></li>
+    <li><a class="<%= (controller_name == "categories" ? 'selected': 'menuLinkx')%>" href="<%= admin_categories_path %>">CATEGORIES <span ></span></a></li>
+    <li><a class="<%= (controller_name == "announcements" ? 'selected': 'menuLinkx')%> " href="<%= admin_announcements_path %>">ANNOUNCEMENTS <span ></span></a></li>
+    <li><a class="<%= (controller_name == "packages" ? 'selected': 'menuLinkx')%> " href="<%= admin_packages_path %>">PACKAGES & RATES<span ></span></a></li>
+
+<!--
+    <li><a class="<%= (controller_name == "email_templates" ? 'selected': 'menuLinkx')%> " href="<%= admin_email_templates_path %>">EMAIL TEMPLATES <span></span></a></li>
+    <li><a class="<%= (controller_name == "statistics" ? 'selected': 'menuLinkx')%> " href="<%= admin_statistics_path %>">STATISTICS<span ></span></a></li>
+    <li><a class="<%= (controller_name == "logs" ? 'selected': 'menuLinkx')%> " href="<%= admin_logs_path %>">LOGS <span ></span></a></li>
+    <li><a class="<%= (action_name == "section_lock" ? 'selected': 'menuLinkx')%> " href="<%= section_lock_admin_system_path %>">SECTION LOCK <span ></span></a></li>
+    <li><a class="<%= (action_name == "premium_feature_settings" ? 'selected': 'menuLinkx')%> " href="<%= premium_feature_settings_admin_system_path %>">PREMIUM FEATURES SETTING <span ></span></a></li>
+-->
+
+    <li><a class="<%= (action_name == "system_templates" ? 'selected': 'menuLinkx')%>" href="<%= system_templates_admin_system_path %>">SYSTEM TEMPLATES <span ></span></a></li>
+    <li><a class="<%= (action_name == "global_settings" ? 'selected': 'menuLinkx')%> " href="<%= global_settings_admin_system_path %>">GLOBAL SETTINGS <span></span></a></li>
+  <% end %>
+  </ul>
+</div>
+

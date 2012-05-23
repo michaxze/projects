@@ -1,0 +1,66 @@
+<div id="admin-left-sidebar">
+  <%= render "/cms/sidebar" %>
+</div>
+
+
+<div id="admin-center">
+  <% if @message.msgtype == "contactus" %>
+    <div>
+      <h2>Message:</h2>
+      <span>Subject: <%= @message.subject %> </span>
+      <p><%= format_html(@message.contents) %> </p>
+      <span style="font-size:10px">Date sent: <%= formatted_date(@message.created_at) %> </span>
+
+      <div style="margin-top: 15px">
+        <b>Send an instant message: </b>
+        <%= form_for :message, :url => reply_contactus_messages_path, :html => { :id => "message-form"} do |f| %>
+        <%= hidden_field_tag "id", @message.id %>
+        <%= text_area_tag :contents, nil, :cols => 50, :rows => 7, :class => "message_contents", :placeholder => "Type your message here" %>
+        <br/>
+        <%= submit_tag "Send" %> or <%= link_to "<< Back", cms_communications_path(:tab => "con") %>
+        <%= show_loader("message") %>
+        <% end %>
+      </div>
+    </div>
+    <hr>
+
+    <script>
+      $(document).ready(function () {
+        $("#message-form").bind("submit", function() {
+          $('#loader_message').show();
+
+          $.ajax({
+            url: "<%= reply_contactus_messages_path %>",
+            type: 'POST',
+            data: $(this).serializeArray(),
+            success: function(data){
+              $("#messages_threads").append(data);
+              $(".message_contents").val('');
+              $("#loader_message").hide();
+            }
+          });
+          return false;
+        });
+      });
+    </script>
+
+  <% else %>
+
+    <h3><%= @message.sender.fullname %> </h3>
+    <div id="messages_threads">
+      <% @message_threads.each do |msg| %>
+        <%= render :partial => "thread_row", :locals => { :msg => msg }  %>
+      <% end %>
+    </div>
+
+    <%= form_for :message, :url => messages_path, :html => { :id => "message-form"} do |f| %>
+      <%= hidden_field_tag "receiver_id", @message.sender.id %>
+      <%= hidden_field_tag "thread_id", @message.message_thread_id %>
+      <%= text_area_tag :contents, nil, :cols => 50, :rows => 5, :class => "message_contents", :placeholder => "Type your message here" %>
+      <br/>
+      <%= submit_tag "Send" %> or <%= link_to "<< Back", cms_communications_path %>
+      <%= show_loader("message") %>
+    <% end %>
+
+  <% end %>
+</div>

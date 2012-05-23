@@ -1,0 +1,135 @@
+<% unless @notification.nil? %>
+<div class="mainBox clearfix no_margin">
+  <h6 class="bold">ZIGZEG UPDATES</h6>  
+  <p><%= @notification.contents %> </p>
+</div>
+<% end %>
+
+<% unless current_user.histories.empty? %>
+<div class="mainBox clearfix">
+  <h6 class="bold">YOUR RECENT VIEWS
+  <% if current_user.histories.length > 3 %>
+  <a id="more_recent_view" class="moreView">&nbsp;</a>
+  <% end %>
+</h6>  
+    <ul class="sideList hover" id="recent_views">
+      <% current_user.histories.uniq_recent.take(10).each_with_index do |h, index| %>
+        <% unless h.listing.nil? %>
+          <% span = content_tag(:span, formatted_date(h.created_at)) %>
+          <li class="<%= h.listing.listing_type.downcase %>s <%= (index > 2) ? "dispNone hidden_row" : "" %>">
+            <%= link_to raw("<div> #{h.listing.name.titleize} #{span}</div>"), form_url(h.listing) %></a>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+</div>
+<% end %>
+
+<div class="mainBox clearfix">
+	<h6 class="bold no_margin">You have <span class="bubble num"><%= current_user.messages.unread.length %></span> new message<% if current_user.messages.unread.length > 1 %>s<% end %> |
+    <%= link_to "Open message box", account_messages_path, :class => "cursor"  %>
+  </h6>
+</div>
+
+<% if current_user.latest_updates.length > 0%>
+<div class="mainBox clearfix">
+  <h6 class="bold">You have  <span class="bubble num"><%= current_user.latest_updates.length %></span> new update<% if current_user.latest_updates.length > 1 %>s<% end %> in your Ziglist.
+  <% if current_user.latest_updates(true,100).length > 10 %>
+    <a id="more_whatsnew_ziglist" class="moreView">&nbsp;</a>
+  <% end %>
+  </h6>
+  <% if current_user.latest_updates(false,100).length > 0 %>
+    <ul class="sideList new" id="whatsnew_ziglist">
+    <% current_user.latest_updates(false, 100).each_with_index do |l, index| %>
+      <% unless l.updateable.nil? %>
+      <%  class_name = case l.updateable_type
+            when "Place"
+              "places"
+            when "Deal"
+              "deals"
+            when "Event"
+              "events"
+            when "Shout"
+              if l.updateable.shoutable.class.name == "Event"
+                "events"
+              elsif l.updateable.shoutable.class.name == "Deal"
+                "deals"
+              else
+                "places"
+              end
+            else
+              "places"
+            end
+      %>
+
+      <li class="<%= class_name%> <%= (index > 9) ? "dispNone hidden_row" : "" %>">
+
+        <% time_str = "<span>" %>
+        <% time_str += distance_of_time_in_words_to_now(l.created_at) %>
+        <% time_str += " ago" %>
+        <% time_str += "</span>" %>
+
+        <% if l.updateable.class.name == "Shout" %>
+				  <% unless l.updateable.shoutable.nil? %>
+          <% plink = "onclick=\"location.href='#{form_url(l.updateable.shoutable, {:lupt => l.id })}'\" " %>
+          <%= link_to raw("<div #{plink}> #{ziglist_description(l)} #{time_str}</div>" ), form_url(l.updateable.shoutable, {:lupt => l.id }), :title => l.updateable.shoutable.name %> 
+					<% end %>
+        <% else %>
+          <% plink = "onclick=\"location.href='#{form_url(l.updateable, {:lupt => l.id })}'\" " %>
+          <%= link_to raw("<div #{plink}> #{ziglist_description(l)} #{time_str}</div>" ), form_url(l.updateable, {:lupt => l.id
+}), :title => l.updateable.name %> 
+        <% end %>
+      </li>
+    <% end %>
+    <% end %>
+    </ul>
+  <% end %>
+
+  <% if current_user.latest_updates(nil,50).length > 0 %>
+  <br/>
+  <h6 class="bold"><a href="" onclick="return false" id="show_update_history">History</a></h6>
+  <div id="update_history"></div>
+  <% end %>
+</div>
+<% end %>
+
+<script>
+  var show_history = false;
+  $("#show_update_history").click(function() {
+    if (show_history)
+      return false;
+    $.ajax({
+      type: 'GET',
+      url: "/account/show_update_history",
+      success: function(data) {
+        show_history = true;
+        $("#update_history").append(data);
+      }
+    });
+  });
+
+  $("#more_recent_view").click(function() {
+    ul = $("#recent_views")
+    ul.find('.hidden_row').each(function() {
+      row = $(this);
+      if ($("#more_recent_view").hasClass('minus')) {
+        row.addClass('dispNone');
+      }else{
+        row.removeClass('dispNone');
+      }
+    });
+  });
+
+  $("#more_whatsnew_ziglist").click(function() {
+    ul = $("#whatsnew_ziglist")
+    ul.find('.hidden_row').each(function() {
+      row = $(this);
+      if ($("#more_whatsnew_ziglist").hasClass('minus')) {
+        row.addClass('dispNone');
+      }else{
+        row.removeClass('dispNone');
+      }
+    });
+  });
+
+</script>

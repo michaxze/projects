@@ -1,0 +1,6 @@
+<h2> Events </h2>
+<ul>
+  <% @place.events.each do |e| %>
+  <li><%= link_to e.name.titleize, form_url(e) %></li>
+  <% end %>
+</ul>

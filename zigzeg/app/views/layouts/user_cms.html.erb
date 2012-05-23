@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>ZIGZEG <%= "- #{@page_title}" unless @page_title.nil? %></title>
+<meta name="robots" content="noindex">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<!-- favicon -->
+<link rel="shortcut icon" href="/images/favicon.ico" />
+
+<%= stylesheet_link_tag "style" %>
+<%= stylesheet_link_tag "user" %>
+<%= stylesheet_link_tag "paging" %>
+<%= stylesheet_link_tag "/javascripts/themes/base/jquery.ui.tabs.css" %>
+<%= stylesheet_link_tag "/javascripts/themes/ui-lightness/jquery.ui.theme.css" %>
+<%= stylesheet_link_tag "/javascripts/themes/ui-lightness/jquery.ui.base.css" %>
+  
+<%= javascript_include_tag "jquery-1.6.2" %>
+
+  <%= javascript_include_tag "ui/jquery.ui.core.js" %>
+  <%= javascript_include_tag "ui/jquery.ui.widget.js" %>
+  <%= javascript_include_tag "ui/jquery.ui.mouse.js" %>
+  <%= javascript_include_tag "ui/jquery.ui.tabs.js" %>
+  <%= javascript_include_tag "jquery.validate" %>
+  <%= javascript_include_tag "user" %>
+  <%= javascript_include_tag "common"%>
+  <%= javascript_include_tag "fileuploader" %>
+  <%= javascript_include_tag 'rails' %>
+<%= javascript_include_tag "jquery.home" %>
+<%= csrf_meta_tag %>
+<!--[if IE]>
+  <%= javascript_include_tag "ie-fix" %>
+<![endif]-->  
+<!--[if lt IE 9]>
+	<%= stylesheet_link_tag "ie-fix8" %>
+<![endif]-->
+</head>
+<body>
+<noscript><div class="ns">Your browser does not support JavaScript!</div></noscript> 
+  <div id="notice_or_error">
+    <%= render :partial => "globals/notice_or_error" %>
+  </div>
+<div class="loginBar BigblkBg pgTop">
+ 		<div class="fcontainer_12" id="topArea">
+    		<%= render "/globals/top_place" %>
+		</div>
+</div>	
+  <div class="userheader no_pad"></div>
+
+  <div id="page_wrap" class="user fcontainer_12 clearfix top">
+    <div class="topMessage">
+      <h2 class="bold">Welcome, <a class="cursor blue" href="/account"><%= current_user.name_or_email %></a></h2>
+      <span>Not <%= current_user.name_or_email%>? Click <%= link_to "here", logout_path(:ret_url => login_url(:ref_url => "/account")),:class=>"cursor blue underline" %> to sign in as a different user</span>
+    </div>
+
+   
+    <div id="page_wrap" class="user fcontainer_12 clearfix">
+      <%= render "globals/users/sidebar" %>
+      <div class="mainContainer">
+	<%= yield %>
+      </div>
+    </div>
+  </div>
+	<div class="clearfix pad_top30 pad_bot"></div>
+  <%= render "globals/footer" %>
+  <div id="boxes">
+  <%= render "/globals/modal_settings" %>
+  <%= render "/globals/modal_updates" %>
+	<div id="profInfo" class="window comparison" style="width:250px;">
+       				<div class="contents container_12 full">
+									<div class="imgBg fleft">&nbsp;</div>
+									<div class="grid_8 fleft">
+											<div class="name">&nbsp;</div>
+											<div class="detail">&nbsp;</div>
+											
+									</div>
+									
+							</div>
+             <div class="arrowLeft"></div>     
+        </div>		
+	<div id="zigHelpPop" class="window comparison">
+	<div class="arrowUpcms"></div>
+	<div class="lgray">
+              <h6 class="white">My Ziglist</h6>
+              <p>‘My Ziglist’ allows you to keep track of your favourite Places, Offers & Events. It allows you to get automatic
+updates and notifications from your favourite places, offers and events.<br><br>
+To add a place, offer or event to your ‘Ziglist’, just click on the ‘Zig this’ button present in all Place, Offer or
+Event pages, the page will then be added into your ziglist.</p>
+              </div>
+   
+
+  </div>
+	
+  <div id="mask"></div>
+</div>
+
+<<<<<<< HEAD
+=======
+  <%= javascript_include_tag "#{Yetting.main_domain}:9292/faye.js" %>
+  <%= javascript_include_tag 'application' %>
+>>>>>>> 552fb8504cfe6060065c49840d42a8cdf2182145
+<%= render "/globals/analytics" %>
+  </body>
+</html>

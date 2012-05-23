@@ -1,0 +1,77 @@
+<h6 class="bold">Information & features of your Zigzeg for Business account</h6>
+<div class="no_margin border"></div>
+<div class="container_12 full no_margin pad_top pad_bot infoFeatures">
+        		<div class="grid_3">Account Type:</div>
+            <div class="grid_8">Zigzeg for Business <%= package.package_name.titleize %></div>
+            <div class="grid_3">Contract Length:</div>
+            <div class="grid_8">12 months</div>
+            <div class="grid_3">Contract Period:</div>
+            <div class="grid_8">
+              <span class="gray">From</span>
+              <%= formatted_date(Time.now.to_date, 'dd mm yyyy')%>
+              <span class="gray">&nbsp;
+                To </span>
+                <% if package.package_code.include?('monthly')%>
+                <%= formatted_date(Time.now + 1.months, 'dd mm yyyy') %>
+                <% else%>
+                <%= formatted_date(Time.now + 12.months, 'dd mm yyyy') %>
+                <% end %>
+                </div>
+            <div class="grid_3">Selected Payment Method:</div>
+            <div class="grid_8">Credit Card</div>
+            <div class="grid_12 clearfix pad_top"></div>
+            <div class="grid_3">Image Gallery Listing:</div>
+            <div class="grid_8">
+
+       <% case package.package_code 
+        when "free" %>
+          Limited to <%= package.allowed_images %> images
+        <% when "basic_monthly", "basic_yearly" %>
+          Limited to <%= package.allowed_images %> images
+        <% when "premium_monthly", "premium_yearly" %>
+          Unlimited
+        <% end %>
+
+
+</div>
+            <div class="grid_3">Zizeg Shouts:</div>
+            <div class="grid_8"><%= package.allowed_shouts == -1 ? "Unlimited" : "Limited to #{package.shouts} shouts" %></div>
+            <div class="grid_3">Offer and Event Listings:</div>
+            <div class="grid_8"><%= package.allowed_events == -1 ? "Unlimited" : "Combined #{package.allowed_events} listings" %></div>
+            <div class="grid_3">Zigzeg End-user Statistics (ZEUS):</div>
+            <div class="grid_8">
+<%= package.package_code.include?("free") ? "Basic" : "Advanced" %>
+            </div>
+            <div class="grid_3">Full Data Service:</div>
+            <div class="grid_8">
+      <% full_data = case package.customer_service.to_s
+        when "true"
+          "Yes"
+        when "false"
+          "N/A"
+        else
+          "N/A"
+        end
+        %>
+        <%= full_data %>
+            </div>
+            <div class="grid_3">Premium Customer Care Assistance:</div>
+            <div class="grid_8">
+       <% care = case package.customer_service.to_s
+        when "true"
+          "Yes"
+        when "false"
+          "N/A"
+        else
+          "N/A"
+        end
+        %>
+         <%= care %>
+
+           </div>
+            <% if package.package_code.include?('premium') %>
+            <div class="grid_3">Assigned Customer Care Officer:</div>
+            <div class="grid_8">N/A</div>
+            <% end %>
+             <div class="grid_12 clearfix pad_top"></div>
+        </div>

@@ -1,0 +1,43 @@
+<script>
+$(function() {
+		$("#forgotFrmx").validate({
+      submitHandler: function(form) {
+        form.submit();
+      }		  
+		});
+});
+</script>
+<!--start page_wrap-->
+<div id="page_wrap" class="fcontainer_12 clearfix">
+    <!--start content-->
+    <div class="container_12 pad_bot30">
+    		<div class="grid_10 prefix_2">
+        		<div class="container_12 full logPage">
+            		<div class="grid_12"><h1 class="bold">Forgotten your password?</h1></div>
+                <div class="grid_9 suffix_3 pad_bot">In order to reset your password, type the email address that you used to sign in to your Zigzeg account below. Check your email and follow the instructions provided within to reset your password.</div>
+                <div class="grid_6 pad_top">
+                <% unless flash[:notice].nil?%>
+                  <label class="bold">Instructions on how to change your password has been sent to you via email. Please check your email to continue.</label>
+               	<% else %>
+                <%= form_tag "/sessions/normal_forgot_password", :id => "forgotFrmx" do%>
+                  	<div class="grid_12">Email</div>
+                    <div class="grid_12"><input type="text" name="email" class="required email radius5 full_width fancyinput" autocomplete="off"/><% unless flash[:error].nil?%><label class="error">Email address not found.</label><% end %></div>
+                    <div class="grid_12 pad_top fright no_margin">
+                    	<input type="submit" name="forgot" value="submit" class="send fright radius5 cursor"/>
+                    </div>
+                <% end %>
+                
+                 <% end %>
+                </div>
+                <div class="grid_6 oLink">
+                		<div class="grid_12"><span class="new">New to Zigzeg?</span><br />
+                    <span><a href="/signup">Register a user account now</a></span></div>
+                    <div class="grid_12"><span class="newB">Zigzeg for Business</span><br />
+                    <span><a href="/signup?signup=advert">Signup for a business account now</a></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end content-->
+</div>
+<!--end page_wrap-->

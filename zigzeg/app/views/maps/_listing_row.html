@@ -1,0 +1,39 @@
+<%
+  class_code = case listing.listing_type
+    when "place"
+      "pl"
+    when "event"
+      "ev"
+    when "deal"
+      "of"
+    end
+%>
+
+<div class="grid_12 data <%= class_code %> map_listing_row <%= listing.listing_type %>_row" ltype="<%= listing.listing_type %>"  data-id="<%= listing.id %>">
+  <a class="cursor">
+    <div class="grid_3 imgC radius5">
+    <% if listing.listing_type == "place" %>
+      <img class="radius5" src="<%= listing.listable.profile_image.image(:super_thumb) rescue get_missing_image(listing.listable, 't') %>" />
+    <% else %>
+      <img class="radius5" src="<%= listing.listable.pictures.first.image(:super_thumb) rescue get_missing_image(listing.listable, 't') %>" />
+    <% end %>
+    </div>
+    <div class="grid_8 pad_top5">
+      <div class="grid_12 ttl" title="<%= listing.name%>">
+      <% ss = params[:search] %>
+      <% if params[:search] %>
+      <%= raw( truncate(listing.name, :length => 40, :omission => "...").gsub(/#{ss}/i) { |match|  raw("<b class='underline'>#{match}</b>") }  )%>
+      <% else %>
+      	<%= truncate(listing.name, :length => 40, :omission => "...") %>
+      <% end %>
+      </div>
+      <div class="grid_12 dsc">
+      <% if params[:search] %>
+        <%= raw( truncate(listing.description, :length => 90, :omission => "...").gsub(/#{ss}/i) { |match|  raw("<b class='underline'>#{match}</b>") }  )%>
+      <% else %>
+      	<%= truncate(listing.description, :length => 90, :omission => '...')%>
+       <% end %>
+      </div>
+    </div>
+  </a>
+</div>

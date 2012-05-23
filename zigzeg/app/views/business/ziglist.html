@@ -1,0 +1,195 @@
+<div class="packageBox pad_bot20 full">
+  <div class="mainBox minHt clearfix no_margin">
+  <script language="javascript"> $(function() {$("#zigTabs").tabs();});</script>
+<div id="zigTabs"> 
+  <ul class="tabs advert">
+		<li class="ui-tabs-selected"><a href="#wnTab"><h6 class="segoe">MY ZIGLIST</h6></a><div class="bubbles all"><%= current_user.favorites.length %></div></li>
+		<li><a href="#branchestab"><h6 class="segoe">PLACES</h6></a><div class="bubbles pl" id="places_counter"></div></</li>
+    <li><a href="#dealsTab"><h6 class="segoe">OFFERS</h6></a><div class="bubbles of" id="deals_counter"></div></li>
+    <li><a href="#eventsTab"><h6 class="segoe">EVENTS</h6></a><div class="bubbles ev" id="events_counter"></div></li>
+    <a class="blue example cursor desc fright" title="What is My Ziglist" name="helpT" href="#zigHelpPop">&nbsp;</a>
+ </ul>
+  <div class="imageLoader tabLoader posRight dispNone"></div> 
+  <div class="panes">
+  <!-- start whats new tab -->
+	<div id="wnTab" class="">
+	<ul class="contentList">
+ 	  <% current_user.favorites.each do |fav| %>
+          <li class="<%= fav.likeable.listing_type.downcase%>s myziglist_<%= fav.likeable_type.downcase%>_<%= fav.likeable_id%>">
+            <div class="fleft">
+              <a href="<%= form_url(fav.likeable) %>" title="<%= fav.likeable.name rescue ''%>" target="_new">
+                <div>
+                <div class="hoverImage radius5">
+                <% if fav.likeable.listable.class == Place %>
+                <img src="<%= fav.likeable.listable.profile_image.image.url(:super_thumb) rescue get_missing_image(fav.likeable.listable,'t') %>"/>
+                <% else %>
+                <img src="<%= fav.likeable.listable.pictures.first.image.url(:thumb) rescue get_missing_image(fav.likeable.listable,'t') %>"/>
+                <% end %>
+                </div>
+                </div>
+                <div class="title pad_top5">
+                  <span><%= truncate(fav.likeable.name, :length => 70, :omission => "...") %></span>
+                    <% if fav.likeable.class.name == "Deal" %>
+                      <% unless fav.likeable.end.nil? %>
+                        <% if (fav.likeable.end - Time.now) <= 3 %>
+                          <div class="expiring icon" title="Ending Soon!"></div>
+                        <% end %>
+                      <% end %>
+                    <% elsif fav.likeable.class.name == "Event" %>
+                      <% unless fav.likeable.end_date.nil? %>
+                        <% if (fav.likeable.end_date - Time.now.to_date).to_i <= 3 %>
+                          <div class="expiring icon" title="Ending Soon!"></div>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+<!--                        <div class="updated icon" title="updated"></div> -->
+                </div>
+              </a>
+              <div class="description marginTop">
+              <p><%= truncate(fav.likeable.description, :length => 125, :omission => "...") %></p>
+            </div>
+
+            <div class="check"><input type="checkbox" name="checkZig" value="<%= fav.likeable_id%>"/></div>
+            </div>
+          </li>
+                
+                <% end %>
+                
+                </ul>
+        
+        <!-- start tab appending area -->
+        <div id="wnTabAppend" class="dispNone">
+          <div id="wnAppendarea" class="pad_bot">
+          
+          </div>
+          <div class="clearfix"></div>
+					<div class="gray_box newTabClickHide cursor" align="center"> &nbsp;click to hide</div>
+        </div>
+        <!-- end tab appending area -->
+      <% if @current_user.favorites.length > 0 %>
+          <a class="button checkButton cursor removeSelected" href="/account/remove_ziglist">Remove from list</a> 
+      <% end %>
+	</div>
+  <!-- start whats new tab -->
+  <!-- start deals tab -->
+	<div id="dealsTab" class="">
+	<ul class="contentList">
+          <% @deals.each do |deal| %>
+            <% unless deal.listable.nil? %>
+            <li class="places myziglist_<%= deal.class.name.downcase%>_<%= deal.id%>">
+              <div class="fleft">
+                <a href="<%= form_url(deal) %>" title="<%= deal.name rescue ''%>" target="_new">
+                          <div>
+                          <div class="hoverImage radius5">
+                          <img src="<%= deal.listable.pictures.first.image.url(:thumb) rescue  get_missing_image(deal.listable,'t') %>"/>
+                          </div>
+                          </div>
+                          <div class="title pad_top5">
+                            <span><%= truncate(deal.name, :length => 70, :omission => "...") %></span>
+                            <% unless deal.listable.end.nil? %>
+                              <% if (deal.listable.end - Time.now.to_date).to_i <= 3 %>
+                                <div class="expiring icon" title="Ending Soon!"></div>
+                              <% end %>
+                            <% end %>
+                            <!-- <div class="updated icon" title="Newly updated"></div> -->
+                          </div>
+                          </a>
+                           <div class="description marginTop">
+        		<p> <%= truncate(deal.description, :length => 125, :omission => "...") %> </p>
+                       </div> <div class="check"><input type="checkbox" name="checkDeals" value="<%= deal.id %>"/></div>
+              </div>
+            </li>
+            <% end %>
+          <% end %>
+
+        </ul>
+      <% if @deals.length > 0 %>
+          <a class="button checkButton cursor removeSelected" href="/account/remove_ziglist">Remove from list</a> 
+      <% end %>       
+	</div>
+  <!-- end deals tab -->
+   <!-- start branch tab -->
+	<div id="branchestab" class="">
+    		<ul class="contentList">
+          <% @places.each do |place| %>
+             <% unless place.listable.nil? %>
+            <li class="places myziglist_<%= place.class.name.downcase%>_<%= place.id%>">
+              <div class="fleft">
+                <a href="<%= form_url(place) %>" title="<%= place.name rescue ''%>" target="_new">
+                  <div>
+                    <div class="hoverImage radius5">
+                    <img src="<%= place.listable.profile_image.image.url(:super_thumb) rescue  get_missing_image(place.listable,'t') %>"/>
+                    </div>
+                  </div>
+                  <div class="title pad_top5">
+                    <span><%= truncate(place.name, :length => 70, :omission => "...") %></span>
+<!--                    <div class="updated icon" title="updated"></div> -->
+                  </div>
+                </a>
+                <div class="description marginTop">
+                  <p><%= truncate(place.description, :length => 125, :omission => "...") %></p>
+                </div> <div class="check"><input type="checkbox" name="checkZig" value="<%= place.id %>"/></div>
+              </div>
+            </li>
+            <% end %> 
+          <% end %> 
+				  
+        </ul>
+      <% if @places.length > 0 %>
+          <a class="button checkButton cursor removeSelected" href="/account/remove_ziglist">Remove from list</a> 
+      <% end %>   
+	</div>
+  <!-- end branches tab -->
+  <!-- start events tab -->
+  <div id="eventsTab" class="">
+	<ul class="contentList">
+          <% @events.each do |event| %>
+            <% unless event.listable.nil? %>
+            <li class="places  myziglist_<%= event.class.name.downcase%>_<%= event.id%>">
+              <div class="fleft">
+                <a href="<%= form_url(event) %>" title="<%= event.name rescue ''%>">
+                  <div>
+                    <div class="hoverImage radius5">
+                    <img src="<%= event.listable.pictures.first.image.url(:thumb) rescue  get_missing_image(event.listable,'t') %>"/>
+                    </div>
+                  </div>
+                  <div class="title pad_top5">
+                    <span><%= truncate(event.name, :length => 70, :omission => "...") %></span>
+                    <% unless event.listable.end_date.nil? %>
+                      <% if (event.listable.end_date - Time.now.to_date).to_i <= 3 %>
+                        <div class="expiring icon" title="Ending Soon!"></div>
+                      <% end %>
+                    <% end %>
+<!--                     <div class="updated icon" title="updated"></div> -->
+                  </div>
+                </a>
+                <div class="description marginTop">
+                  <p><%= truncate(event.description, :length => 125, :omission => "...") %> </p>
+                </div>
+                <div class="check"><input type="checkbox" name="checkZig" value="<%= event.id%>"/></div>
+              </div>
+            </li>
+            <% end %>
+          <% end %>
+				  
+        </ul>
+      <% if @events.length > 0 %>
+          <a class="button checkButton cursor removeSelected" href="/account/remove_ziglist">Remove from list</a> 
+      <% end %>   
+	</div>
+  <!-- end events tab -->
+  
+  </div>
+ <!-- end tab panes -->
+  </div>
+  <div class="clear"></div>
+</div>
+</div>
+
+<script>
+$(function(){
+  $("#places_counter").append($("#wnTab .contentList li.places").length);
+  $("#deals_counter").append($("#wnTab .contentList li.deals").length);
+  $("#events_counter").append($("#wnTab .contentList li.events").length);
+});
+</script>

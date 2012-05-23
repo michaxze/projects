@@ -1,0 +1,93 @@
+<script>
+constant_per_page = <%= Constant::PER_PAGE %>
+</script>
+
+<section id="content" class="grid_12">
+  <input type="hidden" name="pageNumber" id="pageNumber" value="1"/>
+  <%= hidden_field_tag "page_params", formatted_params(params) %>
+  <div id="depSlideContainer">
+    <div id="depWrapper">
+      <div id="depSlide">
+        <a class="ui-slider-handle ui-state-default ui-corner-all" href="#" >
+            <div style="background:url(/images/buttonbar.png) no-repeat; width:55px; height:36px;">&nbsp;</div>
+        </a>
+      </div>
+      <div>
+        <ul>
+          <% unless params[:search].nil?%>
+            <li class="latest grid_3 <%= "noCursor" if @total_all == 0 %>" id="liLatest"><span>Result <div class="bubble latest"><%= @total_all %></div></span></li>
+            <li class="places grid_3 <%= "noCursor" if @total_places == 0 %>" id="liPlaces"><span>Places<div class="bubble places"><%= @total_places %></div></span></li>
+            <li class="deals grid_3 <%= "noCursor" if @total_deals == 0 %>" id="liDeals"><span>Offers<div class="bubble deals"><%= @total_deals %></div></span></li>
+            <li class="events grid_3 <%= "noCursor" if @total_events == 0 %>" id="liEvents"><span>Events<div class="bubble events"><%= @total_events %></div></span></li>   
+          <% else %>
+            <li class="latest grid_3" id="liLatest"><span>Latest </span></li>
+            <li class="places grid_3" id="liPlaces"><span>Places</span></li>
+            <li class="deals grid_3" id="liDeals"><span>Offers</span></li>
+            <li class="events grid_3" id="liEvents"><span>Events</span></li>   
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div align="right" class="pad_bot20 pad_top20 pad_right">
+    <a class="switch_thumb fright">&nbsp;</a>
+    <div id="timeOpen" class="clock fright <%= 'selected' unless params[:time].blank? %>" title="What's open now">&nbsp;</div> 
+  </div>
+  <div>
+    <div id="tabs" class="mainTabContainer">
+      <ul id="tabHeader">
+        <li><a href="#tabAll">all</a></li>
+        <li><a href="?type=place<%= formatted_params(params) %>">places</a></li>
+        <li><a href="?type=deal<%= formatted_params(params) %>">offers</a></li>
+        <li><a href="?type=event<%= formatted_params(params) %>">events</a></li>
+        
+      </ul>
+      <div class="imageLoader dispNone"></div>
+
+      <div id="tabAll">
+        <div class="clearfix"></div>
+        <div class="selecterContent">
+          <ul class="listview imglist" id="allView">
+            <%= render :partial => "listing", :collection => @listings %>
+          </ul>
+          
+        </div>
+
+      <% if @listings.count == 0 %>
+      <div id="noresults">
+       <div class="container_12 pad_top">
+           <div class="grid_12 no_margin">
+           <h6 class="bold">Your search 
+<% unless params[:search].blank? %>
+for <b class="blue">
+  <%= params[:search] %>&nbsp;</b> 
+  <% unless @categories.empty? %>
+    in  <b class="blue"> <%= @categories.map(&:name).join(", ") %> </b>
+  <% end %>
+<% else %>
+  in  <b class="blue"> <%= @categories.map(&:name).join(", ") %> </b>
+<% end %>
+
+           returned  <b class="blue">0</b>  matches.
+              <!-- Did you mean: <b class="blue">wave</b>? -->
+              </h6>
+           </div>
+           <div class="grid_12 pad_top">
+           <h6 class="bold margin_left_20">Suggestions</h6>
+						<ul class="listNone margin_left_20">		
+               <li>- recheck your spelling</li>
+               <li>- try to search using more general keywords</li>
+            </ul>
+           </div>
+       </div>	
+      </div>
+      <% end %>
+      </div>
+    </div>  
+  </section>
+  <!--end content-->
+  <% if @listings.count > Constant::PER_PAGE %>
+   	<div align="center"><h5><a id="showMore" class="cursor">show more</a></h5></div>
+  <% end %>
+  <img src="/images/zipper_off.gif" class="opacity0" width="1" height="1" border="0">
+  <img src="/images/zipper_on.gif" class="opacity0" width="1" height="1" border="0">

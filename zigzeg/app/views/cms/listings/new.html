@@ -1,0 +1,14 @@
+<%
+partial = case params[:type] 
+when "deal"
+  "new_deal"
+when "event"
+  "new_event"
+when "place"
+  "new_place"
+else
+  "new_place"
+end
+%>
+
+<%= render "#{partial}" %>

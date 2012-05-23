@@ -1,0 +1,28 @@
+ul.pageTopLink{ list-style-type:none;}
+.pageTopLink li{ margin:0 0 20px 0; float:left;}.pageTopLink li a{ float:right; color:#525252;}
+.banner #contactFrm input[type=text],.banner #contactFrm textarea{ -moz-border-radius:5px; -webkit-border-radius:5px; border-radius:5px; /*behavior:url(PIE.htc)*/; width:90%;color:#828282;}
+.banner #contactFrm select{width:97%; color:#828282;}
+.banner #contactFrm label{ color:#828282; margin:10px 0 0 0; display:block}
+.banner #contactFrm label.error{ color:#FF6600; margin:inherit; display:inline;}
+.banner .bannerMsg.help{padding-top:30px;}
+.banner .bannerMsg.contact{padding-top:65px; width:45%;}
+.banner .bannerMsg.jobs{ padding-top:30px;}
+.banner.full{ padding-left:4%;}
+.banner .bgHelp{ background:url(/images/need_help.png) no-repeat right top; min-height:280px; margin:0;}
+.banner .bgcontact{ background:url(/images/banner_contact.png) no-repeat center top; min-height:290px; margin:0;}
+.banner .bgjobs{ background:url(/images/jobs.png) no-repeat center top; min-height:280px; margin:0;}
+.banner .bgabout{ background:url(/images/footer_text/pc.gif) no-repeat 100px 25px; min-height:200px; margin:0;}
+.banner .bgcontact a{ position:absolute; top:29%; left:26%; color:#4f7203; padding-left:20px; background:url(/images/placesicon_nobg.png) left no-repeat; font-size:13px;}
+.banner .bgcontact a:hover{ color:#FFF;}
+.banner .bannerMsg span.query{ width:210px; }
+.banner .bannerMsg.help span.query{background:url(/images/howcan.png) no-repeat center center;padding:15px 105px;}
+.banner .bannerMsg.about span.query{background:url(/images/footer_text/ttl2.gif) no-repeat left center;padding:15px 105px;}
+.banner .bannerMsg.contact span.query{background:url(/images/wewould.png) no-repeat left center;padding:15px 150px; background-size:100%;}
+.banner .bannerMsg.jobs span.query{background:url(/images/footer_text/join_zigzeg.png) no-repeat left center;padding:15px 130px;background-size:100%;}
+.banner .bannerMsg h1{ margin:15px 0 0 0;padding:10px 0;}
+.banner .bannerMsg.help h1{ width:318px; background:url(/images/footer_text/help_you.png) no-repeat; background-size:100%;}
+.banner .bannerMsg.about h1{ width:518px; background:url(/images/footer_text/ttl.gif) no-repeat; background-size:100%;}
+.banner .bannerMsg.contact h1{ width:465px; background:url(/images/footer_text/hear.png) no-repeat; background-size:100%;}
+.banner .bannerMsg.jobs h1{ width:475px;  background:url(/images/footer_text/exciting_career.png) no-repeat; background-size:100%;}
+banner .bannerMsg h1{ font-size:50px;}
+.banner .bannerMsg p{ font-size:12px; padding:0 4px; margin:0;}

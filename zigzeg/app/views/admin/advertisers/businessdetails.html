@@ -1,0 +1,423 @@
+<script>
+$(function() {	
+	$("#companyFrm").validate({
+			submitHandler: function(form) {
+				 $('.grayLoader').show().delay(300).fadeOut(300);
+			}	
+	});
+	$( ".accordion" ).accordion({
+		autoHeight: false,
+		navigation: true,
+		collapsible: true,
+		header: "a.accordTitle",
+		active: false,
+		 changestart: function(event, ui){
+              var clicked = $(this).find('a.accordTitle');
+							if(!clicked.hasClass('ui-state-active')){
+									var contentDiv = $(this).find('div.content');
+									contentDiv.load(clicked.attr("href"));
+								//alert('('+clicked.attr("data-id")+') is the data_id to retrieve the data of this element to populate the form')
+						}		
+      }
+	});
+});
+</script>
+<div class="fright">
+  <div class="qlContainer margin_left_20">
+    <div class="quicklinks container_12 business">
+      <a href="business.html"><div class="grid_12">Back to Listing</div></a>
+      <div class="grid_12 marginTop"></div>
+      <a  href="<%= new_admin_message_path(:receiver_id => @user.id) %>"><div class="grid_12">Send message</div></a>
+      <a class="getDetails" href="map/postcode.html"><div class="grid_12">Manage account</div></a>
+
+      <% if @user.suspended?%>
+      <a  href="/admin/users/activate?user_id=<%= @user.id%>" class="cursor"><div class="grid_12">Activate account</div></a>
+      <% else%>
+      <a id="suspendAccount" class="cursor"><div class="grid_12">Suspend account</div></a>
+      <% end %>
+      <div class="align_left dispNone"  id="suspendWrapper">
+        <div class="suspendContain simpleBox">                     
+          <h6 class="no_margin">Account to suspend</h6><span class="close cursor"><h6 class="orange">close</h6></span>
+          <h6 class="orange bold">Starbuck Malaysia</h6>
+          <h6 class="pad_top no_margin">Reason of suspension</h6>
+          <select class="radius5 required" name="suspend[type]">
+            <option value="user">Non-payment of invoices</option>
+          </select>
+          <div class="clearfix pad_top"></div>
+          <a class="checkButton cursor" id="suspendBtn">Suspend Account</a>
+        </div>
+      </div>
+
+      <div class="grid_12 marginTop"></div>
+      <a class="scrollPosition" href="#accountOverview" ><div class="grid_12">Account Overview</div></a>
+      <a class="scrollPosition" href="#accountFeatures" ><div class="grid_12">Account features</div></a>
+      <a class="scrollPosition" href="#regInfoFeatures" ><div class="grid_12">Registration Info</div></a>
+      <div class="grid_12 marginTop"></div>
+      <a class="scrollPosition" href="#paymentInfo" ><div class="grid_12">Payment Info</div></a>
+      <a class="scrollPosition" href="#companyInfo" ><div class="grid_12">Company Info</div></a>
+      <a class="scrollPosition" href="#eventsHeader" ><div class="grid_12">Events</div></a>
+      <a class="scrollPosition" href="#offersHeader" ><div class="grid_12">Offers</div></a>
+      <a class="scrollPosition" href="#shoutHeader" ><div class="grid_12">Shout Box</div></a>
+      <a class="getDetails" href="map/buildingAdd.html"><div class="grid_12">Statistics</div></a>
+      <a href="<%= confirm_admin_advertiser_path(@user.id) %>" target="_blank"><div class="grid_12">Confirm</div></a>
+    </div>
+  </div>
+</div>
+
+    <div id="page_wrap" class="fcontainer_12 clearfix adminUser">
+  		<div class="messageBox clearfix">
+      <div class="container_12">
+      		<div class="grid_8 orange"><a href="../page.html"><h4 class="orange bold"><%= @place.name.titleize rescue '' %></h4></a></div>
+          <div class="grid_4" align="right">
+          		
+          </div>
+      </div>
+      
+       	<h6 class="bold grid_7" id="accountOverview">ACCOUNT OVERVIEW</h6>
+       	<div class="container_12 no_margin" align="left">	  
+       	            <% unless @user.last_payment.nil?%>
+			    		    	<div class="container_12 overview bgGray">
+                        <div class="grid_2 first">Package Type</div>
+                        <div class="grid_2 bold divider"><%= @user.last_payment.package.package_name %></div>
+                        <div class="grid_2">Governement tax(<%= GlobalSetting.find_by_code("GOVTAX").option_value %>%)</div>
+                        <div class="grid_2 bold divider">RM <%= @user.last_payment.amount %></div>
+                        <div class="grid_2">Contract length</div>
+                        <div class="grid_1 bold"><%= @user.last_payment.package.contract_length %></div>
+                        
+                        <div class="grid_2 first">Package Price(month)</div>
+                        <div class="grid_2 bold divider">RM <%= @user.last_payment.package.price %></div>
+                        <div class="grid_2">Payment period</div>
+                        <div class="grid_2 bold divider"><%= @user.last_payment.package.payment_frequency%></div>
+                        <div class="grid_2">Contract period(start)</div>
+                        <div class="grid_1 bold"><%= formatted_date(@user.last_payment.contract_start, 'mmddyyyy') %></div>
+                        
+                        <div class="grid_2 first">Package Price(year)</div>
+                        <div class="grid_2 bold divider">RM <%= (@user.last_payment.package.price * 12) rescue '0'%></div>
+                        <div class="grid_2">Payment method</div>
+                        <div class="grid_2 bold divider"><%= @user.last_payment.payment_method %></div>
+                        <div class="grid_2">Contract period(end)</div>
+                        <div class="grid_1 bold"><%= formatted_date(@user.last_payment.contract_end, 'mmddyyyy')%></div>
+                    </div>
+                    <% else%>
+    		              <div class="grid_2"> No payment history </div>
+                    <% end %>
+    		</div>  
+       	<h6 class="bold grid_7" id="accountFeatures">ACCOUNT FEATURES</h6>
+     		<div class="container_12 no_margin" align="left">
+                <% unless @user.last_payment.nil?%>     		  
+			    		    	<div class="container_12 overview bgGray">
+                        <div class="grid_2 first">Full Data Service</div>
+                        <div class="grid_2 bold divider">N/A</div>
+                        <div class="grid_2">Character Limit</div>
+                        <div class="grid_2 bold divider"><%= @user.last_payment.package.about_char_limit%></div>
+                        <div class="grid_2">Shout Box limit</div>
+                        <div class="grid_1 bold">No limit</div>
+                        
+                        <div class="grid_2 first">Premium C.C. Assist.</div>
+                        <div class="grid_2 bold divider">YES</div>
+                        <div class="grid_2">Image Gallery limit</div>
+                        <div class="grid_2 bold divider">No limit</div>
+                        <div class="grid_2">Events & Offers limit</div>
+                        <div class="grid_1 bold">No limit</div>
+                        
+                        <div class="grid_2 first">Assigned C.C. Officer</div>
+                        <div class="grid_2 bold divider">Jessica Simmons</div>
+                        <div class="grid_2"> &nbsp;</div>
+                        <div class="grid_2 divider">&nbsp;</div>
+                        <div class="grid_2"> &nbsp;</div>
+                    </div>
+            		<% else%>
+            		  <div class="grid_2"> No payment history </div>
+                <% end %>
+    		</div>
+        
+        <h6 class="bold grid_7" id="regInfoFeatures">REGISTRATION INFO FEATURES</h6>
+       	<div class="container_12 no_margin" align="left">
+			    		    	<div class="container_12 overview bgGray">
+                        <div class="grid_3 first">Company Name</div>
+                        <div class="grid_3 bold"><%= @user.advert_company_name %></div>
+                        <div class="grid_3">Company Registration No.</div>
+                        <div class="grid_3 bold"><%= @user.advert_company_reg_number %></div>
+                        <div class="grid_3 first">Registered Company Name</div>
+                        <div class="grid_3 bold"><%= @user.advert_company_name_registered %></div>
+                        <div class="grid_3">Email</div>
+                        <div class="grid_3 bold "><%= @user.email %></div>
+                    </div>
+    		</div>
+
+
+    <h6 class="bold grid_7 pad_top" id="paymentInfo">PAYMENT INFO</h6>      			
+    <div class="container_12 no_margin" align="center">
+      <div class="container_12">
+          
+          <% unless @user.payments.payments_paginated(params[:page]).empty? %>
+          
+          <div class="header" align="left">
+              <div class="grid_4">Payment Detail</div>
+              <div class="grid_2">Type</div>
+              <div class="grid_2">Amount</div>
+              <div class="grid_2">Date</div>
+              <div class="grid_2">Status</div>
+              <div class="grid_1"></div>
+          </div>
+
+          <div class="body">            
+            <% @user.payments.payments_paginated(params[:page]).each do |payment|%>
+          		<div class="row new">
+                  	<div class="container_12">
+                    <div class="grid_4">Basic - Monthly</div>
+              			<div class="grid_2">Cheque</div>
+                    <div class="grid_2">RM 150.00</div>
+                    <div class="grid_2">30/10/2011</div>
+                    <div class="grid_2 status">1 day</div>
+                    <div class="grid_1">
+                      <a class="checkButton cursor removeSelected white stat" name="modal" data-id="1" href="#setStatus">Set status</a></div>
+                    </div>
+              </div>
+            <% end %>              
+          </div><!-- end body -->
+          
+          <div class="footer">
+              <div class="grid_7">
+                <% if @user.payments.payments_paginated(params[:page]).total_pages > 1 %>
+                <span>Page</span>
+                <% end %>
+                <%= will_paginate(@user.payments.payments_paginated(params[:page])) %>
+              </div>
+              <div class="grid_4 align_right fright"><a href="path_to_update" class="checkButton cursor removeSelected" >Expand</a></div>
+          </div>
+          
+          <% else%>
+            <div align="left"> No payment history </div>
+          <% end %>
+          
+      </div>
+    </div>
+    
+ <form id="companyFrm" class="form" method="post">
+    <h6 class="bold grid_7 pad_top" id="companyInfo">COMPANY INFO<input type="submit" value="save info" class="checkButton cursor  white margin_left_20 half marginTop"></h6><div class="pad_top30"><div class="grayLoader">Saving data</div></div>
+      <div class="container_12 no_margin">
+			<div class="container_12 full">
+          <div class="bgGray no_margin full">
+          		<div class="container_12 full">
+              		<div class="grid_9">
+                    <div class="container_12 full">
+                      <div class="grid_4">Company Logo<br><input type="text" name="company_logo" id="comp_logo" value="<%= @user.places.first.profile_image.image.url(:thumb) rescue '' %>" class="radius5 required"></div>
+                      <div class="grid_4">Web URL<br><input type="text" name="web_url" value="<%= @user.places.first.website_url rescue '' %>" class="radius5 required"></div>
+                      <div class="grid_4">Category<br><input type="text" name="category" value="<%= @user.places.first.parent_category.name.titleize rescue '' %>" class="radius5 required"></div>
+                      
+                      <div class="grid_4">Company Name<input type="text" name="company_name" value="<%= @user.places.first.name.titleize rescue '' %>" class="radius5  required"></div>
+                      <div class="grid_4">Facebook page URL<input type="text" name="fb_url" value="<%= @user.places.first.facebook rescue '' %>" class="radius5 required"></div>
+                      <div class="grid_4">Sub-category<input type="text" name="sub_cat" value="<%= @user.places.first.subcategory.name rescue '' %>" class="radius5 required"></div>
+                          <div class="grid_8">
+                          	<div class="container_12 full no_margin">
+                              <div class="grid_3">Telephone<input type="text" name="tel" value="<%= @user.places.first.telephone_numbers rescue '' %>" class="radius5 half number"></div> 
+                            	<div class="grid_3 margin_left_20">Fax<input type="text" name="fax" value="<%= @user.places.first.fax_numbers rescue '' %>" class="radius5 half number"></div>
+                            	<div class="grid_6 fright">Twitter page URL<input type="text" name="twitter_url" value="<%= @user.places.first.twitter rescue '' %>" class="radius5"></div>
+                              
+                              <div class="grid_6">Address <a href="" class="right orange">Place Marker</a>
+                              <input type="text" name="place" value="<%= @user.places.first.address.complete_address rescue '' %>" class="radius5 required"></div>
+                              <div class="grid_6">Email<input type="text" name="email" value="<%= @user.places.first.email rescue '' %>" class="radius5 required email"></div>
+                            </div>
+                          </div>
+                          
+                          <div class="grid_4">
+                          	<div class="container_12 full">
+                          		<div class="grid_12">Features
+                              </div>
+                              
+                              <div class="pad10 radius5 features">
+                              <div class="grid_3" align="center">
+                              		<a class="features"><div></div><img src="/images/wifi.jpg">
+                                  <input type="checkbox" name="features[]" class="" value="wifi">Wifi</a></div>
+                              <div class="grid_3" align="center">
+                              		<a class="features"><div></div><img src="/images/halal.jpg">
+                                  <input type="checkbox" name="features[]" class="" value="halal">Halal</a></div>
+                              <div class="grid_3 suffix_3" align="center">
+                              		<a class="features"><div></div><img src="/images/price.jpg">
+                                  <input type="checkbox" name="features[]" class="" value="price">Price</a>
+                              </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                    	</div>
+                  </div>
+                  <div class="grid_3">
+                    <div class="container_12">
+                        <div class="grid_12">Tags / Keywords<textarea class="full" rows="2"><%= @user.places.first.tags rescue '' %></textarea></div>
+                        <div class="grid_12">About us<textarea class="full" rows="7"><%= @user.places.first.description rescue '' %></textarea></div>
+                    </div>
+                  </div>
+          </div>
+          </div>
+          
+          
+          <div class="bgGray no_margin full imageList" align="center">
+            <% unless @user.places.first.nil? %>
+            <ul id="image_gallery" class="image_gallery">
+            <% @user.places.first.pictures.each do |pic|%>
+              <li><a href="#imagePop" name="modal"><img src="<%= pic.image.url(:thumb)%>" width="85" height="64"></a></li>
+              <% end %>
+            </ul>
+            <% end %>
+          </div>
+          
+          <!--
+          <div class="footer">
+            <div class="grid_7"><span>Page</span>
+              <ul class="pagination"><li><a>1</a></li>
+                <li><a href="" class="selected">2</a></li>
+                <li><a href="">3</a></li>
+              </ul>
+            </div>
+          </div>
+          -->
+          
+          
+      </div>
+    </div>
+    </form>
+   
+    <h6 class="bold grid_7 pad_top" id="eventsHeader">EVENTS</h6>
+      <div class="container_12 no_margin" align="center">
+			<div class="container_12">
+          <div class="header" align="left">
+              <div class="grid_4">Event Name</div>
+              <div class="grid_2">Event Date</div>
+              <div class="grid_2">Listing Date</div>
+              <div class="grid_2">Location</div>
+              <div class="grid_1">Image</div>
+              <div class="grid_1">Created on</div>
+              <div class="grid_1 margin_left_10">Status</div>
+          </div>
+          <div class="body">
+          <div class="accordion">
+          		
+          		<% @user.events.each do |event| %>
+              <div class="row new">
+                    <div class="grid_4">&nbsp;</div>
+                    <div class="grid_2"><%= formatted_date(event.start_date, 'ddmmyyyy')%><br><%= formatted_date(event.end_date, 'ddmmyyyy')%></div>
+                    <div class="grid_2"><%= event.from_price rescue ''%> - <%= event.to_price rescue ''%></div>
+                    <div class="grid_2"><%= event.address.complete_address rescue ''%></div>
+                    <div class="grid_1">Status</div>
+                    <div class="grid_1"><%= formatted_date(event.created_at, 'ddmmyyyy')%></div>
+                    <div class="grid_1 margin_left_10"><%= show_event_status(event) %></div>
+                    <a class="accordTitle" href="<%= eventdetails_admin_advertisers_path(:event_id => event.id) %>" data-id="1"><%= event.name%></a>
+                    <div class="content"><div class="grayLoader">Loading data</div></div>
+              </div>
+              <% end %>
+
+              
+          </div>
+          </div><!-- end body -->
+          <div class="footer">
+              <div class="grid_7"><span>Page</span>
+              	<ul class="pagination">
+                	<li><a>1</a></li>
+                	<li><a href="" class="selected">2</a></li>
+                  <li><a href="">3</a></li>
+                </ul></div>
+              <div class="grid_4 align_right fright"><a href="path_to_update" class="checkButton cursor removeSelected">Expand</a></div>
+          </div>
+      </div>
+		
+    </div>
+   	
+    <h6 class="bold grid_7 pad_top" id="offersHeader">OFFERS</h6>
+      <div class="container_12 no_margin" align="center">
+			<div class="container_12">
+          <div class="header" align="left">
+              <div class="grid_5">Offer name</div>
+              <div class="grid_2">Listing Date</div>
+              <div class="grid_2">Location</div>
+              <div class="grid_1">Image</div>
+              <div class="grid_2">Created On</div>
+              <div class="grid_1">Status</div>
+          </div>
+          <div class="body">
+          <div class="accordion">
+            
+            <% @user.deals.each do |deal|%>
+          		<div class="row new">
+                  	<div class="grid_5">&nbsp;</div>
+              			<div class="grid_2"><%= formatted_date(deal.start, 'ddmmyyy')%> -  <%= formatted_date(deal.end, 'ddmmyyy')%></div>
+                    <div class="grid_2"><%= deal.address.complete_address rescue ''%></div>
+                    <div class="grid_1"><%= deal.pictures.length %></div>
+                    <div class="grid_2"><%= formatted_date(deal.created_at, 'ddmmyyy')%></div>
+                    <div class="grid_1"><%= show_event_status(deal) %></div>
+                    <a class="accordTitle" href="xxformAppend/offersFrm.html" data-id="1"><%= deal.name%></a>
+                    <div class="content"><div class="grayLoader">Loading data</div></div>
+              </div>
+            <% end %>
+            
+            
+              
+          </div>
+          </div><!-- end body -->
+          <div class="footer">
+              <div class="grid_7"><span>Page</span>
+              	<ul class="pagination">
+                	<li><a>1</a></li>
+                	<li><a href="" class="selected">2</a></li>
+                  <li><a href="">3</a></li>
+                </ul></div>
+              <div class="grid_4 align_right fright"><a href="path_to_update" class="checkButton cursor removeSelected">Expand</a></div>
+          </div>
+      </div>
+		
+    </div>
+   
+   
+    <h6 class="bold grid_7 pad_top" id="shoutHeader">SHOUT BOX</h6>
+  <div class="fright filter pad_top">
+<select id="filterShout">
+		<option value="">Show All shouts</option>
+    <option value="1">Show All shouts</option>
+    <option value="2">Show All shouts</option>
+    <option value="3">Show All shouts</option>
+</select>
+<select id="filterShoutCron" class="margin_left_10">
+		<option value="">All / 2011 / 2012</option>
+    <option value="2011">2011</option>
+    <option value="2010">2010</option>
+    <option value="2009">2009</option>
+</select>
+</div>
+      <div class="container_12 no_margin" align="center">
+			<div class="container_12">
+          <div class="header" align="left">
+              <div class="grid_10">Shout box listings</div>
+              <div class="grid_2">Created on</div>
+          </div>
+          <div class="body shout">
+          <div class="accordion">
+            <% unless @user.places.first.nil? %> 
+              <% @user.places.first.announcements.each do |announ|%>
+          		<div class="row new">
+                  	<div class="grid_10">&nbsp;</div>
+              			<div class="grid_2"><%= formatted_date(announ.created_at, 'ddmmyyyy')%></div>
+                    <a class="accordTitle" href="xxformAppend/shoutForm.html" class="link"><%= announ.title.titleize%></a>
+                    <div class="content"><div class="grayLoader">Loading data</div></div>
+              </div>
+              <% end %>
+            <% end %>
+              
+          </div>
+          </div><!-- end body -->
+          <div class="footer">
+              <div class="grid_7"><span>Page</span>
+              	<ul class="pagination">
+                	<li><a>1</a></li>
+                	<li><a href="" class="selected">2</a></li>
+                  <li><a href="">3</a></li>
+                </ul></div>
+              <div class="grid_4 align_right fright"><a href="path_to_update" class="checkButton cursor removeSelected">Expand</a></div>
+          </div>
+      </div>
+		
+    </div>
+    </div>
+    <!--end messagebox-->
+   <div class="clear pad_bot"></div>
+</div>

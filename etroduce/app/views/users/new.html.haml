@@ -1,0 +1,35 @@
+%h3 Add new user:
+
+- form_tag users_path, :method => :post do
+  %table
+    %tr
+      %td
+        Firstname:
+      %td
+        = text_field_tag "user[firstname]"
+
+    %tr
+      %td
+        Lastname:
+      %td
+        = text_field_tag "user[lastname]"
+    %tr
+      %td
+        * Email:
+      %td
+        = text_field_tag "user[email]"
+    %tr
+      %td
+        Role:
+      %td
+        = select_tag "user[role_code]", options_for_select(roles_for_select)
+    %tr
+      %td
+      %td
+        = check_box_tag "send_email", 1, false
+        Send an Email
+    %tr
+      %td
+      %td
+        = submit_tag "Add User"
+        = link_to "Cancel", users_path

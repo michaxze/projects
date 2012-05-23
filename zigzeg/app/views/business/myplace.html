@@ -1,0 +1,29 @@
+  <% if params[:t] == "location" %>
+    <%= render :partial => "location" %>
+  <% elsif params[:t] == "gallery" %>
+    <%= render :partial => "gallery" %>
+  <% elsif params[:t] == "publish" %>
+    <%= render :partial => "publish" %>
+  <% elsif params[:t] == "category" %>
+    <%= render :partial => "category" %>
+  <% else %>
+    <%= render :partial => "place" %>
+  <% end %>
+
+<script>
+    $("#place_category_id").change(function() {
+      var cat_id = $("#place_category_id").val();
+      $("#loader_category").show();
+      $.ajax({
+        type: "GET",
+        cache: false,
+        url: "/welcome/load_select_subcategories?cat_id=" + cat_id,
+        data: $(this).serializeArray(),
+        success: function(data) {
+          $("#subcategory_id").empty();
+          $("#subcategory_id").append(data).fadeIn();
+          $("#loader_category").hide();
+        }
+      });
+    });
+</script>

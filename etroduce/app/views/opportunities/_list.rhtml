@@ -1,0 +1,22 @@
+<div id="opps_listing">
+  <ul>
+    <% opps.each do |opp| %>
+    <li><%= render( :partial => "opportunities/rows", :locals => { :opp => opp } ) %></li>
+    <% end %>
+  </ul>
+</div>
+
+<script>
+  //<![CDATA[
+    function open_opp_details(opp_id) {
+      $.fancybox({
+      	'scrolling'		: 'no',
+      	'titleShow'		: false,
+      	'autoDimensions' : false,
+      	'width'       : 400,
+      	'height'      : 330  	        
+      });
+      
+    }
+  //]]>
+</script>

@@ -1,0 +1,33 @@
+- cat = @opp ? @opp.category.code : params[:c].to_s
+#submenu
+  %div{ :class => "menu-inner" }
+    %ul
+      %li
+        = link_to "All", opportunities_path, :class => (cat == "" ? "selected_menu" : "")
+      %li
+        = link_to "Jobs", opportunities_path(:c => 'jobs'), :class => (cat == "jobs" ? "selected_menu" : "")
+      %li
+        = link_to "Personals", opportunities_path(:c => 'personals'), :class => (cat == "personals" ? "selected_menu" : "")
+      %li
+        = link_to "For Sale", opportunities_path(:c => 'forsale'), :class => (cat == "forsale" ? "selected_menu" : "")
+      %li
+        = link_to "Housing", opportunities_path(:c => 'housing'), :class => (cat == "housing" ? "selected_menu" : "")
+      %li
+        = link_to "Daily Deals", opportunities_path(:c => 'dailydeals'), :style => "background-color: #FFFF66"
+
+    - if logged_in?
+      %div.welcome_user
+        - if @new_messages> 0
+          = link_to(image_tag("mail.png", :size => "25x25", :style =>"margin-bottom: -6px"), messages_path)
+          %span{ :style => "color: red"}
+            (#{@new_messages})
+        - if @new_friend_requests > 0
+          = link_to(image_tag("friend_request.png", :size => "25x25", :style =>"margin-bottom: -4px"), friend_requests_contacts_path)
+          %span{ :style => "color: red"}
+            (#{@new_friend_requests})
+        = link_to "My Account", myopportunities_path(:p => 'f')
+        = " | "
+        = link_to "Log-out", logout_path
+      %div.clr
+  %div.clr
+

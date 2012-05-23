@@ -1,0 +1,32 @@
+<li class="deals">
+              		<!-- ****** START THUMB VIEW AREAS****** -->
+                        <div class="thumbView">
+                        <div class="wraptocenter">
+                      	<a href="#"><img src="images/1.png"/></a>
+                        </div>
+                        <div>
+                          <span><%= post.name.titleize %></span>
+                          <p><%= post.description %></p>
+                        </div>
+                        </div>
+                        <!-- ****** END THUMB VIEW AREA****** -->
+                        
+                        <!-- ****** START LIST VIEW AREAS****** -->
+                        <div class="grid_12 listViewArea">                     
+			                  <div class="grid_1 alpha ">
+                        <div class="square_deals"></div>
+                      </div>
+
+                        <!--list  description-->
+                        <div class="grid_8 alpha pad_left">
+                          <h4 class="bold align_left"><%= link_to post.name.titleize, format_post_link(post) %></h4>
+                          <p class="gray small2 align_left">Placerat cursus in ultricies, nunc in eu magna aenean unc in eu magna c in eu magna cursus. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+                          <p class="align_left"><a href="/" class="small2">Find out more</a> | <a href="" class="small2">Go to map</a></p>
+                        </div>
+                        <div class="grid_3" align="center">
+                          <a href="" class="bigbutton full_width button">Find out more &rarr;</a>
+                        </div>
+                        <div class="clearfix"></div>
+                     	</div>
+      								<!-- ****** END LIST VIEW AREAS****** -->
+</li>

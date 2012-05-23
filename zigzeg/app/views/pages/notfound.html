@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html lang="en" ><head>
+<meta charset="utf-8" />
+<title>ZIGZEG <%= "- #{@page_title}" unless @page_title.nil? %></title>
+<meta name="robots" content="index, follow">
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<!-- favicon -->
+<link rel="shortcut icon" href="/images/favicon.ico" />
+
+<%= stylesheet_link_tag "style" %>
+<%= stylesheet_link_tag "/javascripts/fancybox/jquery.fancybox-1.3.4.css", :media => "screen" %>
+<%= stylesheet_link_tag "/javascripts/themes/base/jquery.ui.all.css" %>
+
+<%= javascript_include_tag "jquery-1.6.2" %>
+
+<%= javascript_include_tag 'rails' %>
+<%= csrf_meta_tag %>
+  	<!--[if IE]>
+     <%= stylesheet_link_tag "ie-fix" %>
+     <%= javascript_include_tag "ie-fix" %>
+    <![endif]-->
+</head>
+<body>
+<noscript><div class="ns">Your browser does not support JavaScript!</div></noscript> 
+<div class="loginBar pages">
+ 		<div class="fcontainer_12" id="topArea">
+      <%= render "/globals/top_footer" %>
+    </div>
+</div>
+<div class="bgGray">&nbsp;</div>	
+<!--start page_wrap-->
+</div>
+<div id="page_wrap" class="fcontainer_12 clearfix pad_bot30 pad_top30">
+    <!--start content-->
+    <div class="container_12 pad_bot30 pad_top30 inlineB">
+    		<div class="grid_10 prefix_2 pad_top30">
+        		<div class="container_12 full ">
+            		<div class="grid_10 suffix_2"><h1 class="bold pLine"><strong>Page not found<span class="info autowidth">&nbsp;</span></strong></h1></div>
+ 
+       <div class="grid_10 pad_bot lh13 pad_top20">
+         <h5 class="bold gray">The <%= params[:type] == "deal" ? "offer" : params[:type]  %> titled <b class="blue">'<%= params[:name] %>'</b> is no longer available in our servers.</h5>
+         <p>This happened because the page you are trying to access may have expired or it may have been removed by the page’s account administrator.</p>
+       </div>
+            </div>
+         <div class="grid_9 suffix_3 pad_top20 pad_bot30">
+         <input type="button" onclick="location.replace('/')" value="Go to Home Page" class="radius5 bgGray white hoverBlack cursor half" name="submit_preview">
+         <input type="button" onclick="location.replace('/business')" value="Go to Account Central" class="radius5 bgGray white margin_left_10 hoverBlack cursor half" name="submit_preview">
+         </div>
+        </div>
+    </div>
+    <!--end content-->
+</div>
+<%= render "/globals/footer" %>
+<!--end page_wrap-->
+<div id="boxes">
+  <%= render "/globals/modal_login" %>
+  <%= render "/globals/modal_forget" %>
+  <%= render "/globals/modal_signup" %>
+  <%= render "/globals/modal_settings" %>
+  <%= render "/globals/modal_updates" %>
+  <div id="mask"></div>
+</div>
+<%= javascript_include_tag "jquery-1.6.2" %>
+<%= javascript_include_tag "jquery.validate" %>
+<%= javascript_include_tag "common" %>
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4e9d07ee4d191140"></script>  
+</body>
+</html>

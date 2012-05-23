@@ -1,0 +1,27 @@
+<div class="simpleBox clearfix">
+		<h6 class="bold no_margin orange">CREATE NEW CATEGORY</h6>
+<%= form_for :category, :url => admin_categories_path, :html => { :id => "categoryFrmx" } do |f| %>
+    <div class="margin_left_20">
+    <ul class="cform">
+     	 <li>
+         <label class="clearfix">Category Name</label>
+         <input type="text" name="name" id="cat_name" placeholder="Food & Beverage" class="required text-input fancyinput" />
+         <div class="clearfix"><label for="cat_name" generated="false" class="error clearfix"></label></div>
+       </li>
+      </ul>
+     </div>
+    <div class="margin_left_20">	
+      <ul class="cform category_list">
+     	 	<li><label class="clearfix">Category List</label>
+         <input type="text" name="add_new" id="sub_cat0" placeholder="Sub-Category" class="required text-input fancyinput" /><a class="category_add" data-id='1'></a>
+          <div class="clearfix"><label for="sub_cat0" generated="false" class="error clearfix"></label></div>
+         </li>   
+     	</ul>
+      <ul class="cform">
+      <li><input type="submit" value="Add Category" id="xuserSubmitBtn" class="radius5 userButton cursor fleft" name="submit"/>
+           <div class="grayLoader category">Saving data</div></li>
+      </ul>
+     </div>
+     
+    <% end %>
+</div>

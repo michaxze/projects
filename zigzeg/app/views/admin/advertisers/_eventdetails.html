@@ -1,0 +1,152 @@
+<script>
+$(function() {
+	$("#eventsFrm").validate({
+			submitHandler: function(form) {
+					alert('event submit')
+					//form.submit();
+			}
+	});
+	$("#eventsTimeFrm").validate({
+			submitHandler: function(form) {
+					alert('time submit')
+					//form.submit();
+			}
+	});
+	$("#eventsDateFrm").validate({
+			submitHandler: function(form) {
+					alert('date submit')
+						//form.submit();
+			}
+	});
+	var dates = $("#start_date,#end_date").datepicker({
+				dateFormat:'dd/mm/yy',
+        minDate: 0,
+				nextText: '',
+				prevText: '',
+				onSelect: function( selectedDate ) {
+					var option = this.id == "start_date" ? "minDate" : "maxDate",
+						instance = $( this ).data( "datepicker" ),
+						date = $.datepicker.parseDate(
+							instance.settings.dateFormat ||
+							$.datepicker._defaults.dateFormat,
+							selectedDate, instance.settings );
+					dates.not( this ).datepicker( "option", option, date );
+				}
+			}
+		);
+		$('#start_icon').live('click',function(){$("#start_date").datepicker( "show" );});
+		$('#end_icon').live('click',function(){$("#end_date").datepicker( "show" )});
+		$('#start_time').timepicker({});$('#end_time').timepicker({});
+});
+</script>
+<div class="pad">
+ 
+<div class="container_12 no_margin">
+			<div class="container_12 full">
+          <div class="no_margin full">
+          		<div class="container_12 full no_margin">
+              <form id="eventsFrm" class="form ajaxForm">
+              		<div class="grid_9">
+                    <div class="container_12 full">
+                      <div class="grid_4 margin_left_20">Event name<br><input type="text" name="event_name" value="<%= event.name %>" class="radius5 required"></div>
+                      <div class="grid_4">Website URL<br><input type="text" name="web_url" value="<%= event.website rescue ''%>" class="radius5 required"></div>
+                      <div class="grid_4">Category<br><input type="text" name="category" value="<%= event.category.name rescue '' %>" class="radius5 required"></div>
+                      <div class="grid_8 subcontent">
+                          	<div class="container_12 full no_margin">
+                              <div class="grid_3">Telephone<input type="text" name="telephone" value="<%= event.telno rescue '' %>" class="radius5 half "></div> 
+                            	<div class="grid_3 margin_left_20">Fax<input type="text" name="fax" value="<%= event.faxno rescue '' %>" class="radius5 width70 "></div>
+                            	<div class="grid_6 fright pad_right5">Facebook page URL<input type="text" name="fb_url" value="<%= event.facebook rescue '' %>" class="radius5 required"></div>
+                              
+                              <div class="grid_6">Event location <a href="" class="right orange">Place Marker</a>
+                              <input type="text" name="address" value="<%= event.address.complete_address rescue '' %>" class="radius5 required"></div>
+                              <div class="grid_6 fright pad_right5">Twitter page URL<input type="text" name="twitter_url" value="<%= event.twitter rescue '' %>" class="radius5 required"></div>
+                              <div class="grid_6"><div class="pad_top20"><input type="submit" name="save_event" value=" Save " class="checkButton cursor  white pad"><input type="button" value="gallery" class="checkButton cursor  white margin_left_10"></div></div>
+                               <div class="grid_6  fright pad_right5">Email<input type="text" name="email" value="<%= event.email rescue '' %>" class="radius5 required"></div>
+                            </div>
+                          </div>
+                       <div class="grid_4 margin_left_10"><div class="">Sub-category<input type="text" name="company_logo" value="<%= event.profile_image.image.url(:thumb) rescue '' %>" class="radius5 full required" ></div>
+                          	<div class="container_12 full">
+                          		<div class="grid_12">Features
+                              </div>
+                              <div class="pad10 radius5 features">
+                              <div class="grid_3" align="center">
+                              		<a class="features"><div></div><img src="/images/wifi.jpg">
+                                  <input type="checkbox" name="features[]" class="" value="wifi">Wifi</a></div>
+                              <div class="grid_3" align="center">
+                              		<a class="features"><div></div><img src="/images/halal.jpg">
+                                  <input type="checkbox" name="features[]" class="" value="halal">Halal</a></div>
+                              <div class="grid_3 suffix_3" align="center">
+                              		<a class="features"><div></div><img src="/images/price.jpg">
+                                  <input type="checkbox" name="features[]" class="" value="price">Price</a>
+                              </div>
+                              </div>
+                            </div>
+                          </div>
+                    	</div>
+                  </div>
+                  <div class="grid_3 pad_bot20">
+                    <div class="container_12">
+                        <div class="grid_12">Tags / Keywords<textarea name="tags" class="full required" rows="2"><%= event.tags %></textarea></div>
+                        <div class="grid_12">About this event<textarea name="about_event" class="full required" rows="5"><%= event.description %></textarea></div>
+                    </div>
+                  </div>
+               </form>
+                  
+                  <div class="borderTop3 full pad_top20 pad_bot20">
+                <form id="eventsDateFrm" class="form ajaxForm">
+                  		<div class="grid_6 divider"> 
+                        	<div class="grid_6">Event: pricing in RM (From)<input type="text" name="event_price_from" value="<%= event.from_price rescue '' %>" /></div>
+                      		<div class="grid_6"> Event: pricing in RM (To)<input type="text" name="event_price_to" value="<%=event.to_price rescue ''%>" /></div>
+                          <div class="grid_2 pad_top"><input type="submit" name="save_pricing" value=" Save " class="checkButton cursor  white"></div>
+                          <div class="grid_10 pad_top20"><input type="checkbox" name="free_event" <%= (event.event_type == 'free') ? "checked" : "" %> /><span class="margin_left_10">free event</span></div>
+                      </div>
+                 </form>
+                 <form id="eventsTimeFrm" class="form ajaxForm">
+                      <div class="grid_6">
+                      		<div class="grid_6">Event Date (start & end)<br />
+                          <small>from<input type="text" name="event_date_start" readonly="readonly" id="start_date" value="<%= formatted_date(event.start_date, 'ddmmyyyy' ) rescue ''%>" class="half"/>&nbsp;&nbsp;to</small>
+                          <input type="text" name="event_date_end" readonly="readonly" class="half" id="end_date" value="<%= formatted_date(event.end_date, 'ddmmyyyy') rescue '' %>"/></div>
+                          <div class="grid_3">Start time<br /><input type="text" name="event_time_start" id="start_time" class="half" value="<%= event.start_time rescue '' %>" /> </div>
+                          <div class="grid_3">End time<br /><input type="text" name="event_time_end" id="end_time" class="half" value="<%= event.end_time rescue '' %>"/></div>
+                          <div class="grid_12 pad_top"><input type="submit" name="save_date" value=" Save " class="checkButton cursor  white"></div>
+                      </div>
+                  </form>
+                  </div>
+          		</div>
+          </div>
+          <div class="form pad_top pad_bot">
+          <div class="bgGray no_margin full imageList" align="center">
+          		<ul class="event_image_gallery">
+              		<li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+              </ul>
+              
+          </div>
+          </div>
+          <div class="footer">
+              <div class="grid_7"><span>Page</span>
+              				<ul class="pagination"><li><a>1</a></li>
+                      <li><a href="" class="selected">2</a></li>
+                      <li><a href="">3</a></li>
+                      </ul></div>
+              <div class="grid_4 align_right fright"><a class="checkButton cursor expand white" data-id="event_image_gallery" href="formAppend/gallery.html">Expand</a></div>
+          </div>
+      </div>
+    </div>
+
+</div>

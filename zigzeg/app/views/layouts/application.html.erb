@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html lang="en" ><head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8" />
+<title>ZIGZEG <%= unless params[:search].blank?
+									"Search: "+params[:search] 
+			 				else 
+							 		"– The Total Urban Awareness System"
+							end %>
+</title>
+<meta name="robots" content="index, follow">
+<meta name="keywords" content="ZIGZEG, City Information System, Social, Directory, Places & Landmarks,  Offers & Deals, Events & Happenings, Discounts & Shopping, Businesses, What to do, Where to go, What to buy, Map & Locations">
+<meta name="description" content="ZIGZEG is a city information system that combines an interactive map & a growing-by-day city information network to give people insight into the changes & happenings occurring to the cities they live in">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<%= javascript_include_tag "modernizr.custom.js" %>
+<%= javascript_include_tag "jquery-1.6.2" %>
+<!-- favicon -->
+<link rel="shortcut icon" href="/images/favicon.ico" />
+<%= stylesheet_link_tag "style" %>
+<%= stylesheet_link_tag "index" %>
+<%= stylesheet_link_tag "/javascripts/themes/base/jquery.ui.all.css" %>
+<%= csrf_meta_tag %>
+  <!--[if IE]>
+  <%= javascript_include_tag "ie-fix" %>
+  <%= stylesheet_link_tag "ie-fix" %>
+  <![endif]-->
+<!--Load Scripts-->
+<%= javascript_include_tag "jquery.preloader" %>
+<%= javascript_include_tag "home" %>
+<%= javascript_include_tag "common" %>
+<%= javascript_include_tag "jquery.home" %>
+<%= javascript_include_tag "jquery.validate" %>
+<%= javascript_include_tag "ui/jquery.ui.core.js" %>
+<%= javascript_include_tag "ui/jquery.ui.widget.js" %>
+<%= javascript_include_tag "ui/jquery.ui.mouse.js" %>
+<%= javascript_include_tag "ui/jquery.ui.slider.js" %>
+<%= javascript_include_tag "ui/jquery.ui.tabs.js" %>
+<%= javascript_include_tag "slides.min.jquery" %>
+<%= javascript_include_tag 'rails' %>
+<%= javascript_include_tag "#{Yetting.main_domain}:9292/faye.js" %>
+<%= javascript_include_tag 'application' %>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDJT0nwhhhJuvHJC8yN0DqLcc5GNAlXRYs&sensor=true"></script>
+</head>
+<body>
+<noscript><div class="ns">Your browser does not support JavaScript!</div></noscript> 
+<div class="loginBar BigblkBg pgTop">
+ 		<div class="fcontainer_12" id="topArea">
+    		<%= render "/globals/top" %>
+		</div>
+</div>	
+  <div class="bgGray pad_top20 minHeight150">
+    <%= render "/globals/search_index" %>
+
+    <% if !["tagsearch", "search"].include?(action_name) %>
+      <%= render "/globals/slider" %>
+    <% end %>
+
+  </div>
+	<div id="zipline"></div>
+	<div class="min_width"><a href="/maps"><div id="zipper"></div></a></div>
+  <!--start page_wrap-->
+  <div id="page_wrap" class="fcontainer_12 clearfix">
+    <!--start content-->
+    <%= yield %>
+    <!--end content-->
+  <div class="clear"></div>
+  </div>
+	<!--end page_wrap-->
+	
+  <%= render "/globals/footer" %>
+
+  <%= render "/globals/modals" %>
+
+<%= render "/globals/analytics" %>
+</body>
+</html>

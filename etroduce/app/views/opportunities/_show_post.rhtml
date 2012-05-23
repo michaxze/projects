@@ -1,0 +1,62 @@
+<div id="show_opportunity">
+  <div class="category">
+    <h3>&nbsp;<%= link_to((opp.category.name.titleize rescue ''), ("/opportunities?c=#{opp.category.code}" rescue '') ) %> </h3>
+  </div>
+    
+  <div class="clr"></div>
+  <div stye="height: 20px">&nbsp;</div>
+
+  <div class="opp_tools">
+    <% if logged_in?%>
+      <% if current_user != opp.user %>
+    <div class="rounded bluelink"><%= link_to "Respond", "javascript:;", :onclick => "showWindow('respond', '#{opp.id}')"%></div>
+    <div class="rounded bluelink"><%= link_to "Refer a friend", "javascript:;", :onclick => "showWindow('refer', '#{opp.id}')" %></div>
+    <div class="rounded bluelink"><%= link_to "Share in Etroduce", "javascript:;", :onclick => "showWindow('share_to_mynetwork', '#{opp.id}')" %></div>
+    <div class="rounded bluelink"><%= link_to "Share to Twitter", Helper.twitter_sharer(opportunity_url(opp), opp.subject), :target => "_blank"%></div>
+    <div class="rounded bluelink"><%= link_to "Share to Facebook", Helper.facebook_sharer(opportunity_url(opp), opp.subject), :target => "_blank"%></div>
+      <% else %>
+      <div class="rounded bluelink"><%= link_to "Edit this post", edit_myopportunity_path(opp) %></div>
+      <% end %>
+    <% else %>
+    <div class="rounded bluelink"><%= link_to "Respond", "javascript:;", :onclick => "showWindow('respond_na', '#{opp.id}')"%></div>
+    <div class="rounded bluelink"><%= link_to "Refer a friend", login_path%></div>
+    <div class="rounded bluelink"><%= link_to "Share to Etroduce", login_path%></div>
+    <div class="rounded bluelink"><%= link_to "Share to Twitter", Helper.twitter_sharer(opportunity_url(opp), opp.subject), :target => "_blank"%></div>
+    <div class="rounded bluelink"><%= link_to "Share to Facebook", Helper.facebook_sharer(opportunity_url(opp), opp.subject), :target => "_blank"%></div>    
+    <% end %>
+  </div>
+
+
+  <div class="opp_details">    
+    <div class="opp_title_info" style="width: 680px">
+      <span style="font-size: 16px; font-weight: bold; font-family: 'lucida grande', tahoma, arial ;"><%= opp.subject.titleize%> <%= show_price(opp)%></span> <br /> 
+      <span style="font-size: 10px; color: #999">Date posted: <%= opp.created_at.strftime("%B %d, %Y")%> - <%= Helper.getcity(opp.zipcode) unless opp.zipcode.blank? %></span><br /> 
+      <span style="font-size: 10px; color: #999">Posted by: <%= link_to opp.user.username, "/#{opp.user.username}"%></span>
+    </div>
+    <div class="clr"></div>
+
+    <div >
+      <%= render :partial => "opportunities/facebook_like"%>      
+      <div id="opportunity_photos" style="margin-bottom: 10px; width: 600px">
+      <% opp.assets.each do |asset|%>
+        <%= link_to(image_tag(asset.image.url(:medium)), asset.image.url(:large), :rel => "opp_gallery") %>
+      <% end %>
+      </div>
+
+      <div class="opp_description">
+        <%= auto_link(opp.description) %>
+      </div>
+      
+      <div style="margin-top: 30px; margin-bottom: 40px; overflow:hidden">
+        Posting ID: <%= opp.id %><br/>
+        <% unless opp.expire_at.nil? %>
+          Expire on: <%= opp.expire_at.strftime("%B %d, %Y")%>
+        <% end %>
+      </div>
+      
+    </div>
+  </div>
+    
+</div>
+
+<div class="clr"></div>

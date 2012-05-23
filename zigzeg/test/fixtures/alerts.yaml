@@ -1,0 +1,30 @@
+1:
+  alert_type: call
+  title: Please call and help
+  description: sample description
+  sender: System
+  status: pending
+2:
+  alert_type: call
+  title: Please please call...
+  description: sample here
+  sender: System
+  status: pending
+3:
+  alert_type: error
+  title: system error title
+  description: sample desc
+  sender: System
+  status: pending
+4:
+  alert_type: report
+  title: repoted page
+  description: sample desc
+  sender: System
+  status: pending
+5:
+  alert_type: payment
+  title: payment report
+  description: sample desc
+  sender: System
+  status: pending

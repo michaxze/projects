@@ -1,0 +1,214 @@
+<%
+lat = place.address.latitude rescue 3.13
+lng = place.address.longitude rescue 101.62
+zoom = 14
+
+image = Yetting.domain + '/images/places_64s.png' 
+%>
+<!--start sidebar-->
+<div id="sidebar" class="page pgSide sidebar">
+  <div class="">
+      <!--sidebar widget-->
+      <div class="sidebar-widget">
+            <div class="container_12 fullS pdT16">
+            <!-- AddThis Button BEGIN -->
+            <div class="grid_12 fullS no_margin addTop">
+            	<% unless current_user.nil?%>
+              <% if @place.user_id == current_user.id %>	
+              			<div class="fleft pgZig noHover"><div class="bold">zigged</div></div>
+              <% else %>
+              		<% unless @listing.nil? %>
+                    <% if (show_zigged_class(@listing)=='zigged') %>
+                      <div class="fleft pgZig noHover"><div class="bold">zigged</div></div>
+                    <% else %>
+                      <a id="zigMe" class="cursor" data-id="<%=@listing.id rescue ''%>">
+                        <div class="fleft pgZig"><div class="bold">zig this</div></div>
+                      </a>
+                    <% end %>		
+                    <% else %>
+                    <a id="zigMe" class="cursor" data-id="<%=@listing.id rescue ''%>">
+                        <div class="fleft pgZig"><div class="bold">zig this</div></div>
+                      </a>
+                    <% end %>
+              <% end %>
+              <% else %>
+              			<a href="#loginMessage" id="zigMessagePop" name="modal" class="absolute lft0"></a>
+              			<a id="zigMe" class="cursor" data-id="<%=@listing.id rescue ''%>">
+                        <div class="fleft pgZig"><div class="bold">zig this</div></div>
+                    </a>
+              <% end %>
+              <div class="addthis_toolbox addthis_default_style top fullS" >
+                <a class="addthis_button_tweet"></a>
+                <a class="addthis_button_facebook_like autowidth fright" fb:like:layout="button_count"></a>
+                <a class="addthis_button_google_plusone fright" g:plusone:size="medium"></a>
+              </div><!-- AddThis Button END -->
+              <span id="msgZigAdd" class="normal dispNone">added to ziglist</span>
+            </div>
+            <div class="clearfix"></div>
+            <div id="pgSideHt" class="pad_top5">
+            <h5 class="pad_top bld7 inlineB no_margin">About Us</h5>
+            <div class="grid_12 fullS no_margin inlineB"><p class="pre lh135" align="justify"><%= @place.description %></p></div>
+						</div>
+            <script>$(function() {if($('#pgSideHt').height() > 420){$('#pgSideHt').jScrollPane();}})</script>
+        		<div class="clearfix pad_bot20"></div>
+            <a target="_blank" href="/maps?id=<%=place.id %>&type=<%= place.class.name.downcase %>" class="pgLocMap cursor ">
+            		<div align="center" class="fullS bld7 radius10 ">LOCATE US ON MAP!</div>
+            </a>
+            <div class="clearfix"></div>
+            <h5 class="bld7 pad_top18">BUSINESS INFO >></h5>
+            <div class="container_12 no_margin inlineB">
+            	<div class="pgContact">
+              <div class="grid_2 no_margin">Address</div>
+              <div class="grid_9"> <a target="_blank" href="/maps?id=<%=place.id %>&type=<%= place.class.name.downcase %>" class="pgCol hoverBlue ">
+              		<div class="clearfix lh135"><%= place.address.complete_address rescue '' %></div>
+              </a>
+              </div>
+              <div class="clearfix"></div>
+              <div class="claarfix pdT16"></div>
+              <% if place.website_url.length > 0 %>
+              <div class="grid_2 no_margin">Website</div>
+              <div class="grid_9">
+              <%= link_to place.website_url.gsub(/^(http):\/\//, ''), place.website_url, :class => "pgCol hoverBlue", :target => "_new" %></div>
+              <% end %>
+              <% if place.facebook.length > 0 %>
+              <div class="grid_2 no_margin">Facebook</div>
+              <div class="grid_9"><%= link_to place.facebook.gsub(/^(http):\/\/|www.|facebook|.com|\//, ''), place.facebook, :class => "pgCol hoverBlue", :target => "_new" %></div>
+              <% end %>
+              <% if place.twitter.length > 0 %>
+              <div class="grid_2 no_margin">Twitter</div>
+              <div class="grid_9"><%= link_to place.twitter.gsub(/^(http):\/\/|www.|twitter|.com|\//, ''), place.twitter, :class => "pgCol hoverBlue", :target => "_new" %></div>
+              <% end %>
+              </div><div class="clearfix"></div>
+              <div class="pdT16 pgContact">
+              <% if place.telephone_numbers.length > 0 %>
+                <div class="grid_2 no_margin">Phone</div>
+                <div class="grid_9"><%= place.telephone_numbers %></div>
+              <% end %>
+              
+              <% if place.fax_numbers.length > 0 %>
+                <div class="grid_2 no_margin">Fax</div>
+                <div class="grid_9"><%= place.fax_numbers %></div>
+              <% end %>
+              <% if place.email.length > 0 %>
+              <div class="grid_2 no_margin">Email</div>
+              <div class="grid_9"><%= place.email %></div>
+              <% end %>
+              </div><div class="clearfix"></div>
+              <div class="pdT16 pgContact">
+              <% unless @listing.category.nil? %>
+              	<div class="grid_2 no_margin">Category</div>
+              	<div class="grid_9"><%= @listing.category.name rescue ''%></div>
+                <div class="clearfix"></div>
+                <% unless @listing.listable.place.sub_category.nil? %>
+                  <% sub_ids = @listing.listable.place.sub_category.split(",")
+                     subcategory = Category.find(sub_ids) %>
+                  <% subcategory.each do |subc| %>
+                    <% if subcategory.index(subc) == 0 %>
+                      <div class="grid_2 no_margin">Subcategory</div>
+                    <% else %>
+                      <div class="grid_2 no_margin">&nbsp;</div>
+                    <% end %>
+
+                    <div class="grid_9"><%= " #{subc.name} " %></div>
+                  <% end %>
+                <% end %>
+            </div>
+            
+        <% end %>  
+              
+              
+							</div>            
+            </div>
+						<div class="pgHr marginTop"></div>
+                <% unless @listing.listable.highlights.empty? %>
+<%
+hc_ids = @listing.listable.highlights.map(&:highlight_category_id)
+hc_ids.uniq!
+highlights = HighlightCategory.find(hc_ids).group_by(&:group_name)
+%>
+            <h5 class="bld7 pdT12">We provide</h5>
+            <div class="full">
+            <% unless highlights['payment'].nil? %>
+               <% unless highlights['payment'].empty? %>
+                 <% highlights['payment'].each do |h| %>
+                   <div class="grid_2 pad_bot no_margin" align="center">
+                     <%= show_highlight2(h) %>
+                   </div>
+                 <% end %>
+               <% end %>
+             <% end %>
+            <% unless highlights['parking'].nil? %>
+            	<% unless highlights['parking'].empty? %>
+                 <% highlights['parking'].each do |h| %>
+                     <div class="grid_3 pad_bot no_margin" align="center"><%= show_highlight2(h) %></div>
+                 <% end %>
+             	<% end %>
+            <% end %>
+            <% unless highlights['provides'].nil? %>
+               <% unless highlights['provides'].empty? %>
+                  <% highlights['provides'].each do |h| %>
+                      <div class="grid_3 pad_bot no_margin" align="center"><%= show_highlight2(h) %></div>
+                   <% end %>
+               <% end %>
+            <% end %>
+            <% unless @listing.listable.category_features.nil? %>
+              <% cat_features = CategoryFeature.where("code IN (?)", @listing.listable.category_features) %>
+	              <% unless cat_features.empty? %>
+                  <% cat_features.each do |h| %>
+  	                  <div class="grid_3 pad_top no_margin" align="center"><%= show_category_feature(h) %></div>
+                  <% end %>
+              	<% end %>        
+            	<% end %> 
+          	<% end %>
+            </div>
+            <div class="clearfix pad_bot"></div>
+          <div class="pgHr marginTop"></div>
+          <div class="pdT12">
+	      			<h5 class="bld7">Rate us <span class="fright gray normal pgRate" id="listing_total_rates"> <%= show_rates_number(place.listing) %></span></h5>
+            <div class="pad_bot">
+	     				<div class="width90 fleft relative">
+								<%= render :partial => "/events/rating", :locals => { :listing => @listing } %>
+								<a href="#loginMessage" id="ratingMessagePop" class="opacity0" name="modal"></a>
+            	</div>
+            </div>
+            </div>
+            <div class="clearfix"></div>
+          	<div class="clearfix pdT28"></div>
+            <% if @listing.listable.user == current_user %><script>$(function() { preview_only = true; });</script><% modal = "" %>
+            <% else %><% modal = "modal" %><% end %>          
+            <div class="bgGray pad_top pad_bot" align="center">
+        		<!--SOCIAL AddThis Button BEGIN -->
+            <div class="addthis_toolbox addthis_default_style addthis_32x32_style pad_top5 pLft7" align="center">
+              <a class="addthis_button_facebook first"></a>
+              <a class="addthis_button_twitter"></a>
+              <a class="addthis_button_tumblr"></a>
+              <a class="addthis_button_linkedin"></a>
+              <a  class="addthis_button_google_plusone" g:plusone:count="false"></a>
+              <a class="addthis_button_email"></a>
+              <a class="addthis_button fleft" id="noHoverF" href="http://www.addthis.com/bookmark.php?v=250&amp;username=quickbutton">
+                  <img src="/images/share_more.png" width="32" height="32" border="0" alt="Share" />
+              </a>
+            </div>
+           <div class="clearfix pad_top5"></div>
+           <div class="sidehr no_margin"></div>
+           <div class="container_12 pgW75 sideContact">
+              <% unless current_user.nil?%>
+              <% if current_user.is_advertiser? && current_user.id == @place.user_id %>
+              	<div class="pad fullS absolute emptyBg z10">&nbsp;</div>
+              <% end %>          
+              <% end %> 
+              <div class="grid_6">
+                <a href="#loginMessage" id="contactPop" name="modal"></a><a id="contact_form_link" href="#contactModal"></a>
+                <a id="contactM" href="" title="Ask a question" class="sideReport bold">ASK A QUESTION</a>
+              </div>
+              <div class="grid_6 divide">
+                <a class="cursor sideReport" href="#reportDialog" id="reportPage" name="<%= modal %>">REPORT<br />THIS PAGE</a>
+              </div>
+                       
+            </div>
+          
+			</div>
+</div>
+	</div>
+</div>
+<!--end sidebar-->

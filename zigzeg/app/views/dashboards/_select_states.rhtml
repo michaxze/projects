@@ -1,0 +1,4 @@
+<% state_id = address.state_id rescue nil %>
+Select a state:
+  <%= select_tag "address[state_id]", options_for_select(Constant.states, state_id), :include_blank => true, :id => "states_select" %>
+

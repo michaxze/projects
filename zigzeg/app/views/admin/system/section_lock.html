@@ -1,0 +1,30 @@
+
+<script>
+$(function() {
+	$("#sectionFrm").validate({
+			submitHandler: function(form) {
+			   $('.grayLoader').show().delay(300).fadeOut(300);
+			}
+	});
+});
+</script>
+<div class="simpleBox clearfix">
+		<h6 class="bold no_margin orange">SECTION LOCK</h6>
+    <p>Section Lock allows Master administrators to lock a section to prevent editing and deletion of data, however
+new data can still be created.</p>
+    <div class="margin_left_20">
+    <form id="sectionFrm">
+    	<ul class="cform access">
+     	 <li class="half"><input type="checkbox" name="section[]" value="systems" class="systemCheck"><span>Systems</span></li>
+       <li class="no_margin"><input type="checkbox" name="section[]" value="package" class="sub"> Package/Rates</li>
+       <li class="no_margin"><input type="checkbox" name="section[]" value="promotion" class="sub"> Promotions</li>
+       <li class="no_margin"><input type="checkbox" name="section[]" value="announcements" class="sub"> Announcements</li>
+       <li class="no_margin"><input type="checkbox" name="section[]" value="map"><span>Map</span></li>
+       <li>
+       		<input type="submit" value="Save status" id="userSubmitBtn" class="radius5 userButton cursor fleft" name="submit"/>
+           <div class="grayLoader">Saving data</div>
+       </li>
+      </ul>
+    </form>
+    </div>
+</div>

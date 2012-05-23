@@ -1,0 +1,96 @@
+<div class="pad">
+
+<div class="container_12 no_margin">
+			<div class="container_12 full">
+          <div class=" no_margin full">
+          		<div class="container_12 full">
+               <form class="form ajaxForm">
+              		<div class="width24">
+                  		<div class="grid_12">Offer name</div>
+                      <div class="grid_12"><input type="text" name="offer_name" value="<%= deal.name %>" class="radius5 required"></div>
+                      <div class="grid_12">Category</div>
+                      <div class="grid_12"><select class="width90 radius5" name="offer_cat">
+                        <% Category.parent_categories.each do |cat|%>
+                        <option value="<%= cat.id %>"><%= cat.name%></option>
+                        <% end %>
+                        </select></div>
+                      <div class="grid_12">Sub-category</div>
+                      <div class="grid_12"><select class="width90 radius5" name="offer_sub"><option>cafe</option></select></div>
+                      <div class="grid_12"><div class="pad_top"><input type="submit" name="save_event" value=" Save " class="checkButton cursor  white pad"><input type="button" value="gallery" class="checkButton cursor  white margin_left_10"></div></div>
+                  </div>
+                  <div class="width24">
+                  		<div class="grid_12">Website URL</div>
+                      <div class="grid_12"><input type="text" name="web_url" value="<%= deal.website rescue '' %>" class="radius5 required"></div>
+                      <div class="grid_12">Facebook page URL</div>
+                      <div class="grid_12"><input type="text" name="fb_url" value="<%= deal.facebook rescue '' %>" class="radius5 required"></div>
+                      <div class="grid_12">Twitter page URL</div>
+                      <div class="grid_12"><input type="text" name="twit_url" value="<%= deal.twitter rescue '' %>" class="radius5 required"></div>
+                      <div class="grid_12">Email</div>
+                      <div class="grid_12"><input type="text" name="email" value="<%= deal.email rescue '' %>" class="radius5 required"></div>
+                  </div>
+                  <div class="width24">
+                  		<div class="grid_12">About this Offer</div>
+                      <div class="grid_12">
+                      		<textarea rows="9" class="required width80"><%= deal.description %></textarea>
+                      </div>
+                  </div>
+                  <div class="width24 pad_bot20">
+                  		<div class="grid_12">How to get this Offer</div>
+                      <div class="grid_12">
+                      		<textarea rows="5" class="required full_width"><%= deal.extra_info %></textarea>
+                      </div>
+                      <div class="grid_12">Tags/Keywords</div>
+                      <div class="grid_12">
+                      		<textarea rows="2" class="required full_width"><%= deal.tags rescue ''%></textarea>
+                      </div>
+                  </div>
+                </form>
+                  <div class="borderTop3 full pad_top20 pad_bot20">
+                <form id="offerLocationFrm" class="form ajaxForm">
+                  		  	<div class="grid_7 ">Offer location<a class="orange fright pad_right cursor">Place Marker</a></div>
+                      		<div class="grid_2">Telephone</div>
+                      		<div class="grid_2">Fax</div>
+                      		<div class="grid_1">&nbsp</div>
+                      		<div class="grid_7"><input type="text" value="<%= deal.address.complete_address rescue '' %>" name="event_date_start" id="" class="nomax full_width"/></div>
+                          <div class="grid_2"><input type="text" value="<%= deal.telno rescue '' %>" name="event_date_start" id="" class="nomax width90"/></div>
+                          <div class="grid_2"><input type="text" value="<%= deal.faxno rescue '' %>" name="event_date_start" id="" class="nomax width90"/></div>
+                          <div class="grid_1"><input type="submit" name="save_pricing" value=" Save " class="checkButton cursor  white"></div>
+                          
+                </form>
+                  </div>
+         		 	</div>
+          </div>
+          <div class="form">
+          <div class="bgGray no_margin full imageList pad_top pad_bot20" align="center">
+          		<ul id="image_gallery" class="">
+              		<li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+                  <li><a href="#imagePop" name="modal"><img src="/images/1.png"></a></li>
+              </ul>
+          </div>
+          </div>
+          <div class="footer">
+              <div class="grid_7"><span>Page</span>
+              				<ul class="pagination"><li><a>1</a></li>
+                      <li><a href="" class="selected">2</a></li>
+                      <li><a href="">3</a></li>
+                      </ul></div>
+              <div class="grid_4 align_right fright"><a class="checkButton cursor expand white" data-id="event_image_gallery" href="formAppend/gallery.html">Expand</a></div>
+          </div>
+      </div>
+    </div>
+</div>

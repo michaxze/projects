@@ -1,0 +1,55 @@
+<% unless categories.empty? %>
+<div class="full_width borderBot padtop20"></div>
+<div class="container_12 full_width inputs pad_top inlineB catListStyle">
+  <div class="grid_3 align_right">
+    <label class="bold">Sub category</label><br />
+    <div class="subCatDetails">
+      Select a sub-category<br />
+      related to your business<br />
+      (multiple selections<br />
+            allowed)
+    </div>
+    <input type="hidden" class="required" name="subCategoryType" id="subcategory_input" value="<%= sub_category rescue ''%>" />
+  </div>
+  <div class="grid_9 no_margin fright bgGray radius5">
+      	<div class="pad15 catHelpInfo"><strong class="pad_top5 pad_bot inlineB">You can select multiple subcategories</strong>
+       	</div>
+       </div>
+  <div class="grid_9">
+    <div class="subcatContainer">
+
+<%
+subcategory = []
+unless sub_category.nil?
+  subcategory = sub_category.split(",")
+end
+%>
+
+    <% categories.each do |cat|%>
+      <a data-id="<%= cat.id %>" class="cursor subCat <%= "selected" if subcategory.include?(cat.id.to_s)%>" id="category_<%= cat.id %>" title="<%= cat.name %>"><div class="grid_6"><%= truncate(cat.name, :length => 35, :omission => "...") %></div></a>
+    <% end %>
+    </div>
+    <div class="grid_6 selectSubCategory">change Sub-category</div>
+  </div>
+</div> 
+</div> 
+<% end %>
+<script>
+$(function() {
+  $(".subcatContainer a").each(function() {
+    if (!this.addEventListener)
+<<<<<<< HEAD
+			this.attachEvent('click', function() { changed = true}, false);
+		else
+		  this.addEventListener('click', function() { changed = true}, false);
+
+=======
+			eventHandler = this.attachEvent;
+		else
+		  eventHandler = this.addEventListener
+			
+		eventHandler('click', function() { changed = true}, false);
+>>>>>>> 552fb8504cfe6060065c49840d42a8cdf2182145
+  });
+})
+</script>

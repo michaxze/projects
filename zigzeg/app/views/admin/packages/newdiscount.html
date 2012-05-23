@@ -1,0 +1,135 @@
+<script>
+$(function() {
+
+	$("#discountFrmx").validate({
+			submitHandler: function(form) {
+	  	  alert('here');
+			  $('.grayLoader').show();
+			  form.submit();
+			}
+	});
+	
+	var dates = $("#start_date,#end_date").datepicker({
+				dateFormat:'dd/mm/yy',
+				minDate: 0,
+				onSelect: function( selectedDate ) {
+					var option = this.id == "start_date" ? "minDate" : "maxDate",
+						instance = $( this ).data( "datepicker" ),
+						date = $.datepicker.parseDate(
+							instance.settings.dateFormat ||
+							$.datepicker._defaults.dateFormat,
+							selectedDate, instance.settings );
+					dates.not( this ).datepicker( "option", option, date );
+				}
+			}
+		);
+		$('#start_icon').live('click',function(){$("#start_date").datepicker( "show" )});
+		$('#end_icon').live('click',function(){$("#end_date").datepicker( "show" )});
+
+  $("#discount_criteria").change(function() {
+    sel = $("#discount_criteria").val();
+
+    if (sel == "2"){
+      $("#amount_of_discount").addClass('dispNone');
+      $("#discountcode").addClass('dispNone');
+      $("#duration").removeClass('dispNone');
+    }else if (sel == "3") {
+      $("#amount_of_discount").removeClass('dispNone');
+      $("#discountcode").removeClass('dispNone');
+      $("#duration").addClass('dispNone');
+    }else{
+      $("#amount_of_discount").removeClass('dispNone');      
+      $("#discountcode").addClass('dispNone');
+      $("#duration").addClass('dispNone')
+    }
+  });
+  
+});
+</script><div class="simpleBox clearfix">
+		<h6 class="bold no_margin orange">CREATE SCHEDULED DISCOUNT</h6>
+
+    <%= form_tag "/admin/packages/create_discount", :id => "discountFrm", :class => "packageFrm" do%>
+    <div class="margin_left_20">
+    		<ul class="cform">
+     	 <li>
+         <label class="clearfix">Discount Name</label>
+         <input type="text" value="" name="discount[name]" id="pack_name" placeholder="Discount Name" value="Basic" class="required text-input fancyinput" />
+         <div class="clearfix"><label for="pack_name" generated="false" class="error clearfix"></label></div>
+       </li>
+       <li>
+         <label class="clearfix">Discount Condition</label>
+         <select name="discount[discount_condition]" class="radius5 notify required narrower" id="adminType">
+         		<option value="1">All New Accounts</option>
+            <option value="2">New Free Accounts</option>
+            <option value="3">New Basic Accounts</option>
+            <option value="4">New Premium Accounts</option>
+         		<option value="8">All Existing Accounts</option>
+            <option value="5">Existing Free Accounts</option>
+            <option value="6">Existing Basic Accounts</option>
+            <option value="7">Existing Premium Accounts</option>
+         </select>
+       </li>
+       <li>
+         <label class="clearfix">Discount for</label>
+         <select name="discount[discount_for]" class="radius5 notify required narrower" id="discount_package">
+         		<option value="1">Package</option>
+         		<option value="2">Add On</option>
+         </select>
+         <select name="discount[discount_for2]" class="radius5 notify required narrower margin_left_30" id="adminType">
+         		<option value="free">Free</option>
+         		<option value="basic">Basic</option>
+         		<option value="premium">Premium</option>
+         </select>
+         <div class="clearfix"><label for="email" generated="false" class="error clearfix"></label></div>
+       </li>
+       <li>
+         <label class="clearfix">Discount Criteria</label>
+         <select name="discount[discount_criteria]" class="radius5 notify required narrower" id="discount_criteria">
+         		<option value="1">Price Discounts</option>
+            <option value="2">Free contact duration</option>
+            <option value="3">Discount code</option>
+         </select>
+         <div class="clearfix"><label for="discount_criteria" generated="false" class="error clearfix"></label></div>
+       </li>
+       
+       <li id="amount_of_discount">
+         <label class="clearfix">Amount of discount(%)</label>
+         <input type="text" name="discount[amount]" id="discount_percent" placeholder="0" class="required text-input number fancyinput narrow " />
+         <span>%</span>
+         <div class="clearfix"><label for="discount_percent" generated="false" class="error clearfix"></label></div>
+       </li>
+       
+       
+       <li id="duration" class="dispNone">
+         <label class="clearfix">Duration</label>
+         <input type="text" name="discount[duration]" id="discount_duration" placeholder="0" class="required text-input number fancyinput narrow " />
+         <span>months</span>
+         <div class="clearfix"><label for="discount_duration" generated="false" class="error clearfix"></label></div>
+       </li>
+       
+       <li id="discountcode" class="dispNone">
+         <label class="clearfix">Discount Code</label>
+         <input type="text" name="discount[discount_code]" id="discount_code" placeholder="code" class="required text-input fancyinput narrow " />
+         <div class="clearfix"><label for="discount_code" generated="false" class="error clearfix"></label></div>
+       </li>
+       
+       <li>
+         <label class="clearfix">Enter start date (DD/MM/YYYY)</label>
+         <input type="text" readonly="readonly" name="discount[start_date]" id="start_date" placeholder="end date" class="required time text-input fancyinput narrower " /><span class="margin_left_10"><img src="/images/cal.gif" id="start_icon"/> </span>
+         <div class="clearfix"><label for="start_date" generated="false" class="error clearfix"></label></div>
+       </li>
+       <li>
+         <label class="clearfix">Enter end date (DD/MM/YYYY)</label>
+         <input type="text" readonly="readonly" name="discount[end_date]" id="end_date" placeholder="start date" class="required time text-input fancyinput narrower " /><span class="margin_left_10"><img src="/images/cal.gif" id="end_icon"/> </span>
+         <div class="clearfix"><label for="end_date" generated="false" class="error clearfix"></label></div>
+       </li>
+       
+       <li>
+       		<input type="submit" value="Save discount"  class="radius5 cursor fleft" name="submit_update"/>
+           <div class="grayLoader">Saving data</div>
+       </li>
+      </ul>
+     </div>
+     <% end %>
+    </div>
+</div>

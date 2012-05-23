@@ -1,0 +1,11 @@
+one: 
+  user_id: 1
+  title: Sample promotion
+  contents: Sample contents
+  announce_type: promotion
+
+two: 
+  user_id: 1
+  title: Sample announcements
+  contents: Sample contents2
+  announce_type: announcement

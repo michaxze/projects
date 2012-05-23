@@ -1,0 +1,142 @@
+<div id="mp2">
+  <div id="right_column" style="padding: 10px; text-align: center; background-color: #FFF">
+    <div  style="margin-left: auto; margin-right: auto">
+        <span style="color: #007099; font-size: 14px; font-weight: bold"> Search </span>
+        <input name="contact[search]" autocomplete="off" id="contact_search" class="rounded bigtextfield searchicon" type="text" placeholder="expertise, name" value="" style="width:600px; background: url(/images/icon-search.png) 7px 10px no-repeat white; padding-left: 20px;font-size: 12px" />
+
+    </div>
+
+
+    <div class="clr"></div>
+
+      <div id="opps_listing">
+        <ul>
+          <% @contacts.each do |user| %>
+          <li><%= render( :partial => "contacts/row", :locals => { :user => user } ) %></li>
+          <% end %>
+        </ul>
+      </div>
+  </div>
+
+</div>
+
+<script>
+
+  function view_user(id) {
+    $.fancybox.showActivity();
+    $.ajax({
+      url: "<%= details_users_path %>",
+      cache : false,
+      data: "id=" + id,
+      success: function(data) {
+        $.fancybox(data, 
+        {
+          'autoDimensions'	: false,
+    			'width'         	: 890,
+    			'height'          : 350,
+    			'transitionIn'		: 'none',
+    			'transitionOut'		: 'none',
+    			'scrolling' : 'auto'
+        });        
+      }
+      
+    })
+  }
+
+  $("#contact_search").keyup(function(e) {
+    search_str = $('#contact_search').val().toLowerCase();
+    $("#opps_listing li").each(function(){
+      c = $(this);
+
+      c.find('.contact_box').each(function() {
+        box = $(this);
+        name = box.find(".name").text().toLowerCase();
+        exp  = box.find(".expertise").text().toLowerCase();
+        name_exp = name + " " + exp;
+
+        if (name_exp.indexOf(search_str) != -1) {
+          found = true;
+          box.removeClass('hide');
+        }else{
+          box.addClass('hide');
+        }
+      });
+
+
+    })
+  });
+
+  $("#edit_list").click(function() {
+    $.fancybox.showActivity();
+
+    $.ajax({
+      type: 'GET',
+      url: "/contacts/show_edit_list",
+      cache : false,
+      success: function(data) {
+        $.fancybox(data, 
+        {
+          'autoDimensions'	: false,
+    			'width'         	: 450,
+    			'height'          : 370,
+    			'padding'         : 0,
+    			'transitionIn'		: 'none',
+    			'transitionOut'		: 'none',
+    			'scrolling' : 'auto'
+        });        
+      }
+    });    
+  });
+
+  $("#create_list").click(function() {
+    $.fancybox.showActivity();
+
+    $.ajax({
+      type: 'GET',
+      url: "/contacts/show_add_list",
+      cache : false,
+      success: function(data) {
+        $.fancybox(data, 
+        {
+          'autoDimensions'	: false,
+    			'width'         	: 450,
+    			'height'          : 370,
+    			'padding'         : 0,
+    			'transitionIn'		: 'none',
+    			'transitionOut'		: 'none',
+    			'scrolling' : 'auto'
+        });        
+      }
+    });    
+  });
+  
+  $("#contact_lists").change(function() {
+    id = $(this).val();
+    if (id != ""){
+      location.href="/contacts?list=" + id;
+    }else{
+      location.href="/contacts";
+    }
+  });
+  
+  function remove_fromlist(list_id, user_id){
+    var ans = confirm("Are you sure you want to remove this from the list?");
+    if (!ans){
+      return false;
+    }
+    
+    $.fancybox.showActivity();
+    $.ajax({
+      type: 'GET',
+      url: "/contacts/remove_user_fromlist",
+      cache : false,
+      data: "id=" + list_id + "&user_id=" + user_id,
+      success: function(data) {
+        $.fancybox.hideActivity();
+        $("#contact_box_id_" + user_id).fadeOut(function(){
+          $(this).remove();
+        })
+      }
+    });
+  }
+</script>

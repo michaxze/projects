@@ -1,0 +1,26 @@
+<div style="text-align:right">
+<p style="line-height: 30px; font-family: Avenir, Times, Arial; font-size: 1.4em; text-decoration: italic; font-weight: normal" class="teal">These are testimonials shared by our clients and people we have collaborated with.
+<br/>
+You can always send us some love through our comments section.
+<br/>
+Better yet, send us an email.
+</p>
+<!-- ><img src="/images/testimonials.png"> -->
+
+</div>
+<!--
+<h4 class="pull-right" style="color: #008083; text-align: right; margin-bottom: 50px;">
+  These are the testimonials...
+</h4>
+-->
+
+<div style="clear:both"></div>
+<br/>
+
+<% @letters.each do |letter| %>
+  <% if letter.alignment == "left"%>
+    <%= render :partial => "letter_left", :locals => { :letter => letter} %>
+  <% else %>
+    <%= render :partial => "letter_right", :locals => { :letter => letter} %>
+  <% end %>
+<% end %>

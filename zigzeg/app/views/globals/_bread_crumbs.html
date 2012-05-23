@@ -1,0 +1,11 @@
+<div class="pad_bot20">
+  <ul id="breadcrumb">
+    <% if action_name == "preview" %>
+      <li class="first"><a href="#">Home</a></li>
+      <li><a href="#" title="<%= place.name %>"><%= truncate(place.name, :length => 25, :omission => "...") %></a></li>
+    <% else %>
+      <li class="first"><a href="<%= root_url %>">Home</a></li>
+      <li><a href="<%= form_url(place) %>" title="<%= place.name %>"><%= truncate(place.name, :length => 25, :omission => "...") %></a></li>
+    <% end %>
+  </ul>
+</div>

@@ -1,0 +1,20 @@
+no-reply@zigzeg.com
+zigzegno12345
+
+#add to my .bashrc
+
+alias zig="cd /home/mike/Sites/gitosis-admin/zigzeg/; git status"
+alias q="rake resque:work QUEUE='*' --trace"
+
+v9W8yOp=C
+syGh3wcS
+
+god -c god/mailers.god
+
+#add a cronjob 
+*/30 * * * * /opt/apps/zigzeg/lib/cronjob.sh >> /opt/apps/zigzeg/log/cronjob.log 2>&1
+
+thin config -C myapp.yml -s3 -p 5000
+
+how to run faye
+rackup faye.ru -s thin -E production

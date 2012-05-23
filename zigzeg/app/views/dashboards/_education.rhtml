@@ -1,0 +1,26 @@
+<div style="float: left; padding-left: 20px;">
+  <h3> Education and Work Information </h3>
+
+  <% @user.errors.full_messages.each do |msg| %>
+    <p><%= msg %></p>
+  <% end %>
+
+  <%= form_for :user, @user, :url => education_dashboards_path, :method => :post do |f|%>
+    <ul style="list-style-type: none">
+      <li> <h4>Working Background </h4></li>
+      <li> <%= f.text_field :company_name, :placeholder => "Present company name" %> </li>
+      <li> <%= f.text_field :work_from, :placeholder => "Working period from" %>
+           <%= f.text_field :work_to, :placeholder => "to" %> </li>
+      <li> <%= f.text_field :designation, :placeholder => "Designation" %></li>
+      <li> <%= f.text_field :description, :placeholder => "Description" %></li>
+      <li><h4>Education background</h4></li>
+      <li> <%= f.text_field :college, :placeholder => "College/University" %></li>
+      <li> <%= f.text_field :profession, :placeholder => "Profession" %></li>
+      <li> <%= f.text_field :year_from, :placeholder => "Year from" %>
+       <%= f.text_field :year_to, :placeholder => "Year to" %></li>
+      <li> <%= f.text_field :grade, :placeholder => "Grade/Level" %></li>
+
+      <li> <%= submit_tag "Update" %> or <%= link_to "Cancel", dashboards_path %></li>
+    </ul>
+  <% end %>
+</div>

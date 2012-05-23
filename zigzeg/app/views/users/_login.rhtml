@@ -1,0 +1,47 @@
+<div id="userLogin" class="pad pad_bot fwidth_400">
+  <h2>User Login</h2><hr>
+  <form id="loginfrm" method="post" action="" class="">  
+  <div id="errormessage_login" class="error_box hide"></div>
+    <ul class="cform"> 
+      <li><input type="text" name="username" minlength="2" class="required fancyinput full_width" placeholder="Username"/></li>
+      <li><input type="password" name="password" class=" required fancyinput full_width" placeholder="Password"/></li>
+      <li> <div class="grid_12 pad_top">
+        <input type="checkbox" class="checkbox" name="agree"/>Remember me
+        <a href="#forgotPw" id="forgot-pw" class=" align_right">forgot password?</a> <a href="#signupList" id="signup-user2" class=" align_right">Sign Up</a> </div>
+      </li>
+      <li><div class="grid_12 pad">
+        <input type="submit" name="submit" class="fancybutton simple small_shadow  half" value="login" size=""/>
+        <input type="button" name="cancel" class="fancybutton simple small_shadow align_right half" value="cancel"/>
+        </div>
+       </li>
+    </ul>
+    </form>
+   </div>
+
+<script>
+$("#cancel_login").click(function() {
+  $.fancybox.close();
+});
+
+$("#loginfrm").bind("submit", function() {
+  $.fancybox.showActivity();
+  $.ajax({
+    type	: "POST",
+    cache	: false,
+    url		: "/login",
+    data	: $(this).serializeArray(),
+    success: function(data) {
+      $.fancybox.hideActivity();
+      if ( data == "true") {
+        location.replace("<%= dashboards_url %>");
+      } else {
+        $("#errormessage_login").empty();
+        $("#errormessage_login").append("Incorrect username and password combination");
+        $("#errormessage_login").removeClass('hide');
+      }
+    }
+  });
+  return false;
+});
+
+</script>

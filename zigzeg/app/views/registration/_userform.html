@@ -1,0 +1,133 @@
+<script>
+  jQuery(document).ready(function(){
+
+    $("#email").blur(function() {
+      $.ajax({
+        url: "/registration/validate_email?email=" + $("#email").val(),
+        type: "GET",
+        async: false,
+        success: function(data) {
+          if (data == "true") {
+            $("label[for=email]").html("Email address already in use.<br />Please use a different email.");
+            $("label[for=email]").show();
+          }
+        }
+      });    
+    })
+    
+    
+	   $("#find_out").change(function(){
+	     if ($("#find_out").val() == "others"){
+	       $("#others").show();
+       }else{
+         $("#others").hide();
+       }
+	   });
+	   
+$("#signUserFrm").validate({
+										rules:{
+											"user[password_conf]":{
+																equalTo:"#password"
+												},
+											"user[password]":{
+																minlength: 6
+												},
+											 find_out_other:{
+													 required: function(element) {
+															return $("#find_out").val() == 'others';
+													}
+												}
+											},
+										messages: {
+												"user[email]": {
+														required: 'Email field is required'
+												},
+												"user[password]": {
+														required: 'Password field is required'
+												},
+												"user[password_conf]": {
+														required: 'Password Confirmation field is required',
+														equalTo: 'Entered passwords do not match'
+												}
+												
+										},
+						         submitHandler: function(form) {
+  $("#loader_submit").show();
+  $("#userSubmitBtn").attr("disabled","disabled");
+											 jQuery.post("/signup", $("#signUserFrm").serialize(),
+												function(data){
+													if (data == "success") {
+													email = $("#signUserFrm #email").val();
+ 													   location.href="/signup_success?email="+email;
+													}else{
+                                                                                                          if (data.indexOf('Password') > -1) {
+													    $("label[for=passwordconf]").text(data);
+													    $("label[for=passwordconf]").show();
+												          }
+													}
+												}
+											);
+											//$('.signUpLoader').show();
+										 }
+                });
+								
+	 });
+</script>        <!--user form-->
+        <div id="userFrmContent" class="grid_8 alpha" align="left">
+        <a href="/auth/facebook" class="fbReg cursor"><h4 class="segoe">SIGN IN WITH FACEBOOK</h4></a>
+       	<p class="full no_margin pad_bot">
+        <% unless params[:error].nil? %>
+          <label class="error"> Unable to sign-in using your Facebook account. The email used has been registered in our system as a Business account.<br/>
+            Please sign in using another email.
+           </label>
+        <% else %>
+        By signing in using your Facebook acccount, you agree to accept the terms stipulated in our <a href="/help#eusa" class=" blue">End-user Service Agreement</a>.
+        <% end %>
+        </p>
+        <div id="ordUserFrm">
+        
+        <form id="signUserFrm" class="" method="post" action="">
+        <div id="errormessage">
+                        </div>
+                        <div id="sendmessage">
+                                Your message has been sent. Thank you!
+                        </div>
+      <h4 class="segoe pad_top30">CREATE A ZIGZEG ACCOUNT</h4>
+      <p class="full lh1">You may <a href="/login">click here to log-in</a> if you already have a Zigzeg account.</p>
+      <div class="container_12 full pad_top20">
+      	<div class="grid_12 no_margin"><label class="pad_bot5 gray">Email Address</label></div>
+        <div class="grid_4 suffix_6 no_margin"><input type="text" value="" name="user[email]" id="email" class="required email text-input fancyinput full_width" /><br /><label for="email" generated="false" class="error clearfix"></label></div>
+         <div class="grid_4 no_margin pad_top">Password (mininum 6 characters)</div>
+         <div class="grid_8 pad_left pad_top">Re-enter Password</div>
+         <div class="grid_4 no_margin"><input type="password" value="" name="user[password]" id="password" class="required fancyinput full_width"/><br /><label for="password" generated="false" class="error"></label></div>
+         <div class="grid_4 suffix_4 pad_left"><input type="password" value="" name="user[password_conf]" id="passwordconf" class="required text-input fancyinput full_width"/><br /><label for="passwordconf" generated="false" class="error"></label></div>
+            
+         <div class="grid_12 no_margin pad_top">How did you find out about Zigzeg?</div>   
+         <div class="grid_4 suffix_8 no_margin"><select id="find_out" name="find_out" class="required fancyinput radius5 full_width">
+            <option value=""></option>
+            <option value="Word of mouth">Word of mouth</option>
+            <option value="SMS">SMS</option>
+            <option value="Email">Email</option>
+            <option value="Online ads">Online ads</option>
+            <option value="Search engine">Search engine</option>
+            <option value="others">Others</option>
+          </select>
+          <div class="clearfix"></div>
+          <label for="find_out" generated="false" class="error"></label>
+          </div>  
+          <div class="grid_12 no_margin pad_top5"><div id="others" class="dispNone pad_top5">
+            <input type="text" name="find_out_other" value="" class="text-input fancyinput">
+          </div>
+          <div class="clearfix"></div>
+          <label for="find_out_other" generated="false" class="error"></label>
+          </div>
+          <div class="grid_8 no_margin pad_top30"><p>By clicking "Join" you confirm that you accept the terms stipulated in our <a href="/help#eusa" class=" blue">End-user Service Agreement</a>.</p></div> 
+          <div class="grid_12 no_margin pad_top"><input type="submit" value="Join" id="userSubmitBtn" class="radius5 bigbutton advertButton white simple small_shadow" name="submit"/>
+         <%= show_loader("submit") %>
+</div>
+      </div>
+      </form>
+        </div>
+                
+        </div>
+        <!--end form-->

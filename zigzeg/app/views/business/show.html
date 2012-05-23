@@ -1,0 +1,252 @@
+<div class="packageBox pad_top20 full">
+  <% unless @notification.nil?%>
+  <div class="container_12 ">
+    <div class="grid_12"><h6 class="bold orange">ZIGZEG UPDATES </h6></div>
+    <div class="grid_12 pad_bot20"><p><%= @notification.contents rescue ''  %></p></div>
+  </div>
+  <div class="full_width borderBot"></div>
+  <% end %>
+  
+
+  <div class="container_12">
+    <div class="grid_12 numberMsg">
+      <h6 class="bold no_margin half fleft">
+        YOU HAVE <div class="bubble"><%= @unread_messages.length %></div> NEW MESSAGE<% if @unread_messages.length > 1 %>S<% end %>.
+      </h6>
+      <a class="cursor fright blue" href="<%= business_messages_path %>">Open message box ></a>
+    </div>
+  </div>
+
+  <div class="full_width borderBot"></div>
+  <div class="container_12 quicklinks">
+    <div class="grid_4 head places radius10"><span>MY PLACE</span></div>
+    <div class="grid_4 head offers radius10"><span>MY OFFERS</span></div>
+
+    <% if !current_user.is_freeaccount?%>
+      <div class="grid_4 head events radius10"><span>MY EVENTS</span></div>
+    <% else%>
+      <div class="clearfix"></div>
+    <% end %>
+
+    <div class="grid_4">
+      <ul>
+        <li><%= link_to "Edit company info", myplace_business_path  %></li>
+        <li><%= link_to "Edit category & features", myplace_business_path(:t => :category)%></li>
+        <li><%= link_to "Edit contact info", myplace_business_path(:t => :location)%></li>
+        <li><%= link_to "Add images to gallery", myplace_business_path(:t => :gallery)%></li>
+        <li><%= link_to "Go to Place page", form_url(@place), :target => "_blank" %></li>
+       </ul>
+     </div>
+
+     <div class="grid_4">
+   		<ul>
+     		<li>You have <a href="/business/myoffers" class="blue underline cursor"><%= current_user.place.pub_deals.length %></a>
+        Live Offer<% if current_user.place.pub_deals.length > 1 %>s<% end %></li>
+     		<li><a href="/business/offers/new">Create an offer</a></li>
+         <li><a href="/business/myoffers">Manage your offers</a></li>
+       </ul>
+     </div>
+
+    <% if !current_user.is_freeaccount?%>
+    <div class="grid_4">
+      <ul>
+    		<li>You have <a href="/business/myevents" class="blue underline cursor"><%= current_user.place.pub_events.length%></a> 
+        Live Event<% if current_user.place.pub_events.length > 1 %>s<% end %></li>
+        <li><a href="/business/events/new">Create an event</a></li>
+        <li><a href="/business/myevents">Manage your events</a></li>
+      </ul>
+    </div>
+    <% end %>
+    <div class="clearfix pad_bot"></div>
+	 <div class="grid_12 head social radius10"><span>SOCIAL MEDIA INTEGRATION</span><a href="#cmpSocInteg" name="help" class="blue example cursor desc">&nbsp;</a></div>
+   <div class="grid_4">
+   		<ul>
+     		<li><a href="/auth/facebook?provider=facebook" class="dGray cursor" >Facebook Setup</a> <span class="check"><a class="cursor">disable</a></li>
+     		<li><a href="/auth/twitter?provider=twitter" class="dGray cursor" >Twitter Setup</a> <span class="check"><a class="cursor">disable</a></li>
+        <li><a class="dGray cursor" >Google+ Setup</a></li>
+       </ul>
+     </div>
+  </div>                
+</div>
+
+             <%if current_user.latest_updates.length > 0 %>
+                <div class="packageBox pad_bot full">
+                  <div class="mainBox clearfix full no_margin">
+                    <h6 class="bold">WHAT'S NEW FROM 
+                      <b class="gray">MY ZIGLIST</b>
+
+  <% if current_user.latest_updates(true,100).length > 10 %>
+    <a id="more_whatsnew_ziglist" class="moreView">&nbsp;</a>
+  <% end %>
+
+                    </h6>
+                     <ul class="sideList new" id="whatsnew_ziglist">
+                       <% current_user.latest_updates(true, 100).each_with_index do |upd, index| %>
+      <% unless upd.updateable.nil? %>
+      <%  class_name = case upd.updateable_type
+            when "Place"
+              "places"
+            when "Deal"
+              "deals"
+            when "Event"
+              "events"
+            when "Shout"
+              if upd.updateable.shoutable.class.name == "Event"
+                "events"
+              elsif upd.updateable.shoutable.class.name == "Deal"
+                "deals"
+              else
+                "places"
+              end
+            else
+              "places"
+            end
+      %>
+
+
+                        <% title = upd.updateable.class.name == "Shout" ? upd.updateable.shoutable.name : upd.updateable.name %>
+
+                        <li class="<%= class_name %> <%= (index > 9) ? "dispNone hidden_row" : "" %>">
+
+        <% if upd.updateable.class.name == "Shout" %>
+             <a title="<%= title %>" href="<%= form_url(upd.updateable.shoutable, { :lupt => upd.id}) %>">
+             <div onclick="location.href='<%= form_url(upd.updateable.shoutable, { :lupt => upd.id}) %>'" >
+               <%= ziglist_description(upd) %>
+               <span><%= distance_of_time_in_words_to_now(upd.created_at) %> ago</span>
+             </div>
+           </a>
+        <% else %>
+                          <a title="<%= title %>" href="<%= form_url(upd.updateable, { :lupt => upd.id}) %>">
+                            <div onclick="location.href='<%= form_url(upd.updateable, { :lupt => upd.id}) %>'" >
+                              <%= ziglist_description(upd) %>
+                              <span><%= distance_of_time_in_words_to_now(upd.created_at) %> ago</span>
+                            </div>
+                          </a>
+       <% end %>
+                        </li>
+                       <% end %>
+                       <% end %>
+                    </ul>
+                    <div id="newZigAppend"></div>
+
+  <% if current_user.latest_updates(nil,50).length > 0 %>
+  <br/>
+  <h6 class="bold"><a href="" onclick="return false" id="show_update_history">History</a></h6>
+  <div id="update_history"></div>
+  <% end %>
+
+                  </div>
+                </div>
+            <% end %>
+            <script type="text/javascript">
+/*$(function () {
+    var chart;
+    $(document).ready(function() {
+	chart = new Highcharts.Chart({
+		chart: {
+			renderTo: 'container21',
+			zoomType: 'x',
+			spacingRight: 20
+		},
+		title: {
+			text: '<%= truncate(current_user.name_or_email, :length => 40, :omission => "...") %>'
+		},
+		subtitle: {
+			text:''
+		},
+		xAxis: {
+			type: 'datetime',
+			maxZoom: 24 * 3600000, // 15 days
+			title: {
+				text: null
+			},
+			gridLineColor: '#197F07'
+		},
+		yAxis: {
+			title: {
+				text: ''
+			}
+			
+		},
+		tooltip: {
+			shared: true
+		},
+		legend: {
+			enabled: false
+		},
+		plotOptions: {
+			area: {
+				fillColor: '#e5f2fa',
+				lineWidth: 3,
+				lineColor:'#0372c3',
+				marker: {
+					enabled: false,
+					states: {
+						hover: {
+							enabled: true,
+							radius: 5
+						}
+					}
+				},
+				shadow: false,
+				states: {
+					hover: {
+						lineWidth: 5
+					}
+				}
+			}
+		},
+
+		series: [{
+			type: 'area',
+			name: 'Hits',
+			pointInterval: 24 * 3600000,
+			pointStart: Date.UTC(2012, 0, 01),
+			data: [1000,1100,1200,1300,1100,1350,1400,1420,1500]
+		}]
+	});
+});
+    
+});*/
+		</script>
+            <div class="dispNone">
+             		<div class="packageBox pad_bot pad_top20 full ">
+											<div class="container_12 pad_bot">
+										<div class="grid_12 pad_bot"><h6 class="bold no_margin half fleft" title="Zigzeg End-user Statistics">Zigzeg End-user Statistics (ZEUS)</h6>*not functioning yet </div>
+                    <div class="grid_12">
+                    	<div id="container21" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+                    		 <%= image_tag "stats.jpg"%>
+                    </div>
+                </div>               
+            		</div>
+            </div>
+
+<script>
+
+  var show_history = false;
+  $("#show_update_history").click(function() {
+    if (show_history)
+      return false;
+    $.ajax({
+      type: 'GET',
+      url: "/account/show_update_history",
+      success: function(data) {
+        show_history = true;
+        $("#update_history").append(data);
+      }
+    });
+  });
+
+
+  $("#more_whatsnew_ziglist").click(function() {
+    ul = $("#whatsnew_ziglist")
+    ul.find('.hidden_row').each(function() {
+      row = $(this);
+      if ($("#more_whatsnew_ziglist").hasClass('minus')) {
+        row.addClass('dispNone');
+      }else{
+        row.removeClass('dispNone');
+      }
+    });
+  });
+</script>

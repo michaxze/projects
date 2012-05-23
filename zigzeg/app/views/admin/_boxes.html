@@ -1,0 +1,34 @@
+<div id="boxes">
+  <div id="accountSettings" class="window radius0 white">
+  		<% unless current_user.nil? %>
+      <div class="container_12 full">
+      		<% if current_user.is_regular?%>
+          <a href="<%=  account_path %>" ><div>Overview</div></a>
+          <a href="/account/ziglist" ><div>My Ziglist</div></a>
+          <a href="/account/settings" ><div>Profile & Settings</div></a>
+      		<% end %>
+        	
+        	<% if current_user.is_advertiser? %>	
+      		<a href="<%=  account_path %>" ><div>Overview</div></a>
+          <a href="/business/myplace" ><div>My Place</div></a>
+          <a href="/business/myoffers" ><div>My Offers</div></a>
+          <% if !current_user.is_freeaccount?%>
+          <a href="/business/myevents" ><div>My Events</div></a>
+          <% end %>
+        	<a href="/business/ziglist" ><div>My Ziglist</div></a>
+          <a href="/business/account" ><div>My Account</div></a>
+          <a href="/business/settings" ><div>Profile & Settings</div></a>
+          <% end %>
+        	
+        	<% if current_user.is_admin?%>
+      		<a href="<%=  account_path %>" ><div>Account</div></a>
+          <% end%>
+          <a href="<%=  logout_path %>" ><div class="bold bTop">Logout</div></a>
+      </div>
+      <% end %>
+      
+</div>
+
+  <div id="mask"></div>
+</div> 
+

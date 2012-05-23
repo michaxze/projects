@@ -1,0 +1,15 @@
+			<% if @biz_page.nil? %>
+			<ul class="footerNav pageTopLink fright">
+					<li><a <% if request.fullpath == "/about" %> class="current" <% else %> href="/about" <% end %> >About Zigzeg</a></li>
+					<li><a <% if request.fullpath == "/contacts" %> class="current" <% else %> href="/contacts" <% end %> >Contact Us</a><!--<a id="zigzegcontactM" href="#zigzegcontactModal">Contact Us</a>--></li>
+					<li><a <% if request.fullpath == "/careers" %> class="current" <% else %> href="/careers" <% end %> >Career</a></li>
+					<li><a <% if request.fullpath == "/help" %> class="current" <% else %> href="/help" <% end %> >Help</a></li>
+					<li><a target="_blank" href="http://biz.zigzeg.com/">Zigzeg for Business</a></li>
+      </ul>
+			<% else %>
+			<ul class="footerNav pageTopLink fright">
+          <li  class="no_pad"><a href="http://biz.zigzeg.com/" target="_new">Zigzeg for Business</a></li>
+          <li><a <% if request.fullpath == "/help_biz" %> class="current" <% else %> href="/help_biz" <% end %> >Help</a></li>
+          <li><a<% if request.fullpath == "/contactus" %> class="current" <% else %> href="/contactus" <% end %>  >Contact Us</a></li>
+      </ul>
+			<% end %>

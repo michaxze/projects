@@ -1,0 +1,29 @@
+<%= link_to "New post", new_admins_blog_path %>
+
+<% unless @blogs.empty? %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Date posted</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @blogs.each do |blog|%>
+    <tr>
+      <td><%= blog.title %></td>
+      <td><%= blog.created_at.strftime("%Y-%m-%d")%></td>
+      <td>
+        <%= link_to "Edit", edit_admins_blog_path(blog) %> | 
+      <%= link_to "Delete", delete_admins_blog_path(blog) %>
+      </td>
+    </tr>
+    <% end%>
+  </tbody>
+</table>
+
+<%= will_paginate @blogs, :renderer => BootstrapPagination::Rails %>
+<% end %>
+
+

@@ -1,0 +1,185 @@
+<%
+if post.use_place_address?
+  lat = post.map_address.lat
+  lng = post.map_address.lng
+  address = post.place.address.complete_address
+else
+  lat = post.address.latitude rescue 3.13
+  lng = post.address.longitude rescue 101.62
+  address = post.address.complete_address
+end
+zoom = 14
+
+if post.class.name.downcase == "event" 
+ image = Yetting.domain + '/images/events_64s.png' 
+else 
+ image = Yetting.domain + '/images/deals_64s.png'
+end 
+
+%>
+
+<!--start sidebar-->
+<aside id="sidebar" class="sidebar absolute">
+  <!-- Start gray box-->
+  <div class="gray_box">
+    <!--sidebar widget-->
+    <div class="sidebar-widget">
+      <h3 class="segoe gray pad_bot aboutPlace" align="center">HOW TO GET THERE</h3>
+<img class="borderGray" src="http://maps.googleapis.com/maps/api/staticmap?markers=icon:<%= image%>%7Csize:mid%7Ccolor:red%7C<%=lat%>,<%= lng%>&zoom=14&size=247x208&maptype=roadmap&sensor=false&style=saturation:-80">
+<div class="clearfix"></div>
+      <% if post.class.name.downcase == 'event' %>
+        <% event = post %>
+        <ul id="contactDetails">
+          <% if event.telno.length > 0 %>
+	        <li class="tel" title="Contact telephone number"><%= event.telno %></li>
+          <% end %>
+	        <% if event.faxno.length > 0 %>
+	        <li class="fax" title="Company fax number"><%= event.faxno %></li>
+	        <% end %> 
+
+	        <% if address.length > 0 %>
+	        <li class="address" title="Address"> <%= address %></li>
+	        <% end %>
+
+	        <% if event.email.length > 0 %>
+	        <li class="email" title="Email"><%= event.email %></li>
+	        <% end %>
+	        <% if event.website.length > 0 %>
+	        <li class="site" title="Website"><%= link_to event.website.gsub(/^(http):\/\/|www./, ''), "#", :class => "gray hoverBlue" %> </li>
+          <% end %>
+          <% if event.facebook.length > 0 %>
+          <li class="fb" title="Facebook account">
+          <%= link_to event.facebook.gsub(/^(http):\/\/www.|facebook|.com|\//, ''), "#", :class => "gray hoverBlue" %>
+          </li> 
+          <% end %>
+        <% if event.twitter.length > 0 %>
+        <li class="twit" title="Twitter account"><%= link_to event.twitter.gsub(/^(http):\/\/www.|twitter|.com|\//, ''), "#", :class => "gray hoverBlue" %></li>  
+        <% end %>  	
+	      </ul>
+	
+     <% else %>
+       <ul id="contactDetails">
+	       <% if post.telno.length > 0 %>
+	       <li class="tel" title="Company telephone number"><%= post.telno %></li>
+	       <% end %>
+
+	       <% if post.faxno.length > 0 %>
+	       <li class="fax" title="Company fax number"><%= post.faxno %></li>
+	       <% end %>
+	       <% if address.length > 0 %>
+	       <li class="address" title="Address"><%= address %></li>
+	       <% end %>
+				 
+         <% if post.email.length > 0 %>
+	       <li class="email" title="Email address"><%= post.email %></li>
+	       <% end %>
+	       
+         <% if post.website.length > 0 %>
+	       <li class="site" title="Website"><%= link_to post.website.gsub(/^(http):\/\/|www./, ''), "#", :class => "gray hoverblue" %></li>
+	       <% end %>
+         <% if post.facebook.length > 0 %>
+        <li class="fb" title="Facebook account"><%= link_to post.facebook.gsub(/^(http):\/\/|www.|facebook|.com|\//, ''), "#", :class => "gray hoverBlue" %></li> 
+        <% end %>
+        <% if post.twitter.length > 0 %>
+        <li class="twit" title="Twitter account"><%= link_to post.twitter.gsub(/^(http):\/\/|www.|twitter|.com|\//, ''), "#", :class => "gray hoverBlue"  %></li>  
+        <% end %>  	
+       </ul>
+     <% end %>
+    </div>
+
+          <% unless post.place.category.nil? %>
+            <div class="sidehr"></div>
+             
+            <div class="container_12 full">
+            	<div class="grid_4"><h6 class='no_margin gray fleft'>Category</h6></div>
+            	<div class="grid_8"><h6 class="fleft gray">
+
+                <% if post.place.category.parent_id.nil? %>
+                  <%= post.place.category.name.titleize %>
+                <% else %>
+                  <%= " #{post.place.category.parent.name.titleize}" unless post.place.category.parent.nil? %>
+                <% end %>
+
+
+ </h6></div>
+              <div class="clearfix"></div>
+              <% unless post.place.category.parent.nil? %>
+              <div class="grid_4"><h6 class='fleft gray no_margin'>Subcategory</h6></div>
+            	<div class="grid_8"><h6 class="fleft gray"><%= " #{post.place.category.name.titleize} " unless post.place.category.nil? %></h6></div>
+              <% end %>
+              <div class="sidehr"></div>
+            </div>
+          
+          <% end %>
+
+ 
+    <% unless post.highlights.empty? %>
+      <!--sidebar widget-->
+      <div class="sidebar-widget">
+        <h6 class="black">Highlight:</h6>
+        <ul class="social">
+          <% post.highlights.each do |h| %>
+          <li> <%= show_highilght(h) %> </a></li>
+          <% end %>
+        </ul>
+      </div>
+    	<div class="sidehr"></div>
+      
+    <% end %>
+      <!--sidebar widget-->
+      <div class="sidebar-widget marginTop ">
+      <h6 class="black">User Rating:<span class="fright gray" id="listing_total_rates">
+<%= show_rates_number(post) %>
+      </span></h6>
+            <div class="pad_bot">
+	      <div class="width90 fleft relative">
+		<%= render :partial => "/events/rating_preview" %>
+		<a href="#loginMessage" id="ratingMessagePop" class="pad absolute" name="modal"></a>
+              </div>
+            </div>
+            <div class="clearfix pad_top"></div>
+            <div class="sidehr"></div>
+            <div class="sidebar-widget pad_bot">
+        		<!--SOCIAL AddThis Button BEGIN -->
+            <div class="addthis_toolbox addthis_default_style addthis_32x32_style fleft">
+            <div class="absolute full pad emptyBg">&nbsp;</div>
+            <a class="addthis_button_facebook first"></a>
+            <a class="addthis_button_twitter"></a>
+            <a  class="addthis_button_google_plusone" g:plusone:count="false"></a>
+            <a class="addthis_button_email"></a>
+            <a class="addthis_button last" href="kttp://www.addthis.com/bookmark.php">
+        				<img src="/images/share_more.png" width="32" height="32" border="0" alt="Share" />
+            </a>
+            </div></h6>
+            <!-- SOCIAL AddThis Button END -->
+        		</div>
+            
+           <div class="clearfix pad_top"></div>
+            <div class="sidehr no_margin"></div>
+            <div class="container_12 full sideContact">
+            		<div class="grid_6">
+
+<script>
+$(document).ready(function(e) {
+  preview_only = true;
+});
+</script>
+
+
+                <a href="#loginMessage" id="contactPop" name="modal"></a><a id="contact_form_link" href="#contactModal"></a>
+                  <a id="contactM" href="" title="Ask a question" class="sideReport bold">ASK A QUESTION</a>
+                </div>
+                <div class="grid_6 divide">
+                				 <a class="cursor sideReport" href="#reportDialog" id="reportPage" name="modal">Report this page</a>
+                </div>
+            </div>
+            
+            
+            
+            </div>
+           </div>
+           <!-- end gray box --> 
+
+            
+        </aside>
+        <!--end sidebar-->

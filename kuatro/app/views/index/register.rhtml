@@ -1,0 +1,65 @@
+<div style="height: 50px;"></div>
+<div id="login_f" style="width: 350px">
+
+    <h3>Registration form:</h3>
+    <div id="error">
+        <%= flash[:error]%>
+    </div>
+
+    <% form_tag register_path, :method => "post" do-%>
+    <center>
+    <table id="tlogin">
+    <tr>
+        <td>Firstname:</td>
+        <td><%= text_field_tag "firstname", nil, :style => "width: 180px" %></td>
+    </tr>
+    <tr>
+        <td>Lastname:</td>
+        <td><%= text_field_tag "lastname", nil, :style => "width: 180px" %></td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td><%= text_field_tag "email", nil, :style => "width: 180px" %></td>
+    </tr>
+    <tr>
+        <td>Password:</td>
+        <td><%= password_field_tag"password", nil, :style => "width: 180px" %></td>
+    </tr>
+    <tr>
+        <td>Confirm Password:</td>
+        <td><%= password_field_tag "confirm_password", nil, :style => "width: 180px" %></td>
+    </tr>
+    <tr>
+        <td>Company Name:</td>
+        <td><%= text_field_tag "company_name", nil, :style => "width: 180px" %></td>
+    </tr>
+    <tr>
+        <td>Nature of Business:</td>
+        <td><%= text_field_tag "business_nature", nil, :style => "width: 180px" %></td>
+    </tr>
+    <tr>
+        <td>Designation:</td>
+        <td><%= text_field_tag "designation", nil, :style => "width: 180px" %></td>
+    </tr>
+    <tr>
+        <td>TAX ID:</td>
+        <td><%= text_field_tag "tax_id", nil, :style => "width: 180px" %></td>
+    </tr>
+    <tr>
+        <td>Phone no.:</td>
+        <td><%= text_field_tag "phone_no", nil, :style => "width: 180px" %></td>
+    </tr>
+
+    <tr>
+        <td>&nbsp;</td>
+        <td><%= submit_tag "Register"%></td>
+    </tr>
+    <tr>
+        <td colspan=2>Already have an account? <%= link_to "Login now!", login_path %> </td>
+    </tr>
+    
+    </table>
+    </center>
+    <% end -%>
+</div>
+

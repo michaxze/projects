@@ -1,0 +1,49 @@
+<%
+unless listing.nil?
+  post = listing.listable
+end
+%>
+
+<div class="clearfix"></div>
+<div class="alpha pad_top30">
+  <!--blog header-->    
+  <% unless post.tags.nil? %>
+
+  <% if post.tags.length > 0 %>
+  <h6 class="fright"><a id="tagLink" class="gray showAll cursor fright dispNone" >SHOW ALL</a></h6>
+  <h3 class="segoe">TAGS </h3>
+  
+  <div class="hr"></div>
+  <!--start tags-footer-->
+  <div id="divTag" style="max-height:40px; overflow:hidden;" >
+    <div class="tag-links inlineB">
+    <% post.tags.gsub(',','').split(" ").each do |tag| %>
+      <% if action_name == "preview" %>
+        <%= link_to tag, "#" %>
+      <% else %>
+        <%= link_to tag, "/?search=#{tag}&btnSearch=search" %>
+      <% end %>
+    <% end %> 
+    </div>
+ </div>
+  <!--end blog footer-->
+  <% end %>
+  <% end %>
+</div>
+<script>
+$(function() {
+	if( $('.tag-links').height() > $('#divTag').height() )
+		$('#tagLink').show();
+	
+	$('#tagLink').click(function(e) {
+   
+		if($(this).hasClass('showAll')){
+			$(this).text('HIDE').removeClass('showAll').addClass('hideAll');
+			 $('#divTag').css('overflow','visible').css('max-height','none');
+		}else{
+			$(this).text('SHOW ALL').addClass('showAll').removeClass('hideAll');
+			 $('#divTag').css('overflow','hidden').css('max-height','40px');
+		}
+  });
+});
+</script>

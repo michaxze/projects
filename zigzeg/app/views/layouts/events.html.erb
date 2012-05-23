@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html lang="en" >
+<head>
+<meta charset="utf-8" />
+<title>Zigzeg - <%= @page_title rescue '' %></title>
+<meta name="robots" content="noindex">
+<<<<<<< HEAD
+<meta name="keywords" content='<%= "#{@page_key}" unless @page_key.nil? %>'>
+<meta name="description" content='<%= "#{@page_desc}" unless @page_desc.nil? %>'>
+=======
+<meta name="keywords" content="<%= "#{@page_key}" unless @page_key.nil? %>">
+<meta name="description" content="<%= "#{@page_desc}" unless @page_desc.nil? %>">
+>>>>>>> 552fb8504cfe6060065c49840d42a8cdf2182145
+
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<%= javascript_include_tag "modernizr.custom.js" %>
+<!-- favicon -->
+<link rel="shortcut icon" href="/images/favicon.ico" />
+<%= stylesheet_link_tag "style" %>
+<%= stylesheet_link_tag "place/style" %>
+<%= stylesheet_link_tag "/javascripts/fancybox/jquery.fancybox-1.3.4.css", :media => "screen" %>
+<%= stylesheet_link_tag "/javascripts/themes/base/jquery.ui.tabs.css" %>
+<%= stylesheet_link_tag "jquery.gallery" %>
+            
+<%= javascript_include_tag "jquery-1.6.2" %>
+<%= javascript_include_tag "jquery.home" %>
+<%= javascript_include_tag "ui/jquery.ui.core.js" %>
+<%= javascript_include_tag "ui/jquery.ui.widget.js" %>
+<%= javascript_include_tag "ui/jquery.ui.mouse.js" %>
+<%= javascript_include_tag "ui/jquery.ui.tabs.js" %>
+<%= javascript_include_tag "jquery.validate" %>
+<%= javascript_include_tag "fancybox/jquery.fancybox-1.3.4.js" %>
+<%= javascript_include_tag "jquery.rating" %>
+<%= javascript_include_tag "jquery.preloader" %>
+<%= javascript_include_tag "common" %>
+<%= javascript_include_tag "endPage" %>
+<%= javascript_include_tag "jquery.countdown" %>
+<!--[if lt IE 9]>
+	<%= javascript_include_tag "jquery.count_ie" %>
+<![endif]-->
+<%= javascript_include_tag "dealsEnd" %>
+<%= javascript_include_tag "jquery.gallery" %>
+<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4e9d07ee4d191140"></script>
+
+<%= javascript_include_tag 'rails' %>
+<%= csrf_meta_tag %>
+<!--[if IE]>
+	<%= stylesheet_link_tag "ie-fix" %>
+  <%= javascript_include_tag "ie-fix" %>
+<![endif]-->
+
+
+</head>
+
+<body>
+<noscript><div class="ns">Your browser does not support JavaScript!</div></noscript> 
+<div class="loginBar BigblkBg pgTop">
+ 		<div class="fcontainer_12" id="topArea">
+    		<%= render "/globals/top_place" %>
+		</div>
+</div>
+<div class="pgPlace <%= @listing.listing_type rescue '' %> ">
+		<div class="pgHead">
+			<div class="fcontainer_12 clearfix">
+				<div class="container_12 fullS no_margin">
+					<div class="grid_2 autowidth no_margin">
+					<% if @listing.listing_type == "event" %>
+	      					<%= image_tag(@event.pictures.first.image.url(:thumb), :class => "",  :size => "72x72") rescue image_tag(get_missing_image_pg(@event.class.name,'t'), :class => "", :size => "72x72") %>
+            <% else %>
+              		<%= image_tag(@deal.pictures.first.image.url(:thumb), :class => "",  :size => "72x72") rescue image_tag(get_missing_image_pg(@deal.class.name,'t'), :class => "", :size => "72x72") %>
+            <% end %>
+					
+					</div>
+					<div class="grid_6  pgTtl">
+						<h1 class="bld7">
+						<% if @listing.listing_type == "event" %>
+	      					<%= @event.name %>
+            <% else %>
+              		<%= @deal.name %>
+            <% end %></h1>
+					</div>
+					
+					<div class="grid_5 fright no_margin relative">
+				<% unless @event.nil? %>
+					<%= render :partial =>  "/globals/countdown_event", :locals => { :event => @event } 
+					%>
+				<% else %>
+					<%= render :partial =>  "/globals/countdown_deal", :locals => { :deal => @deal } %>
+				<% end %>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+</div>
+<!--start page_wrap-->
+<div class="fcontainer_12 clearfix  relative">
+  <!--start content-->
+  <div id="content" class="fgrid_12 clearfix">
+    <%= yield %>
+    <% event_deal = @event ||= @deal %>
+		<%= render :partial =>  "/globals/sidebar", :locals => { :listing => @listing }
+		 %>
+  </div>
+  <!-- end content -->
+  <div class="clear"></div>
+</div>
+</div>
+<!--end page_wrap-->
+
+<%= render "/globals/footer" %>
+<%= render :partial =>  "/globals/contact_form", :locals => { :place => @place } %>
+
+<div id="boxes">
+  <%= render "/globals/modal_login" %>
+  <%= render "/globals/modal_forget" %>
+  <%= render "/globals/modal_signup" %>
+  <%= render "/globals/modal_report" %>
+  <%= render "/globals/modal_settings" %>
+  <%= render "/globals/modal_updates" %>
+  <div id="mask"></div>
+</div>
+
+<% unless current_user.nil? %>
+  <script>
+    var global_user_id = <%= current_user.id %>
+  </script>
+<% end %>
+
+<<<<<<< HEAD
+=======
+ <!--<%= javascript_include_tag "#{Yetting.main_domain}:9292/faye.js" %>-->
+ <%= javascript_include_tag 'application' %>
+
+>>>>>>> 552fb8504cfe6060065c49840d42a8cdf2182145
+<%= render "/globals/analytics" %>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<div class="clr"></div>
+  <div id="inner-content">
+  <% unless @user.nil? %>
+    <h2>You have successfully activated your account. Please sign in to start posting. </h2>
+    <br/><br/>
+    <h2> Please update your account information: </h2>
+    <br/>
+    <div>
+      <% form_tag updateinfo_account_path(:id => @user.id), :method => :post, :id => "activate_form" do -%>
+      <div id="field_line">
+        <div class="field_label">Firstname * : </div>
+        <div class="field_box"> <%= text_field_tag :firstname, @user.firstname %> </div>
+      </div>
+      <div class="clr"></div>
+      <div id="field_line">
+        <div class="field_label">Lastname * : </div>
+        <div class="field_box"> <%= text_field_tag :lastname, @user.lastname %> </div>
+      </div>
+      <div class="clr"></div>
+
+      <div id="field_line">
+        <div class="field_label">Zipcode * : </div>
+        <div class="field_box"> <%= text_field_tag :zipcode %> </div>
+      </div>
+      <div class="clr"></div>
+
+      <div id="field_line">
+        <div class="field_label">Password * : </div>
+        <div class="field_box"> <%= password_field_tag :password %> </div>
+      </div>
+      <div class="clr"></div>
+      
+      <div id="field_line">
+        <div class="field_label"></div>
+        <div class="field_box"> <%= submit_tag "Update my account" %> </div>
+      </div>
+      <div class="clr"></div>
+
+
+      <% end %>
+    </div>  
+  <% else%>
+    <p> The activation link you visited doesn't exists or already expired.
+  <% end %>
+  </div>
+
+  <div class="clr"></div>
+</div>
+<script>
+  $("#activate_form").bind('submit', function() {
+    if ($("#zipcode").val().length < 1){
+      alert("Please enter your zip code.");
+      $("#zipcode").focus();
+      return false;
+    }else if ($("#firstname").val().length < 1) {
+      alert("Please enter your first name.");
+      $("#firstname").focus();
+      return false;    
+    }else if ($("#lastname").val().length < 1) {
+      alert("Please enter your last name.");
+      $("#lastname").focus();
+      return false;
+    }else if ($("#password").val().length < 1) {
+      alert("Please assign a password.");
+      $("#password").focus();
+      return false;
+    }
+    
+
+    return true;
+  });
+</script>

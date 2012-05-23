@@ -1,0 +1,65 @@
+<div class="messageBox clearfix">
+
+
+
+  <h6 class="bold grid_7">SCHEDULED DISCOUNTS</h6>
+
+  <a  href="<%= newdiscount_admin_packages_path %>" class="checkButton cursor  fright ">Create Discount</a>
+  			<div class="container_12"> 
+  			  
+            <div class="header">
+                <div class="grid_6">Schedule Discount name</div>
+                <div class="grid_2">Status</div>
+                <div class="grid_2">Criteria</div>
+                <div class="grid_2 fright">Discount Value</div>
+            </div>
+            <div class="body">
+              
+              <% @discounts.each do |discount|%>
+              <div class="row">
+                  <div class="grid_6"><a href="appends/editPackage.html" data-id="1" class="getDetails"><%= discount.name.titleize %></a></div>
+                  <div class="grid_2"><%= show_discount_status(discount) %></div>
+                  <div class="grid_2"><%= discount.discount_criteria %></div>
+                  <div class="grid_2 fright"><%= discount.amount %>%</div>
+                  <div></div>
+              </div>
+              <% end %>
+              
+
+            </div><!-- end body -->
+
+        </div>
+
+
+
+
+
+
+
+  <h6 class="bold grid_7">PACKAGES</h6>
+  <a  href="appends/manageDiscount.html" class="checkButton cursor removeSelected fright createData">Create Discount</a>
+
+
+      <div class="container_12"> 
+          <div class="header">
+              <div class="grid_7">Package Name</div>
+              <div class="grid_3"></div>
+              <div class="grid_2">Price/month</div>
+          </div>
+          <div class="body">
+
+        <% @packages.each do |p|%>
+          <div class="row">
+              <div class="grid_7">
+                <%= link_to p.package_name, edit_admin_package_path(p), :data_id => p.id %>
+              </div>
+              <div class="grid_3"></div>
+              <div class="grid_2">RM <%= p.price %></div><div></div>
+          </div>
+        <% end %>
+          
+          
+          </div><!-- end body -->
+          
+      </div>
+</div>

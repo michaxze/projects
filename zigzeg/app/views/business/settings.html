@@ -1,0 +1,150 @@
+<div class="packageBox pad_top20 pad_bot20 full">
+		<div class="simpleBox clearfix">
+  <script type="text/javascript" >
+  $(function() {
+    first_timer = false;
+      <% if current_user.viewed_profile? %>
+       first_timer = false;
+       $("#galErr").hide();
+      <% else %>
+        <% current_user.update_attribute(:viewed_profile, true) if !current_user.viewed_profile %>
+        first_timer = true;
+        $("#galErr").show();
+      <% end %>
+      $(".close-popup").click(function() {$("#galErr").hide();});
+
+    $("#settingsFrm").validate({
+			rules:{
+				"password": {
+						required: function(element) {
+							return $("#password").val() != '';
+						},
+						minlength: 6
+				},"password_confirmation": {
+						required: function(element) {
+							return $("#password").val() != '';
+						},
+						minlength: 6,
+						equalTo: "#password"
+				}
+			},
+        submitHandler: function(form) {
+           $('.frmLoader.settings').show();
+           $(".frmSaved.settings").hide();
+           $(".frmErrorsFound.settings").hide();
+								$.ajaxSetup({
+									'beforeSend': function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $("meta[name='csrf-token']").attr('content')); }
+								});
+                $.ajax({
+	                 type: "POST",
+                   url: "/business/settings",
+                   data:  $(form).serializeArray(),
+   success: function(data){
+					if (data != " ") {
+						if(data.username != "undefined"){
+							$("#username").addClass('error');
+							$('label[for="username"]').text(data.username);
+							$('label[for="username"]').show();
+						}
+						$(".frmSaved.settings").hide();
+					}else{
+						$(".frmSaved.settings").show().fadeOut(3000);
+					}
+if (first_timer)
+  location.replace("/business");
+else
+  setTimeout('location.replace("/business/settings")', 700);
+$('.frmLoader.settings').hide();
+      }
+    });
+						 	}
+						});
+						
+});
+    
+</script>
+
+
+<div class="msgErr radius15 shadow dispNone profile" id="galErr">
+  <div class="container_12">
+   <div class="grid_12 bold">Welcome to ZIGZEG!</div>
+   <div class="grid_12 pad_top" align="justify">
+     <p>
+As this is your first entry into our system, we would like for you take some time to update your profile information as well as set some preference for your account's settings. 
+</p>
+<p>
+We hope you will have a great time using ZIGZEG as much as we have had a great time creating & developing it. 
+</p>
+<p>Have a great day & best regards,</p>
+<p><b><i>The ZIGZEG Team</i></b></p>
+</p>
+      <br/>
+      <input type="button" value="Continue" class="radius5 bgGray margin_left_10 gray cursor  close-popup" name="close_popup">
+    </div>
+  </div>
+</div>
+
+<h6 class="bold">PROFILE INFORMATION</h6>
+  <%= form_tag settings_business_path, :id => "settingsFrm" do%>
+		<div class="container_12 pad_bot full no_margin">
+    		<div class="grid_3 bold align_right pad_top">Company Name</div>
+        <div class="grid_5 suffix_4">
+        			<input type="text" value="<%= current_user.advert_company_name rescue ''%>" name="user[advert_company_name]" id="company_name" class="required text-input fancyinput" /></div>
+              <div class="prefix_3 grid_5 suffix_4 pad_bot"><label for="user[advert_company_name]" generated="false" class="error"></label></div>      
+        <div class="grid_3 bold align_right lh13 pad_top5">Registered Company Name <span class="normal">(optional)</span></div>
+        <div class="grid_5 suffix_4">
+        			 <input type="text" value="<%= current_user.advert_company_name_registered%>" name="user[advert_company_name_registered]" id="advert_company_name_registered" class="text-input fancyinput" /></div>
+              <div class="prefix_3 grid_5 suffix_4 pad_bot"><label for="user[advert_company_name_registered]" generated="false" class="error"></label></div>      
+       <div class="grid_3 bold align_right lh13 pad_top5">Company Registration Number</div>
+        <div class="grid_5 suffix_4">
+        			 <input type="text" value="<%= current_user.advert_company_reg_number%>" name="user[advert_company_reg_number]" id="advert_company_name_registered" class="text-input fancyinput" /></div>
+              <div class="prefix_3 grid_5 suffix_4 pad_bot"><label for="user[advert_company_reg_number]" generated="false" class="error"></label></div>      
+       
+       
+        <div class="grid_3 bold align_right pad_top">Email</div>
+        <div class="grid_5 suffix_4">
+        			 <input type="text" value="<%= current_user.email%>" name="user[email]" id="email" class="required email text-input fancyinput" disabled/></div>
+         <div class="prefix_3 grid_5 suffix_4 pad_bot"><label for="user[email]" generated="false" class="error"></label></div>      
+    </div>
+			<div class="full borderBot"></div>
+    	<h6 class="bold pad_top20">ACCOUNT PREFERENCES</h6>
+			<div class="container_12 full no_margin">
+      		<div class="grid_3 align_right bold lh13 pad_top5">Email notification for Ziglist and message</div>
+          <div class="grid_5 suffix_3">
+<%= select_tag "settings[notify_updates]", options_for_select(Constant::NOTIFICATION_OPTIONS, (current_user.settings['notify_updates'] rescue nil)), :class => "radius5 notify"%></div>
+      </div> 
+      <div class="container_12 full no_margin pad_top5">
+      		<div class="grid_3 align_right bold lh13 pad_top5">Subscribe to Zigzeg's newsletter</div>
+          <div class="grid_5 suffix_3"><%= select_tag "settings[notify_newsletter]", options_for_select(Constant::YESNO_OPTION, (current_user.settings['notify_newsletter'] rescue nil)), :class => "radius5 notify"%></div>
+      </div>
+      <div class="container_12 full no_margin pad_top5">
+      		<div class="grid_3 align_right bold lh13 pad_top5">Auto archive expired listings</div>
+          <div class="grid_5 suffix_3"><%= select_tag "settings[auto_archive_listings]", options_for_select(Constant::YESNO_OPTION, (current_user.settings['auto_archive_listings'] rescue nil) ), :class => "radius5 notify"%></div>
+      </div>
+      
+      <div class="full borderBot"></div>
+
+    <h6 class="bold clearfix pad_top20">CHANGE PASSWORD</h6>
+			<div class="container_12 full no_margin pad_top pad_bot">
+      		<div class="grid_3 align_right bold pad_top">Enter new password</div>
+          <div class="grid_5 suffix_3"> <input type="password" value="" name="password" id="password" class="text-input fancyinput" /></div>
+           <div class="clearfix pad_bot"></div>
+          <div class="grid_3 align_right bold pad_top">Re-type password</div>
+          <div class="grid_5 suffix_3"><input type="password" value="" name="password_confirmation" id="password_confirmation" class="text-input fancyinput" /></div>
+          <div class="clearfix pad_bot"></div>
+          <div class="full borderBot"></div>
+           
+          <div class="grid_6 prefix_3 suffix_3 pad_top20"><input type="submit" value="Save changes" id="userSubmitBtn" class="radius5 userButton white cursor fleft half" name="submit_form"/><input type="button" value="Cancel" id="" class="margin_left_20 radius5 bgGray hoverBlack white  half cursor fleft" name="submit" onclick="location.replace('/business')"/><div class="frmLoader settings fleft dispNone">Saving profile</div>
+          <label class="frmSaved settings dispNone error">Profile saved.</label>
+          
+          <div class="frmLoader password dispNone gray">Saving password</div>
+           <div class="frmSaved password dispNone gray">Password saved.</div>
+      </div> 
+      <div class="prefix_2 grid_7">
+          <label class="frmErrorsFound settings disNone error"></label> 
+          </div>
+         
+        
+    <% end %>
+			</div>
+</div>

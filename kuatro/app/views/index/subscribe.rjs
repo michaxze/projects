@@ -1,0 +1,16 @@
+#page.replace_html "notifier", "Thank you subscribing. We'll surely let you know when we launch this website."
+#page.visual_effect :highlight, "notifier"
+#page.visual_effect :fade, "notifier", :delay => 0.7
+
+if flash[:error]
+  page[:subscriber_form].reset  
+  page.replace_html :error, flash[:error]
+  page.visual_effect :fade, :error, :delay => 0.5
+  page.show :error
+else
+  page[:subscriber_form].reset  
+  page.replace_html :notice, flash[:notice]
+  page.visual_effect :fade, :notice, :delay => 2
+  page.show :notice
+  flash.discard
+end

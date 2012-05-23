@@ -1,0 +1,32 @@
+
+<h3>Advertisers/Business </h3>
+
+<table>
+  <tr>
+    <td> Business Name </td>
+    <td> Deals</td>
+    <td> Places </td>
+    <td> Events </td>
+    <td> Company Name </td>
+  </tr>
+
+  <% @users.each do |u| %>
+  <tr>
+    <td> <%= link_to((u.advert_company_name rescue u.fullname), edit_cms_user_path(u)) %> <%= (u.status) ? nil : raw("<span style=\"color:red\">(disabled)</span>") %> </td>
+    <td> <%= u.deals.empty? ? "0" : (link_to u.deals.length, deals_cms_user_path(u))  %> </td>
+    <td> <%= u.places.empty? ? "0" : (link_to u.places.length, places_cms_user_path(u))  %> </td>
+    <td> <%= u.events.empty? ? "0" : (link_to u.events.length, events_cms_user_path(u))  %> </td>
+    <td> <%= link_to "Edit", edit_cms_user_path(u) %>  | 
+      <%= link_to (u.status? ? "Disable" : "Enable"), toggle_status_cms_user_path(u), :confirm => "Are you sure you want to disable this account?" %> |
+      <%= link_to "Delete", cms_user_path(u), :confirm => "Are you sure you want to delete this?", :method => :delete unless u.super_admin? %> 
+      [
+      <%= link_to "Add place", new_cms_user_listing_path(u) %>  
+      <%= link_to "Add event", new_cms_user_listing_path(u) %>  
+      <%= link_to "Add deal", new_cms_user_listing_path(u) %> 
+      ]
+    </td>
+  </tr>
+  <% end %>
+</table>
+
+

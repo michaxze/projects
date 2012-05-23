@@ -1,0 +1,63 @@
+<!--start content-->
+<section id="" class="fgrid_12 clearfix">
+  <div id="main" class="full_width alpha pad welcomeStep">
+    <h2 class="bold">Welcome to Zigzeg, <%= current_user.advert_company_name %></h2>
+    <p class="width90 pad_bot lh1">
+      Thank you for registering a Zigzeg Business account. You are now ready to proceed to create your Zigzeg page.
+      <br/><br/>
+      Before you continue, below is an overview of what you can do with your account.
+    </p>
+    <div class="packageBox pad_top20 pad_bot20 full_width">
+      <div class="container_12 ">
+              			<% if current_user.latest_subscription.package_code.include?("basic")%>
+                    <div class="grid_12"><h6 class="bold">Zigzeg for Business BASIC account features:</h6></div>
+                		<div class="grid_3 check">Comprehensive Business Information</div>
+                    <div class="grid_3 check">Twitter & Facebook Integration</div>
+                    <div class="grid_3 check">Zigzeg Interactive Urban Map</div>
+                    <div class="grid_3 check">Complete Content Management</div>
+                    <div class="grid_3 check">Link your Businesses</div>
+                    <div class="grid_3 check">Products, Services & Brands Gallery</div>
+                    <div class="grid_3 check">ZEUS (Advanced version)</div>
+                    <div class="grid_3 check">Improved Listing Priority & Exposure</div>
+                    <div class="grid_3 check">Create Zigzeg Offers</div>
+                    <div class="grid_3 check">Create Zigzeg Events</div>
+                    <% elsif current_user.latest_subscription.package_code.include?("premium")%>
+                    <div class="grid_12"><h6 class="bold">Zigzeg for Business PREMIUM account features:</h6></div>
+                		<div class="grid_3 check">Comprehensive Business Information</div>
+                    <div class="grid_3 check">Twitter & Facebook Integration</div>
+                    <div class="grid_3 check">Zigzeg Interactive Urban Map</div>
+                    <div class="grid_3 check">Complete Content Management</div>
+                    <div class="grid_3 check">Link your Businesses</div>
+                    <div class="grid_3 check">Products, Services & Brands Gallery</div>
+                    <div class="grid_3 check">ZEUS (Advanced version)</div>
+                    <div class="grid_3 check">Improved Listing Priority & Exposure</div>
+                    <div class="grid_3 check">Create Zigzeg Offers</div>
+                    <div class="grid_3 check">Create Zigzeg Events</div>
+                    <div class="grid_3 check">Your Company Logo On Our Maps</div>
+                    <div class="grid_3 check">Premium Customer Care & Data Service</div>
+                    <% else %>
+                    <div class="grid_12"><h6 class="bold">Zigzeg for Business FREE account features:</h6></div>
+                		<div class="grid_3 check">Comprehensive Business Information</div>
+                    <div class="grid_3 check">Twitter & Facebook Integration</div>
+                    <div class="grid_3 check">Zigzeg Interactive Urban Map</div>
+                    <div class="grid_3 check">Complete Content Management</div>
+                    <div class="grid_3 check">Link your Businesses</div>
+                    <div class="grid_3 check">Products, Services & Brands Gallery</div>
+                    <div class="grid_3 check">ZEUS (Simplified version)</div>
+                    <% end  %>
+                    <div class="grid_12 border no_margin">&nbsp;</div>
+                    <div class="grid_12 pad_top20"><h5 class="bold">More on how to fully utilise Zigzeg's features to promote your business. <a href="http://biz.zigzeg.com/" target="_new" class="blue font12">Learn more...</a></h5></div>
+                    
+                </div>
+             </div>
+    <div class="packageBox pad_top20 pad_bot20 full_width">
+    <div class="container_12 pad_top">
+    <div class="grid_5"><h5 class="bold">NEXT: Create your business page now!</h5></div>
+    <div class="prefix_5 grid_2"><a href="/welcome/create_page" data-id="2" class="blue radius15 userButton white bold create ">CREATE</a></div>
+    </div>
+    </div>
+    </div>
+  </div>
+  <!--end main-->
+</section>
+<!--end content-->

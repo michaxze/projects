@@ -1,0 +1,7 @@
+<div class="mainBox clearfix">
+<% if @unread_messages > 0 %>
+  <%= link_to "#{@unread_messages} unread email from zigzeg.com", messages_path %>
+<% else %>
+No new messages.
+<% end %>
+</div>

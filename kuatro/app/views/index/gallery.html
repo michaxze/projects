@@ -1,0 +1,33 @@
+
+<% if @album.nil? %>
+<ul class="thumbnails" style="width; 800px !important; ">
+  <% @albums.each do |album| %>
+  <li class="span3x" style="height: 180px; width:240px !important; margin-bottom: 50px; margin-right: 10px">
+    <a href="/gallery?id=<%= album.id %>&album_id=<%= album.id %>" class="thumbnailo">
+      <div style="background-image:url(/images/thumb-bg.png); background-repeat: no-repeat; background-size: 240px 185px; width: 260px; height: 180px !important">
+        <img src="<%= album.pictures.first.image.url(:thumb) rescue '' %>" style="width: 180px !important; height: 120px !important; padding-top: 13px; padding-left: 12px;">
+        <div class="clear:both"></div>
+        <label style="text-align: center; width: 180px; padding-left: 12px;" class='thumb-label'><%= album.name %></label>
+        <div class="clipx"></div>
+      </div>
+    </a>
+  </li>
+  <% end %>
+</ul>  
+<% end %>
+
+
+<% unless @album.nil?%>
+<ul class="thumbnails" style="width:800px !important; margin-left: 0px;">
+  <% @album.pictures.each do |pic| %>
+  <li class="span3x" style="margin: 0px 9px 33px 0px !important; ">
+    <a href="<%= pic.image.url(:large) %>" class="thumbnail" rel="fancybox" title="<%= pic.description %>">
+      <div >
+        <img src="<%= pic.image.url(:thumb) rescue '' %>" style="width: 180px; height: 120px">
+        <div class="clear:both"></div>
+      </div>
+    </a>
+  </li>
+  <% end %>
+</ul>  
+<% end %>

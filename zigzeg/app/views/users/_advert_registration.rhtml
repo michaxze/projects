@@ -1,0 +1,48 @@
+<div id="advertReg" class="pad fwidth_400">
+  <div><a href="#signupList" id="signup-user2">Sign Up </a> >> <strong>Advertiser</strong></div>
+  <hr />
+  <div class="">
+    <%= form_tag "/signup", :id => "advertfrm" do %>
+      <div id="errormessage_advert" class="error_box hide">Error something</div>
+      <div id="" class="success_box hide"></div>
+      <ul class="cform"> 
+        <li><input type="text" name="user[company_name]" id="cname" class=" required fancyinput full_width" placeholder="Company Name"/></li>
+        <li><input type="text" name="usercompany_name_registered]" id="regcname" class="required fancyinput full_width" placeholder="Registered Company Name"/></li>
+        <li><input type="text" name="user[company_reg_number]" id="cregnum" class="required fancyinput full_width" placeholder="Company Registration Number"/></li>
+        <li><input type="text" name="user[username]" id="email" class="required email fancyinput full_width" placeholder="Email" /></li>
+        <li><input type="password" name="user[password]" id="apw" class="required fancyinput full_width" placeholder="Password"/></td><tr>
+        <li><input type="password" name="user[password_conf]" id="apw2" class="required fancyinput full_width" placeholder="Re-enter password"/></li>
+        <li><input type="checkbox"  style="width:10px;" id="cregnum" name="required" name="user[agree]"/>I agree on the terms and conditions.</li>
+        <li class="full_width"><input type="submit" name="submit"  class="fancybutton simple small_shadow half" value="submit"/>&nbsp;
+        <input type="button" name="cancel" id="cancel_advert"  class="fancybutton simple small_shadow align_right half" value="cancel"/></li>
+      </ul>
+    <% end %>
+  </div>
+</div>
+
+<script>
+$("#cancel_advert").click(function() {
+  $.fancybox.close();
+});
+
+$("#advertfrm").bind("submit", function() {
+  $.fancybox.showActivity();
+  $.ajax({
+    type	: "POST",
+    cache	: false,
+    url		: "/signup",
+    data	: $(this).serializeArray(),
+    success: function(data) {
+      $.fancybox.hideActivity();
+      if ( data == "success") { 
+        $.fancybox("You have successfully submitted your registration form. <br/> Please check your email to activate your account.");
+      } else {
+        $("#errormessage_advert").empty();
+        $("#errormessage_advert").append(data);
+        $("#errormessage_advert").removeClass('hide');
+      }
+    }
+  });
+  return false;
+});
+</script>

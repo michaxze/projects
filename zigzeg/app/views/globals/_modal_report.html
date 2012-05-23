@@ -1,0 +1,52 @@
+<!-- START REPORT MODAL VIEW  -->
+<div id="reportDialog" class="window">
+  <div class="arrowTopSign"></div>
+  <div>
+    <h6 class="white bold">I want to report this page because:</h6>
+    <div class="bLine clearfix"></div>
+    <form id="reportFrm" method="post">
+      <%= hidden_field_tag "listing_id", @listing.id %>
+      <label for="report" generated="false" class="error"></label>
+      <ul class="lgray">
+        <li><input type="radio" name="report" value="its a scam" class="required">It's a scam</li>
+        <li><input type="radio" name="report" value="not existing"  class="required">Place no longer exist</li>
+        <li><input type="radio" name="report" value="sexually explicit"  class="required">Sexually explicit content</li>
+        <li><input type="radio" name="report" value="link not working"  class="required">Some links in this page are not working</li>
+        <li><input type="radio" name="report" value="offensive"  class="required">Offensive language used</li>
+        <li><input type="radio" name="report" value="others"  class="required">Something else</li>
+      </ul>
+      <div class="margin_left_20">
+        <textarea id="reportText" name="content" class="required dispNone radius5"></textarea>
+        <div class="clearfix"></div>
+        <label for="reportText" generated="false" class="error"></label>
+      </div>
+      <div class="clearfix pad_top"></div>
+      <input type="submit" value="continue" class=""><input type="button" value="cancel" class="margin_left_10 close">
+    </form>
+    <div class="clearfix"></div>
+    <a href="#reportSuccess" id="reportCont" name="modal"></a>
+  </div>
+</div>
+
+<div id="reportSuccess" class="window">
+  <div class="arrowTopSign"></div>
+  <div>
+    <h4 class="lgray bold">REPORT SENT</h4>
+    <div class="success clearfix white" id="reportMsgSuccess">Thank you for your feedback. Our team will strive to  fix the issue reported in the shortest time possible.</div>
+    <a id="reportCont" class="button fright bgGray close">Continue</a>
+  </div>
+</div>
+
+<div id="loginMessage" class="window">
+  <div class="arrowTopSign"></div>
+  <div>
+    <h4 class="lgray bold">You are not logged in</h4>
+    <div class="info clearfix pad" id="reportMsgSuccess">A Zigzeg account is required to use this feature. Please log-in or register an account in order to proceed.</div>
+    <div align="right" class="pad_top">
+      <a href="/signup" class="button bgGray">REGISTER</a>
+      <a href="/login" class="button bgGray margin_left_10">LOGIN</a> &nbsp;
+    </div>
+  </div>
+</div>
+
+<!-- END REPORT MODAL VIEW  -->

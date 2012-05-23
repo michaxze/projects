@@ -1,0 +1,7 @@
+<h3><%= @history_page_title %> </h3>
+
+<ul style="list-style-type:none">
+  <% @histories.each do |h| %>
+   <li> <%= h.listing.name.titleize %> </li>
+  <% end %>
+</ul>

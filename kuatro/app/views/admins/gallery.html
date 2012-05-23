@@ -1,0 +1,70 @@
+<ul class="breadcrumb">
+  <li>
+    <a href="<%= gallery_admins_url %>">Gallery</a> <span class="divider">/</span>
+  </li>
+
+  <% unless params[:cat_id].nil?%>
+    <li>
+      <a href="<%= gallery_admins_path(:cat_id => @cat.id) %>"><%= @cat.name %></a> <span class="divider">/</span>
+    </li>
+    <% unless @album.nil?%>
+      <li class="active"><%= @album.name %></li>
+    <% end%>
+  <% end %>
+</ul>
+
+<div style=" position: relative; top: -45px; float: right">
+  <a href="<%= newalbum_admins_path(:cat_id => params[:cat_id]) %>"><i class="icon-plus-sign"></i>New Album</a>  
+   
+</div>
+
+
+<div style="clear:both"></div>
+
+<% if !@albums.nil? && @album.nil? %>
+  <% if @albums.empty?%>
+    <a href="<%= newalbum_admins_path(:cat_id => params[:cat_id]) %>"><i class="icon-plus-sign"></i>New Album</a>  
+  <% end %>
+
+  <ul class="thumbnails">  
+    <% @albums.each do |a|%>
+    <li class="span3">
+      <a href="/admins/gallery?album_id=<%= a.id %>" class="thumbnail">
+        <div style="background-image:url(/images/album-bg.jpg); width: 217px; height: 218px">
+          <img src="<%= a.pictures.first.image.url(:thumb) rescue '' %>" width="162" height="150" style="padding-top: 16px; padding-left: 12px">
+          <label style="text-align:center"><%= a.name%></label>
+          <a href="/admins/delete_album?album_id=<%= a.id %>" style='margin-left: 20px'>Delete</a>
+        </div>
+      </a>
+    </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<% unless @album.nil? %>
+
+<%= form_for :picture, :url =>  addpicture_admins_path(:album_id => params[:album_id], :cat_id => params[:cat_id]), :html => { :multipart => true, :class => "well form-search" } do |f|%>
+  <label>Photo description: </label>
+  <%= f.text_field :description %><br/>
+  <label>Add photos to this album: </label>
+  <%= f.file_field :image %>
+  
+  <button type="submit" class="btn">Upload</button>
+<% end %>
+
+  <ul class="thumbnails">  
+    <% @album.pictures.each do |p|%>
+    <li class="span3">
+      <a href="<%= p.image.url(:large) %>" class=""  rel="fancybox">
+        <div >
+          <img src="<%= p.image.url(:thumb) rescue '' %>" width="162" height="150" style="padding-top: 16px; padding-left: 12px">
+          <label style="text-align:center"><%= p.description%>
+          <a href="/admins/delete_picture?album_id=<%= @album.id%>&picture_id=<%= p.id %>&cat_id=<%= params[:cat_id] %>">Delete</a>
+          </label>
+          
+        </div>
+      </a>
+    </li>
+    <% end %>
+  </ul>  
+<% end %>

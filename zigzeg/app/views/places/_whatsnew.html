@@ -1,0 +1,42 @@
+<% 
+appended_class = ""
+unless appended.nil?
+  appended_class = "appended"
+end
+%>
+          <% if whatsnew.class.name == "Shout" %>
+            <li class="announcements <%= appended_class %> shoutList<%= whatsnew.id %>">
+              <div class="margin_left_10">
+                <b class="black fleft shoutTitle<%= whatsnew.id %>">Posted 
+                  <%= distance_of_time_in_words_to_now(whatsnew.created_at, true)%> ago
+                </b>
+                <% unless current_user.nil?%>
+                <% if current_user.is_advertiser? && current_user.id == @place.user_id %>
+                	<a data-id="<%= whatsnew.id %>" class="shoutMod editShout"><div class="radius5">Edit</div></a>
+                  <a data-id="<%= whatsnew.id %>" class="shoutMod delShout"><div class="radius5">Delete</div></a><div class="imageLoader shoutL load<%= whatsnew.id %>">&nbsp;</div>
+                <% end %><% end %>
+                <div class="clearfix"></div>
+                <p><span class="shoutContent<%= whatsnew.id %>"><%= whatsnew.content rescue '' %></span>
+                  <% if whatsnew.shoutable_type != "Place" %>
+                    <br/>From <%= link_to truncate(whatsnew.shoutable.name.titleize, :length => 50, :omission => "..."), form_url(whatsnew.shoutable), :class => "normal" %>
+                  <% end %> 
+                </p>
+              </div>
+            </li>
+            <div class="hr <%= appended_class %> hr<%= whatsnew.id %>"></div>
+          <% else%>
+            <li class="<%= whatsnew.class.name.downcase%>s <%= appended_class %>">
+            <div class="margin_left_10">
+              <strong>
+                <a <%= (whatsnew.class.name.to_s == "Announcement") ? "class=announcement_modal":''  %> href="<%= form_url(whatsnew) %>" title="<%= whatsnew.title.titleize rescue ''%>">
+                <%= truncate(whatsnew.name.titleize, :length => 55, :omission => "...") rescue '' %>
+                </a>
+                      </strong>
+                      <p><%= whatsnew.description rescue '' %></p>
+                    </div>
+            </li>
+            <div class="hr <%= appended_class %>"></div>
+          <% end %>
+
+          
+

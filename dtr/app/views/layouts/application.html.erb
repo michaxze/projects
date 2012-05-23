@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Daily Time Record</title>
+    <%= csrf_meta_tag %>
+    <%= stylesheet_link_tag 'application' %>
+    <%= stylesheet_link_tag 'bootstrap' %>
+    <%= stylesheet_link_tag 'bootstrap-responsive' %>
+    <%= yield(:head) %>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Daily Time Record">
+    <meta name="author" content="Michael Gimena">
+
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">Daily Time Record</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="/">Dashboard</a></li>
+              <li><a href="/monthly"><%= Date::MONTHNAMES[Time.now.month]%></a></li>
+              <% unless user_signed_in? -%>
+              <li><%= link_to 'Log-In', new_user_session_path %></li>
+              <li><%= link_to 'Register', new_user_registration_path %></li>              
+              <% else%>
+              <li>
+              <% link = content_tag :span, current_user.email, :class => "label" %>
+              <%= link_to(raw("Log-Out #{link}"), user_session_path, :method => :delete) %></li>
+              <% end%>              
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <%- flash.each do |name, msg| -%>
+      <% type = case name.to_s
+      when "alert"
+        "error"
+      when "notice"
+        "success"
+      else
+        "error"
+      end
+      %>
+
+        <% if msg.is_a?(String)%>
+          <div class="alert alert-<%= type %>" id="flash_<%= "#{name}"%>">
+            <a class="close" data-dismiss="alert">×</a>
+            <%= msg %>
+          </div>
+        <% end %>
+      <%- end -%>
+      
+      <%= yield %>
+    </div> <!-- /container -->
+
+<!--
+    <footer>
+      <div id="company-info" class="row-fluid">
+        <div class="vcard span12">
+          <div class="adr">
+            <a class="fn org url" href="/">Daily Time Record</a>
+            <div class="tag-line">your time recorder</div>
+          </div>
+        </div>
+
+        <p class="span4 center">
+          <a href="/contact">Contact us.</a> •
+          <a class="value" rel="nofollow external" href="mailto:michaxze@gmail.com">michaxze@gmail.com</a>
+        </p>
+      </div>      
+    </footer>
+-->
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <%= javascript_include_tag :jquery %>
+    <%= javascript_include_tag "bootstrap-transition" %>
+    <%= javascript_include_tag "bootstrap-alert" %>
+    <%= javascript_include_tag "bootstrap-modal" %>
+    <%= javascript_include_tag "bootstrap-dropdown" %>
+    <%= javascript_include_tag "bootstrap-scrollspy" %>
+    <%= javascript_include_tag "bootstrap-tab" %>
+    <%= javascript_include_tag "bootstrap-tooltip" %>
+    <%= javascript_include_tag "bootstrap-popover" %>
+    <%= javascript_include_tag "bootstrap-button" %>
+    <%= javascript_include_tag "bootstrap-collapse" %>
+    <%= javascript_include_tag "bootstrap-carousel" %>
+    <%= javascript_include_tag "bootstrap-typeahead" %>
+  </body>
+</html>

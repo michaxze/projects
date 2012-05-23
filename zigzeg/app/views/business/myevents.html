@@ -1,0 +1,141 @@
+      <div class="packageBox pad_top20 pad_bot20 full depList">
+      <div class="container_12">
+				<div class="grid_12 numberMsg">
+          <h6 class="grid_7 bold no_margin half fleft pad_top">MY EVENT LIST &nbsp;
+              <% if !current_user.premium_subscriber?%>
+                |&nbsp; 
+                <div class="bubble"><%= current_user.remaining_events %></div> post remaining <a href="#cmpBizInfo" name="help" class="blue example cursor desc"></a>
+              <% end%>
+          </h6>
+
+            <% if current_user.remaining_events  > 0 || current_user.premium_subscriber? %>
+              <a  class="menuBar checkButton cursor fright createData" href="<%= new_business_event_path %>">CREATE EVENT</a>
+            <% end %>
+          </div>
+      </div>
+      <div class="container_12 pad_top inlineB eventListContain">
+              <div class="header clearfix bgGray">
+                  <div class="grid_5">Event Title</div>
+                          <div class="grid_1 spW">Created</div>
+                          <div class="grid_1 spW">Starts</div>
+                          <div class="grid_1 spW">Ends</div>
+                          <div class="grid_1">Status</div>
+                          <div class="grid_1" align="center">Edit</div>
+                          <div class="pad_right5" align="right"><input type="checkbox" name="checkAll" id="checkAll"></div>
+              </div>
+              <div class="body full minHt">
+<% reload_page = nil %>
+              <% @events.each do |e|%>
+<%
+case e.mystatus
+when Constant::EXPIRED
+  if e.mystatus != e.status
+    e.update_attribute(:sort_status, 4)
+    e.update_attribute(:status, Constant::EXPIRED)
+    reload_page = true
+  end
+end
+%>
+              <div class="row event_row_<%= e.id %>">
+                  <div class="grid_5">
+                    <% if e.is_complete? || e.is_published? || e.expired? || e.is_deleted?%>
+                      <a class="cursor" target="_new" href="<%= form_url(e) %>"><%= e.name%>&nbsp;</a>
+                    <% else %>
+                      <%= e.name%>&nbsp;
+                    <% end%>
+                  </div>
+                  <div class="grid_1 spW"><%= formatted_date(e.created_at, 'ddmmyy')%>&nbsp;</div>
+                  <div class="grid_1 spW">
+                    <%
+                      date_str = case e.event_type.to_i
+                      when 1
+                        #one day
+                        formatted_date(e.start_date, 'ddmmyy')
+                      when 2
+                        #multi day
+                        formatted_date(e.start_date, 'ddmmyy')
+                      when 3
+                        e.event_day.titleize + " weekly"
+                      when 4
+                        e.event_day.to_i.ordinalize + " monthly"
+                      else
+                        ""
+                      end
+                    %>
+                    <%= date_str %>&nbsp;
+                  </div>
+                  <div class="grid_1 spW">
+                    <%
+                      date_str = case e.event_type.to_i
+                      when 1
+                        #one day
+                        formatted_date(e.start_date, 'ddmmyy')
+                      when 2
+                        #multi day
+                        formatted_date(e.end_date, 'ddmmyy')
+                      when 3
+                        #e.event_day.titleize + ", weekly"
+                        "on-going"
+                      when 4
+                        #e.event_day.to_i.ordinalize + ", monthly"
+                        "on-going"
+                      else
+                        ""
+                      end
+                    %>
+                     
+                    
+                  <%= date_str %>&nbsp;
+                  </div>
+                  <!-- status classes: expired, notlive, inc, complete, published, deleted -->
+                  <div class="grid_1">
+                    <a title="<%= get_status_msg(e.mystatus,'event') %>" class="pubStat noCursor noDecor"><div class="<%= e.mystatus %>">&nbsp;</div></a>
+                  </div>
+                  <div class="grid_1" align="center">
+                    <% if e.mystatus.to_s != Constant::EXPIRED %>
+                      <% if [Constant::PUBLISHED, Constant::DELETED].include?(e.status) && !e.editable? %>
+                    <a class="blue noCursor getDetailsx editIconD noDecor" title="Event already live. Cannot modify this event.">&nbsp;</a>
+                      <% else %>
+                    <a class="blue cursor getDetailsx editIcon noDecor" title="Edit this event" data-id="<%= e.id %>" href="<%= edit_business_event_path(e) %>">&nbsp;</a>
+                      <% end %>
+
+                    <% else %>
+                    <a class="blue noCursor getDetailsx editIconD noDecor" title="Expired event cannot be edited">&nbsp;</a>
+                      <% end %>
+                    </div>
+                  <div class="pad_right5" align="right">
+                    <% if e.status != Constant::DELETED %>
+                      <input type="checkbox" value="<%= e.id%>" name="checkZig" class="checkList">
+                    <% end %>
+                  </div>
+              </div>
+              <% end %>
+            	<% if @events.empty? %>
+                 <div class="row center">
+                   Your Event list is currently empty.
+                  </div>
+                  </div><!-- end body -->
+              <% end %>
+              
+              </div><!-- end body -->
+             <div class="footer">
+             <div class="grid_9">
+              <div class="my_pagination pad_top5"><%= will_paginate @events %></div>
+             &nbsp;</div>
+     <% if @events.length > 0 %>
+    <div class="grid_3 align_right fright pad_top20">   <a class="checkButton cursor removeSelected" href="<%= remove_business_events_path %>">Delete</a></div>
+     <% end %>
+</div>
+          </div>
+        
+      </div>
+
+<script>
+$(document).ready(function() {
+
+  <% unless reload_page.nil? %>
+    location.reload();
+  <% end %>
+  $('.next_page,.previous_page').text('');
+});
+</script>

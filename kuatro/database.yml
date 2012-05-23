@@ -1,0 +1,34 @@
+development:
+  adapter: mysql
+  encoding: utf8
+  reconnect: true
+  database: kuatro_development
+  pool: 5
+  username: root
+  password: root
+  port: 8889
+  host: 127.0.0.1
+  #socket: /tmp/mysql.sock
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: kuatro_test
+  pool: 5
+  username: root
+  password:
+  socket: /tmp/mysql.sock
+
+production:
+  adapter: mysql
+  encoding: utf8
+  reconnect: true
+  database: 
+  pool: 5
+  username: 
+  password: 
+  socket: /tmp/mysql.sock

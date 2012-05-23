@@ -1,0 +1,26 @@
+<div class="full stepBar relative" style="">
+  <ul class="stepBarUL">
+    <li class="<%= params[:t].nil? ? "selected" : ""%>">
+      <div class="absolute border_bar" id="border_bar"></div>
+      <a class="cursor" href="<%= myplace_business_path %>">COMPANY INFO</a>
+      <div class="right_arrow"></div>
+    </li>
+     <li class="<%= params[:t] == 'category' ? "selected" : ""%>">
+      <a class="cursor" href="<%= myplace_business_path(:t => 'category') %>">CATEGORY & FEATURES</a>
+      <div class="right_arrow"></div>
+    </li>
+    <li class="<%= params[:t] == 'location' ? "selected" : ""%>">
+      <a class="menuBarx" href="<%= myplace_business_path(:t => 'location') %>">CONTACT INFO</a>
+      <div class="right_arrow"></div>
+    </li>
+    <li class="<%= params[:t] == 'gallery' ? "selected" : ""%>">
+      <a  class="menuBarx" href="<%= myplace_business_path(:t => 'gallery') %>">IMAGE GALLERY</a>
+      <div class="right_arrow"></div>
+    </li>
+    <!--<li class="<%= params[:t] == 'publish' ? "selected" : ""%>">
+      <a  class="menuBarx" href="<%= myplace_business_path(:t => 'publish') %>">PUBLISH</a>
+      <div class="right_arrow"></div>
+    </li>-->
+  </ul>
+</div>
+

@@ -1,0 +1,82 @@
+module Constant
+
+  RESERVED_USERNAMES = [
+    # controllers
+    "users",
+    "application",
+    "invitations",
+    "opportunities",
+    "contacts",
+    "contact_lists",
+    "contacts_list",
+    "etros",
+    "messages",
+    "mthreads",
+    "pages",
+    "profiles",
+    "tags",
+    "user_networks",
+    "user_numbers",
+    "work_infos",
+    "sessions",
+    "admin",
+    "bizsp",
+    "getting_started",
+    "notifications",
+    "classifieds",
+    "admins",
+    "accounts",
+    "myopportunities",
+    "public",
+
+
+    # special routes
+    "profile",
+    "login",
+    "logout",
+    "forgot_password",
+    "password_reset",
+    "signup",
+    "aboutus",
+    "contactus",
+    "activate",
+    "confirm",
+    "settings",
+    "account",
+    "sign_in",
+    "sign_out",
+    "confirm",
+    "tw_callback",
+    "dashboard",
+    "my_contacts",
+    "search",
+    "alpha",
+    "beta",
+    "sign",
+    "out",
+    "terms",
+    "privacy",
+    "facebook",
+    "linkedin",
+    "twitter",
+    "link",
+    "start",
+    "jobs",
+    
+    #categories
+    "personals",
+    "deals",
+    "dailydeals",
+    "housing",
+    "forsale",
+    "sale",
+    "cars",
+    "services",
+
+    # reserved usernames
+    "admin",
+    "superuser",
+    "root"
+   ].collect(&:freeze)      
+
+end

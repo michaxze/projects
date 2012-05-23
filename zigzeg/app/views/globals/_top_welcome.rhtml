@@ -1,0 +1,19 @@
+<div class="container_12 inlineB full">
+<div class="grid_2"><a href="<%= root_url %>" class="noDecor"><div id="logoPage">&nbsp;</div></a></div>
+<div class="grid_10 align_right no_margin fright">
+  <% unless current_user.nil? %>
+		<a href="#accountSettings" id="signUpLink" name="menuM" class="logged settings noDecor"><div><%= truncate(current_user.name_or_email, :length => 25, :omission => "...") %></div></a>
+    <div class="separator"></div>
+			<a class="logged updates bold noHover noCursor" name="menuM">0</a>
+    	<div class="separator"></div>&nbsp;&nbsp;
+        <a class="radius5 noHover noCursor">0 message</a>
+  <% else %> 
+    New to Zigzeg? &nbsp; <a href="#signupDialog" name="modal" class="noBg"  id="signUpLink" >Create an account</a>
+     <% if mobile_device? %>
+     <a  href="/login" id="logInLink" class="radius5" name="modal">Log-in</a>
+     <% else %>
+     <a  href="#loginDialog" id="logInLink" class="radius5" name="modal">Log-in</a>
+     <% end %>
+  <% end %>
+</div>
+</div>

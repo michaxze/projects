@@ -1,0 +1,33 @@
+#submenu
+  -if logged_in?
+    %div{ :class => "menu" }
+      %ul
+        %li
+          = link_to "Messages", messages_path
+        %li
+          = link_to "Opportunities", opportunities_path
+        %li
+          = link_to "Contacts", contacts_path
+        %li
+          = link_to "Add new", new_opportunity_path
+
+      %div.welcome_user
+        = "Hi #{current_user.firstname}! "
+        = link_to "Log-out", logout_path
+    %div.clr
+  -else
+    %div{ :class => "menu-inner" }
+      %ul
+        %li
+          = link_to "Jobs", jobs_opportunities_path
+        %li
+          = link_to "Personals", personals_opportunities_path
+        %li
+          = link_to "For Sale", forsale_opportunities_path
+        %li
+          = link_to "Housing", housing_opportunities_path
+        %li
+          = link_to "Daily Deals", deals_opportunities_path
+
+        %div.clr
+    %div.clr

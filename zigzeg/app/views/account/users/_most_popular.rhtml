@@ -1,0 +1,13 @@
+<div style="height:100px">
+  <div style="background-color: #ccc">
+    <h3>Most Popular</h3>
+  </div>
+  <div style="clear:both"></div>
+  <div>
+    <ul>
+      <% @mostpopular.each do |p| %>
+        <li> <%= p.name.titleize %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>

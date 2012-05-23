@@ -1,0 +1,335 @@
+<div class="simpleBox clearfix">
+  <script type="text/javascript" >
+ 
+$(function() {
+  first_timer = false;
+      <% if current_user.viewed_profile? %>
+       first_timer = false;
+       $("#galErr").hide();
+      <% else %>
+        <% current_user.update_attribute(:viewed_profile, true) if !current_user.viewed_profile %>
+        first_timer = true;
+        $("#galErr").show();
+      <% end %>
+      $(".close-popup").click(function() {$("#galErr").hide();});
+
+  $("#city_name").autocomplete("/business/search_city", {
+    width: 330,
+    selectFirst: false,
+  });
+
+  $("#city_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#city_name").val(data[1]);
+      $("#state_name").val(data[2]);
+      $("#country_name").val(data[3]);
+    }
+  });
+
+  $("#state_name").autocomplete("/business/search_state_autocomplete", {
+    width: 150,
+    selectFirst: false
+  });  
+  $("#state_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#state_name").val(data[1]);
+      $("#country_name").val(data[2]);
+    }
+  });
+
+  $("#country_name").autocomplete("/business/search_country_autocomplete", {
+    width: 150,
+    selectFirst: false,
+  });
+  $("#country_name").result(function(event, data, formatted) {
+    if (data) {
+      $("#country_name").val(data[0]);
+    }
+  });
+
+    $("#settingsFrm").validate({
+      messages: {
+	      "user[username]": {
+        required: 'Username is required!',
+        },"user[email]": {
+											required: 'Email is required!',
+									},"user[username]": {
+											required: 'Username is required!',
+									},"user[location]": {
+											required: 'location is required!',
+									},"user[dob_3i]": {
+											required: 'Birthday is required!',
+									},"user[dob_2i]": {
+											required: 'Birthmonth is required!',
+									},"user[dob_1i]": {
+											required: 'Birthyear is required!',
+									},"user[gender]": {
+											required: 'Gender is required!',
+									}
+							},
+							/*THIS IS A SCRIPT FOR CHECKING ON THE EMAIL ALREADY EXIST IN THE SYSTEM*/
+							/*,rules: {
+									"user[email]":{
+										remote: {
+												url: "/check-email",
+												type: "post",
+												data: {
+													username: function() {
+														return $("#email").val();
+													}
+												}
+											}
+									},
+							}*/
+      submitHandler: function(form) {
+        $('.frmLoader.settings').show();
+        $(".frmSaved.settings").hide();
+        $(".frmErrorsFound.settings").hide();
+
+        $.ajaxSetup({
+          'beforeSend': function(xhr) { xhr.setRequestHeader('X-CSRF-Token', $("meta[name='csrf-token']").attr('content')); }
+        });
+
+        $.ajax({
+          type: "POST",
+          url: "/account/settings",
+          data:  $(form).serializeArray(),
+          success: function(data){
+            if (data != " ") {
+              if(data.username != "undefined"){
+                $("#username").addClass('error');
+                $('label[for="username"]').text(data.username);
+                $('label[for="username"]').show();
+              }
+              if(data.email != "undefined"){
+                $("#email").addClass('error');
+                $('label[for="email"]').text(data.email);
+                $('label[for="email"]').show();
+              }
+              $(".frmSaved.settings").hide();
+
+              $('html, body').animate({
+                scrollTop: $(".mainContainer").offset().top
+              }, 500);
+            }else{
+              $(".frmSaved.settings").show().fadeOut(3000);
+            }
+            
+            $('.frmLoader.settings').hide();
+            if (first_timer)
+              location.replace("/account");
+            else
+              location.replace("/account/settings");
+            end
+          }
+        });
+      }
+    });
+						
+						$("#frmPassword").validate({
+							messages: {
+									"user[password]": {
+											required: 'Password is required!',
+									},"user[password_confirmation]": {
+											required: 'Please re-enter the same password',
+											equalTo: 'Password does not match to the above field',
+									}
+							},rules:{
+									"user[password]": {
+											minlength: 6
+									},"user[password_confirmation]"	:{
+										equalTo:"#password"
+									}
+							},submitHandler: function(form) {
+  						          $('.frmLoader.password').show();
+                                                          $.ajax({
+                                                            type: "POST",
+                                                            url: "/account/change_password",
+                                                            data:  $(form).serializeArray(),
+                                                            success: function(data){
+   						              $('.frmLoader.password').hide();
+   						              $('.frmSaved.password').show().fadeOut(3000);
+                                                            }
+                                                          });
+					 		}
+						});
+						createUploader(); 				
+});
+  function createUploader(){  
+	          var uploader = new qq.FileUploader({
+                element: document.getElementById('imageArea'),
+								allowedExtensions: ['jpg', 'jpeg', 'png', 'gif'], 
+								onSubmit: function(id, fileName){$('.qq-upload-list').show()},
+								//this is use for additional paramater like the userid
+								params: {
+authenticity_token: $("meta[name=csrf-token]").attr("content"),
+								},
+								debug: true,
+                                                                onProgress: function(id, fileName, loaded, total){
+                                                                $("#progress_bar").val(loaded);
+                                                                },
+								onComplete: function(id, fileName, responseJSON){
+if ( responseJSON.error != undefined){
+  $('.qq-upload-list').fadeOut().empty();
+}else{
+  $('#thumb').attr("src",responseJSON.filename);
+  $('.qq-upload-list').empty();
+  $('.qq-upload-list').append('<li>Image uploaded</li>').fadeOut(1000).empty();
+}
+								},
+                action: '/account/upload_profile',
+                sizeLimit: 4194304,
+                multiple: false,
+        messages: {
+          sizeError: "{file} is too large, maximum file size is 4MB."
+        }
+            });           
+        }       
+</script>
+
+<div class="msgErr radius15 shadow dispNone profile" id="galErr">
+  <div class="container_12">
+   <div class="grid_12 bold">Welcome to ZIGZEG!</div>
+   <div class="grid_12 pad_top" align="justify">
+     <p>
+As this is your first entry into our system, we would like for you take some time to update your profile information as well as set some preference for your account's settings. 
+</p>
+<p>
+We hope you will have a great time using ZIGZEG as much as we have had a great time creating & developing it. 
+</p>
+<p>Have a great day & best regards,</p>
+<p><b><i>The ZIGZEG Team</i></b></p>
+</p>
+      <br/>
+      <input type="button" value="Continue" class="radius5 bgGray margin_left_10 gray cursor  close-popup" name="close_popup">
+    </div>
+  </div>
+</div>
+<h6 class="bold pLine"><strong>PROFILE INFORMATION</strong></h6>
+  <form id="settingsFrm" method="POST" action=""  >
+    <div class="imageContainer">
+		  <span>Profile photo</span>
+      <% if current_user.avatar.exists? %>
+        <%= image_tag current_user.avatar.url(:thumb), :id => "thumb",:class=>"" %>
+      <% else%>
+        <img src="/images/<%= current_user.gender %>_silhouette.png" class="radius5" id="thumb">
+      <% end %>
+      <div id="progress_bar"></div>
+      <div id="imageArea" title="Click to change profile image" class="imageArea radius5"></div>
+    </div>
+    <ul class="cform">
+      <li>
+        <label class="clearfix">Username</label>
+        <input type="text" value="<%= current_user.username rescue ''%>" name="user[username]" id="username" class="required text-input fancyinput" />
+        <div class="clearfix"><label for="username" generated="false" class="error clearfix"></label></div>
+        <% unless current_user.uid.nil? %>
+        <div class="italic smallfont"> You are currently signed in using Facebook</div>
+        <% end %>
+      </li>
+      <li class="">
+        <label class="clearfix">Email</label>
+        <input type="text" value="<%= current_user.email%>" name="user[email]" id="email" class="required email text-input fancyinput" disabled/>
+        <div class="clearfix"><label for="email" generated="false" class="error clearfix"></label></div>
+      </li>
+      <li class="">
+	<div class="borderBot userLine"></div>
+        <div class="clearfix"></div>
+	<label class="clearfix">City/Town</label>
+        <input type="text" value="<%= current_user.city_name rescue ''%>" name="user[city_name]" id="city_name" class="required text-input fancyinput" autocomplete="off"/>
+        <div class="clearfix"><label for="city_name" generated="false" class="error clearfix"></label></div>
+      </li>
+			<li>
+        <label class="clearfix">State/Region</label>
+        <input type="text" value="<%= current_user.state_name rescue ''%>" name="user[state_name]" id="state_name" class="required text-input fancyinput" autocomplete="off"/>
+        <div class="clearfix"><label for="state_name" generated="false" class="error clearfix"></label></div>
+      </li>
+      <li>
+        <label class="clearfix">Country</label>
+        <input type="text" value="<%= current_user.country_name rescue ''%>" name="user[country_name]" id="country_name" class="required text-input fancyinput" autocomplete="off" />
+        <div class="clearfix"><label for="country_name" generated="false" class="error clearfix"></label></div>
+      </li>
+
+
+<script>
+    $("#user_city_id").change(function() {
+      var city_id = $("#user_city_id").val();
+      $("#loader_location").show();
+      $.ajax({
+        type: "GET",
+        cache: false,
+        url: "/account/load_select_sections?id=" + city_id,
+        data: $(this).serializeArray(),
+        success: function(data) {
+          $("#select_sections_li").empty();
+          $("#select_sections_li").hide();
+          $("#select_sections_li").append(data).fadeIn();
+          $("#loader_location").hide();
+        }
+      });
+    });
+</script>
+
+       <li>
+        <label class="clearfix">Date of Birth</label>
+        <% unless current_user.dob.nil?%>
+         <%= date_select("user", "dob", { :order => [:day, :month, :year],  :default => current_user.dob.to_date,  :start_year =>
+1920, :end_year => Time.now.year }, {:class => "radius5 dob autowidth"} ) %>
+         <% else %>
+         <%= date_select("user", "dob", { :order => [:day, :month, :year], :prompt => { :day => "Select day", :month => "Select
+month", :year => "Select year"},  :start_year => 1920, :end_year => Time.now.year }, {:class => "radius5 dob autowidth"} ) %>
+         <% end %>
+       </li>
+       <li>
+         <label class="clearfix">Gender</label>
+         <select name="user[gender]" class="radius5 dob required autowidth">
+            <option value=''> Select gender </option>
+            <option value="female" <%= current_user.gender == "female" ? "selected" : "" %>>Female</option>
+            <option value="male" <%= current_user.gender == "male" ? "selected" : "" %>>Male</option>
+         </select><br><label for="user[gender]" generated="false" class="error"></label>
+       </li>
+         
+			</ul>
+			<div class="clearfix pad_bot"></div>
+			<div class="clearfix"></div>
+    	<h6 class="bold pLine"><strong>ACCOUNT PREFERENCES</strong></h6>
+			<ul class="cform">
+     	 <li>
+         <label class="clearfix">Email notification for Ziglist and message</label>
+<%= select_tag "settings[notify_updates]", options_for_select(Constant::NOTIFICATION_OPTIONS, (current_user.settings['notify_updates'] rescue nil)), :class => "radius5 notify"%>
+       </li>
+       <li>
+         <label class="clearfix">Subscribe to Zigzeg's newsletter.</label>
+         <%= select_tag "settings[notify_newsletter]", options_for_select(Constant::NOTIFICATION_OPTIONS2), :class => "radius5 notify"%>
+       </li>
+       <li class="pad_top5">
+       		<input type="submit" value="Save Profile & Settings" id="userSubmitBtn" class="radius5 userButton white cursor fleft" name="submit"/>
+          <label class="frmLoader settings dispNone error">Saving profile</label>
+          <label class="frmSaved settings dispNone error">Profile & Settings saved.</label>
+       </li>
+       <li><label class="frmErrorsFound settings disNone error"></label> </li>
+      </ul>
+    </form>
+    
+    <form class="clearfix" id="frmPassword">
+		<div class="clearfix pad_top"></div>
+    <h6 class="bold clearfix pLine"><strong>CHANGE PASSWORD</strong></h6>
+			<ul class="cform">
+     	 <li>
+         <label class="clearfix">Enter new password</label>
+         <input type="password" value="" name="user[password]" id="password" class="required text-input fancyinput" />
+         <div class="clearfix"><label for="password" generated="false" class="error clearfix"></label></div>
+       </li>
+       <li>
+         <label class="clearfix">Re-enter password</label>
+         <input type="password" value="" name="user[password_confirmation]" id="password_confirmation" class="required text-input fancyinput" />
+         <div class="clearfix"><label for="password_confirmation" generated="false" class="error"></label></div>
+       </li>
+       <li class="pad_top5">
+       		<input type="submit" value="Save New Password" id="userSubmitBtn" class="radius5 userButton white cursor fleft" name="submit"/>
+           <div class="frmLoader password dispNone">Saving password</div>
+           <div class="frmSaved password dispNone">Password saved.</div>
+       </li>
+      </ul>
+    
+    </form>
+</div>

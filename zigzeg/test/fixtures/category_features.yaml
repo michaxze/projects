@@ -1,0 +1,112 @@
+Animals & Pets:
+  - dogs for sale: dogs
+  - cats for sale: cats
+  - birds for sale: birds
+  - fishes for sale: fishes
+  - exotics for sale: exotics
+  - pet food: pet-food
+Audio & Visual:
+Automobiles:
+Books & Magazines:
+Computer & Technology:
+Education & Schools:
+Entertainment & Leisure:
+  - live band: live-band
+  - television - movies: tv-movie
+  - television - sports: tv-sports
+  - above 21 only: above21
+  - alcohol & liquor available: liquor
+Fashion & Accessories:
+  - "fashion : menswear": menswear
+  - "fashion : women's wear": womanswear
+  - "fashion : children's wear": childrens-wear
+  - "fashion : lingerie": lingerie
+  - "fashion : underwater": lingerie
+  - "fashion : athletic wear": sport-shoes
+  - "fashion : accessories": accessory
+  - "fashion : men's shoes": mens-shoes
+  - "fashion : women's shoes": women-shoe
+  - "fashion : sports shoes": sport-shoes
+  - "fashion : perfume": perfume
+  - "fashion : cosmetics": cosmetics
+  - "fashion : bags & travel cases": bags-travel-cases
+  - "fashion : maternity": maternity-wear
+  - "fashion : plus-sized": maternity-wear
+  - "fashion : watches": jewelry
+  - "spectacles": liquor
+  - "contact lenses": eyewear
+  - "vision check": vision-check
+Food & Bites:
+  - live band: live-band
+  - television - movies: tv-movie
+  - television - sports: tv-sports
+  - alcohol & liquor available: liquor
+Finance & Related:
+  - express cheque machines: express-cheque
+  - cash deposit machines: cash-deposit
+  - foreign currency exchange: foreign-exchange
+Furnitures & Fixtures:
+Government & Related:
+Green & Eco:
+Health & Beauty:
+  - television - movies: tv-movie
+  - television - sports: tv-sports
+  - massage: massage
+  - spa / sauna: massage
+  - gym: gym
+Home Improvement:
+Hotels & Lodging:
+  - 1-star rated: 1-star
+  - 2-star rated: 2-star
+  - 3-star rated: 3-star
+  - 4-star rated: 4-star
+  - 5-star rated: 5-star
+  - 6-star rated: 6-star
+  - television: tv-movie
+  - airport pick-up service: airport-pickup
+  - gym: gym
+  - spa / sauna: massage
+  - live band: live-band
+  - conference hall: conference-hall
+  - business facilities: business-facility
+  - swimming pool: pool
+  - massage: massage
+Kiddie Stuff:
+Medical & Related:
+  - specialist centre: specialist-centre
+  - outpatient: hospital
+  - X-ray: x-ray
+  - minor surgery: surgery-minor
+  - major surgery: surgery-major
+  - ct scan: ct-scan
+  - magnetic resonance scan: hospital
+  - hospital: hospital
+  - clinic: clinic  
+  - pharmacy: pharmacy
+  - ultrasound: ultrasound
+  - plastic surgery: plastic-surgery
+  - blood bank: blood-bank
+  - vision check: vision-check
+  - rehabiliation centre: rehabilitation-centre
+  - ambulance service: ambulance
+  - dental care: detal-care
+  - test lab: test-lab
+Music & Instruments:
+  - keyboard: keyboard
+  - piano: piano
+  - guitar: guitar
+  - drums: drums
+  - wind instruments: wind-instruments
+  - speakers: speakers
+  - stringed instruments: string-instruments
+  - headphones: headphone
+  - microphones: microphones
+  - turntables: turntable
+  - synthesizers: synthesizer
+Organisations & Associations:
+Photography & Imaging:
+Professional Services:
+Sports & Fitness:
+Stationery & Related:
+Travel & Tours:
+Others:
