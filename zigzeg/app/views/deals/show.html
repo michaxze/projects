@@ -1,5 +1,0 @@
-<% if @listing.listing_type == "event" %>
-  <%= render :partial => "/events/details", :locals => { :listing => @listing } %>
-<% else %>
-  <%= render :partial => "/deals/details", :locals => { :listing => @listing } %>
-<% end %>

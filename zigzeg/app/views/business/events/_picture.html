@@ -1,8 +1,0 @@
-<div class="grid_3">
-    <div class="imageContain delete">
-      <div class="imgUrl" style="background:url('<%= picture.image.url(:thumb)%>') center no-repeat">
-          <div class="del"><input type="checkbox" name="deleteIcon" value="<%=picture.id %>" class="delCB opacity0"/></div>
-    	</div>
-    </div>
-    <div class="imageText"><a class="black cursor noDecor" name="modal" data-id="<h6><%= picture.name rescue '' %></h6><p><%= picture.description rescue '' %></p>" href="#galDialog" ><%= picture.name rescue ''  %></a> <span class="fright"><a class="blue cursor galDesc editIcon"  href="/business/events/edit_picture?id=<%=picture.id %>" title="Add details to image" data-id="<%= picture.id %>">&nbsp;</a></span></div>
-</div>

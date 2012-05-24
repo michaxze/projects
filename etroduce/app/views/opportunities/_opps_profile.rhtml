@@ -1,8 +1,0 @@
-<h2>Opportunities posted </h2>
-  <ul style="list-style-type: none; margin-top: 10px">
-  <% opportunities.each do |opp|%>
-    <li style="line-height: 25px">
-      <%= link_to opp.subject.titleize, opportunity_path(opp) %>
-    </li>
-  <% end %>
-</ul>

@@ -1,8 +1,0 @@
-1:
-  user_id: 1
-  notification_type: announcement
-  contents: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
-2:
-  user_id: 1
-  notification_type: announcement
-  contents: The quick brown fox jump over the lazy dog. The quick brown fox jump over the lazy dog.

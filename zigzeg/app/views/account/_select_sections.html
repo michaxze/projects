@@ -1,8 +1,0 @@
-<% section_id = current_user.section_id rescue nil %>
-
-<label class="clearfix">Section</label>
-<%= select_tag  "user[section_id]", options_for_select(sections, section_id), :class => "radius5 notify", :include_blank => true %>
-<div class="clearfix">
-  <label for="user_section" generated="false" class="error clearfix"></label>
-</div>
-

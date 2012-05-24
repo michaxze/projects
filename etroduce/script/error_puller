@@ -1,4 +1,0 @@
-#!/usr/bin/env ruby
-
-require File.join(File.dirname(__FILE__), '../config/environment')
-require File.join(File.dirname(__FILE__), '../app/scripts/pivotal_email_tracker')

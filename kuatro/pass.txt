@@ -1,9 +1,0 @@
-user: Tetrasome
-pwd: N4k3aN70
-
-info@kuatromedya.com
-pwd: same
-
-tetrasome@gmail.com
-
-https://github.com/mikehoward/use_tinymce

@@ -1,9 +1,0 @@
-<div style="width: 880px">
-  <form method="get" action="<%= opportunities_path %>">
-    <%= hidden_field_tag "c", params[:c] %>
-    <input name="search_str" class="rounded bigtextfield searchicon" type="text" placeholder="jobs, people, housing, items for sale, deals" value="" style="width:400px; background: url(/images/icon-search.png) 5px 6px no-repeat white; padding-left: 20px;font-size: 12px" />
-    <%= submit_tag "Search" %>
-    <% new_post_link = logged_in? ? new_myopportunity_path : login_path(:ret_url => 1)%>
-    <%= link_to "Post opportunity", new_myopportunity_path, :class => "post_opp_link" %>
-  </form>
-</div>

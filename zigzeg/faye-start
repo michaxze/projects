@@ -1,1 +1,0 @@
-thin start -R faye.ru -p 9292 -dP tmp/pids/faye.pid
